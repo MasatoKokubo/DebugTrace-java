@@ -1,0 +1,225 @@
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="../../../build/docs/javadoc/stylesheet.css" title="Style">
+	<link rel="stylesheet" type="text/css" href="addtional.css" title="Style">
+</head>
+<body>
+	<p>
+		DebugTrace class has some logging methods.<br>
+	</p>
+	The following are a sample code used DebugTrace methods and a log of when the sample was executed.<br>
+	Log bodys are automatically indent.<br>
+	<div class="title">Sample code:</div>
+	<pre class="codeBlock code">
+01 package sample;
+02 <span class="debugCode">import jp.masatokoubo.debugtrace.DebugTrace;</span>
+03
+04 <span class="comment">// main</span>
+05 public static main(String[] args) {
+06   <span class="debugCode">DebugTrace.enter();</span>
+07   <span class="debugCode">DebugTrace.println("args", args);</span>
+08
+09   sub(args);
+10
+11   <span class="debugCode">DebugTrace.leave();</span>
+12 }
+13
+14 <span class="comment">// sub</span>
+15 private static sub(String[] args) {
+16   <span class="debugCode">DebugTrace.enter();</span>
+17
+18   <span class="debugCode">DebugTrace.println("args", args);</span>
+19
+20   <span class="debugCode">DebugTrace.leave();</span>
+21 }
+</pre>
+
+	<div class="title">Log of when the sample code has been executed:</div>
+	<pre class="codeBlock code">
+2016-06-20 19:55:11.000 DBEUG Enter sample.Sample.main (6)
+2016-06-20 19:55:11.000 DBEUG &nbsp;&nbsp;&nbsp;&nbsp;args:(String[] length:3)["arg0", "arg1", "arg2"] (7)
+2016-06-20 19:55:11.000 DBEUG &nbsp;&nbsp;&nbsp;&nbsp;Enter sample.Sample.sub (16)
+2016-06-20 19:55:11.001 DBEUG &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;args:(String[] length:3)["arg0", "arg1", "arg2"] (18)
+2016-06-20 19:55:11.001 DBEUG &nbsp;&nbsp;&nbsp;&nbsp;Leave sample.Sample.sub (20)
+2016-06-20 19:55:11.001 DBEUG Leave sample.Sample.main (11)
+</pre>
+	<br>
+
+	DebugTrace read DebugTrace.properties file in the classpath on startup.
+	You can specify following propeties in the DebugTrace.properties file.<br>
+	<br>
+
+	<div class="title">Properties of DebugTrace.properties file:</div>
+
+	<table class="additinal">
+		<tr><th>Name</th><th>Value</th><th>Default</th></tr>
+		<tr>
+			<td>threadChangeString</td>
+			<td>
+				Format string to output when a thread has been changed<br>
+				<ul class="additinal">
+					<b>parameter:</b><br>
+					<span class="parameter">%1</span>: The <b>thread name</b>
+				</ul>
+			</td>
+			<td class="code">______________________________ <span class="parameter">%1$s</span> ______________________________</td>
+		</tr>
+		<tr>
+			<td>indentString</td>
+			<td>
+				String used for indent.<br>
+				<ul class="additinal">
+					"\\s" are change to a space character
+				</ul>
+			</td>
+			<td class="code">\\s\\s\\s\\s</td>
+		</tr>
+		<tr>
+			<td>enterString</td>
+			<td>
+				Log string used by enter method<br>
+				<ul class="additinal">
+					<b>parameters:</b><br>
+					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
+					<span class="parameter">%2</span>: The <b>method name</b> of the caller<br>
+					<span class="parameter">%3</span>: The <b>line numnber</b> of the call point
+				</ul>
+			</td>
+			<td>
+				<div class="code">
+					Enter <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span>(<span class="parameter">%3$d</span>)
+				</div>
+				<ul class="additinal">
+					If your locale is de, es, fr or it,
+					then Enter change to Eingeben, Entrar, Entrer or Entrare.
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>leaveString</td>
+			<td>
+				Log string used by leave method
+				<ul class="additinal">
+					<b>parameters:</b><br>
+					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
+					<span class="parameter">%2</span>: The <b>method name</b> of the caller<br>
+					<span class="parameter">%3</span>: The <b>line numnber</b> of the call point
+				</ul>
+			</td>
+			<td>
+				<div class="code">
+					Leave <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span>(<span class="parameter">%3$d</span>)
+				</div>
+				<ul class="additinal">
+					If your locale is de, es, fr or it,
+					then Leave change to Verlassen, Dejar, Quitter or Lasciare.
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>resultSetRowSeparator</td>
+			<td>Line separator when output a <b>ResultSet</b> object</td>
+			<td class="code">\\r\\n</td>
+		</tr>
+		<tr>
+			<td>utilDateFormat</td>
+			<td>
+				Format string when output a <b>java.util.Date</b> object
+				<ul class="additinal">
+					<b>parameter:</b><br>
+					<span class="parameter">%1</span>: a <b>java.util.Date</b> object<br>
+				</ul>
+			</td>
+			<td class="code">
+				<span class="parameter">%1$tY</span>-<span class="parameter">%1$tm</span>-<span class="parameter">%1$td</span>
+				<span class="parameter">%1$tH</span>:<span class="parameter">%1$tM</span>:<span class="parameter">%1$tS</span>
+			</td>
+		</tr>
+		<tr>
+			<td>sqlDateFormat</td>
+			<td>
+				Format string when output a <b>java.sql.Date</b> object
+				<ul class="additinal">
+					<b>parameter:</b><br>
+					<span class="parameter">%1</span>: a <b>java.sql.Date</b> object<br>
+				</ul>
+			</td>
+			<td class="code">
+				<span class="parameter">%1$tY</span>-<span class="parameter">%1$tm</span>-<span class="parameter">%1$td</span>
+			</td>
+		</tr>
+		<tr>
+			<td>timeFormat</td>
+			<td>
+				Format string when output a <b>java.sql.Time</b> object
+				<ul class="additinal">
+					<b>parameter:</b><br>
+					<span class="parameter">%1</span>: a <b>java.sql.Time</b> object<br>
+				</ul>
+			</td>
+			<td>
+				<span class="parameter">%1$tH</span>:<span class="parameter">%1$tM</span>:<span class="parameter">%1$tS</span>
+			</td>
+		</tr>
+		<tr>
+			<td>timestampFormat</td>
+			<td>
+				Format string when output a <b>java.sql.Timestamp</b> object
+				<ul class="additinal">
+					<b>parameter:</b><br>
+					<span class="parameter">%1</span>: a <b>java.sql.Timestamp</b> object<br>
+				</ul>
+			</td>
+			<td class="code">
+				<span class="parameter">%1$tY</span>-<span class="parameter">%1$tm</span>-<span class="parameter">%1$td</span>
+				<span class="parameter">%1$tH</span>:<span class="parameter">%1$tM</span>:<span class="parameter">%1$tS</span>.<span class="parameter">%1$tL</span>
+			</td>
+		</tr>
+		<tr>
+			<td>arrayMax</td>
+			<td>Max length when output an <b>array</b></td>
+			<td>100</td>
+		</tr>
+		<tr>
+			<td>byteArrayMax</td>
+			<td>Max length when output a <b>byte array</b></td>
+			<td>100</td>
+		</tr>
+		<tr>
+			<td>mapMax</td>
+			<td>Max count when output a <b>Map</b></td>
+			<td>100</td>
+		</tr>
+		<tr>
+			<td>stringMax</td>
+			<td>Max length when output a <b>String</b></td>
+			<td>200</td>
+		</tr>
+		<tr>
+			<td>resultSetMaxRows</td>
+			<td>Max rows when output a <b>ResultSet</b> object</td>
+			<td>100</td>
+		</tr>
+		<tr>
+			<td>resultSetMaxColumns</td>
+			<td>Max columns when output a <b>ResultSet</b> object</td>
+			<td>20</td>
+		</tr>
+		<tr>
+			<td>logger</td>
+			<td>
+				Logger wrapper class<br>
+				Select from follows.
+				<ul class="additinal">
+					<span class="selection">JdkLogger</span> : if you use <b>java.util.logging.Logger</b><br>
+					<span class="selection">Log4jLogger</span> : if you use <b>org.apache.log4j.Logger</b> of Log4J<br>
+					<span class="selection">Log4j2Logger</span> : if you use <b>org.apache.logging.log4j.Logger</b> of Log4J 2<br>
+					<span class="selection">SystemOutLogger</span> : if you use <b>System.out<br>
+				</ul>
+			</td>
+			<td>SystemOutLogger</td>
+		</tr>
+	</table>
+</body>
+</html>

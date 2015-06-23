@@ -1,0 +1,43 @@
+apply plugin: 'java'
+
+dependencies {
+	compile files('libs/log4j-1.2-api-2.3.jar', 'libs/log4j-api-2.3.jar')
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+version             = '1.0.0'
+
+compileJava {
+	options.encoding     = 'UTF-8'
+	options.deprecation  = true
+	options.debug        = true
+	options.compilerArgs = ['-Xlint']
+}
+
+jar {
+	manifest {
+		attributes	'Implementation-Title'    : project.name,
+					'Implementation-Version'  : version,
+					'Implementation-Vendor'   : 'Masato Kokubo',
+					'Implementation-Vendor-Id': 'jp.masatokokubo',
+					'Main-Class'              : 'jp.masatokokubo.debugtrace.DebugTrace'
+
+	}
+}
+
+javadoc {
+	title               = "$project.name / JDK $sourceCompatibility API Specification"
+	options.locale      = 'en'
+	options.windowTitle = "$project.name / JDK $sourceCompatibility"
+	options.overview    = 'src/main/java/overview.html'
+
+	options.addBooleanOption('author', true)
+	options.addStringOption ('bottom', '<div class="copyright">&copy;2015 Masato Kokubo</div>')
+}
+
+javadoc.doLast {
+	new File("src/main/java/addtional.css").eachLine {
+		new File("build/docs/javadoc/stylesheet.css").append("$it\n")
+	}
+}

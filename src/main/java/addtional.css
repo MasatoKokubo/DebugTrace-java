@@ -1,0 +1,97 @@
+
+/* The followings are additional for DebugTrace. */
+.title {
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+.codeBlock {
+	margin: 10px;
+	padding: 10px;
+	color: #000000;
+	background-color: #F7F7F7;
+	border-width: 1px;
+	border-style: dashed;
+	border-color: #77AADD;
+}
+
+.code {
+	font-family: monospace;
+}
+
+.debugCode {
+	color: #0077BB;
+}
+
+.comment {
+	color: #00BB00;
+}
+
+.parameter {
+	color: #CC2222;
+	background-color: #F7EEFF;
+	border-radius: 4px;
+	padding: 2px 3px 2px 3px;
+}
+
+.selection {
+	color: #0055DD;
+	font-weight: bold;
+}
+
+.copyright {
+	padding-left: 100px;
+	padding-top: 100px;
+	color: #444444;
+}
+
+
+ul.additinal {
+	margin: 4px 0px 0px 8px;
+	padding: 0px 0px 0px 0px;
+	list-style-type: disc;
+}
+
+ol.additinal {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	list-style-type: decimal;
+}
+
+ul.additinal li, ol.additinal li {
+	margin: 2px 0px 6px 0px;
+}
+
+table.additinal {
+	margin: 8px;
+	border-collapse: collapse;
+	font-family: sans-serif;
+	font-size: 10pt;
+}
+
+table.additinal tr th {
+	background-color: #E0E0E0;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #808080;
+	border-collapse: collapse;
+	padding: 4px;
+}
+
+table.additinal tr td {
+	background-color: #FFFFFF;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #808080;
+	border-collapse: collapse;
+	padding: 4px;
+}
+
+table.additinalNoBorder {
+	margin: 8px;
+}
+
+table.additinalNoBorder tr td {
+	border-style: none;
+	padding: 0px;
+}

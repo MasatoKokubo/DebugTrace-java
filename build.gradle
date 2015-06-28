@@ -42,11 +42,10 @@ javadoc.doLast {
 	}
 }
 
-//task binZip(type: Zip, dependsOn: jar, javadoc) {
 task zip(type: Zip) {
 	into('/'  , {from 'build/libs'})
 	into('/'  , {from 'LICENSE.txt', 'README.txt'})
 	into('doc', {from 'build/docs/javadoc'})
 	into('src/main', {from 'src/main'})
-	into('resource-sample', {from 'src/test/resource'})
+	into('resources-sample', {from 'src/test/resources'})
 }

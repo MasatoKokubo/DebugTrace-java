@@ -167,32 +167,32 @@
 		<tr>
 			<td>arrayMax</td>
 			<td>Max length when output an <b>array</b></td>
-			<td>100</td>
+			<td>512</td>
 		</tr>
 		<tr>
 			<td>byteArrayMax</td>
 			<td>Max length when output a <b>byte array</b></td>
-			<td>100</td>
+			<td>8192</td>
 		</tr>
 		<tr>
 			<td>mapMax</td>
 			<td>Max count when output a <b>Map</b></td>
-			<td>100</td>
+			<td>512</td>
 		</tr>
 		<tr>
 			<td>stringMax</td>
 			<td>Max length when output a <b>String</b></td>
-			<td>200</td>
+			<td>8192</td>
 		</tr>
 		<tr>
 			<td>resultSetMaxRows</td>
 			<td>Max rows when output a <b>ResultSet</b> object</td>
-			<td>100</td>
+			<td>512</td>
 		</tr>
 		<tr>
 			<td>resultSetMaxColumns</td>
 			<td>Max columns when output a <b>ResultSet</b> object</td>
-			<td>20</td>
+			<td>512</td>
 		</tr>
 		<tr>
 			<td>logger</td>
@@ -200,14 +200,33 @@
 				Logger wrapper class<br>
 				Select from follows.
 				<ul class="additinal">
-					<span class="selection">JdkLogger</span> : if you use <b>java.util.logging.Logger</b><br>
-					<span class="selection">Log4jLogger</span> : if you use <b>org.apache.log4j.Logger</b> of Log4J<br>
-					<span class="selection">Log4j2Logger</span> : if you use <b>org.apache.logging.log4j.Logger</b> of Log4J 2<br>
-					<span class="selection">SystemOutLogger</span> : if you use <b>System.out<br>
+					<span class="selection">JdkLogger</span> : when you use <b>JDK Logger</b><br>
+					<span class="selection">Log4jLogger</span> : when you use <b>Log4J 1</b><br>
+					<span class="selection">Log4j2Logger</span> : when you use <b>Log4J 2</b><br>
+					<span class="selection">System.out</span> : when you use <b>System.out</b><br>
+					<span class="selection">System.err</span> : when you use <b>System.err</b><br>
 				</ul>
 			</td>
-			<td>SystemOutLogger</td>
+			<td>System.out</td>
 		</tr>
 	</table>
+	<br>
+
+	<table class="additinal">
+		<tr><th>Logger</th><th>Log Level</th><th>Logger Name</th></tr>
+		<tr>
+			<td>JdkLogger</td>
+			<td class="code">FINEST</td>
+			<td class="code" rowspan="3">jp.masatokokubo.debug.DebugTrace</d>
+		</tr>
+		<tr>
+			<td>Log4jLogger</td>
+			<td class="code" rowspan="2">TRACE</td>
+		</tr>
+		<tr>
+			<td>Log4j2Logger</td>
+		</tr>
+	</table>
+
 </body>
 </html>

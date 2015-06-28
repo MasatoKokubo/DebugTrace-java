@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -29,10 +30,6 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
-
-import jp.masatokokubo.debug.logging.Logger;
-import jp.masatokokubo.debug.logging.LoggerFactory;
-import jp.masatokokubo.debug.logging.SystemOutLoggerFactory;
 
 /**
 	A utility class for debugging.<br>
@@ -137,31 +134,41 @@ public class DebugTrace {
 	private static final int    resultSetMaxRows      = resource.getInt   ("resultSetMaxRows"     ); // Max rows when output a ResultSet object
 	private static final int    resultSetMaxColumns   = resource.getInt   ("resultSetMaxColumns"  ); // Max columns when output a ResultSet object
 
-	// Logger factory
-	private static LoggerFactory loggerFactory;
+	// Append timestamp
+	private static String appendTimestamp(String string) {
+		return String.format(timestampFormat, new Timestamp(System.currentTimeMillis())) + " " + string;
+	}
 
+	// Logger map
+	private static final Map<String, Logger> loggerMap = new LinkedHashMap<>();
 	static {
-		// Logger factory name
-		String loggerFactoryName = null;
-		try {
-			loggerFactoryName = resource.getString("logger");
-			if (loggerFactoryName.indexOf('.') == -1)
-				// The logger factory name dose not have package name
-				loggerFactoryName = LoggerFactory.class.getPackage().getName() + '.' + loggerFactoryName;
-			loggerFactoryName += "Factory";
-			loggerFactory = (LoggerFactory)Class.forName(loggerFactoryName).newInstance();
-		}
-		catch (Exception e) {
-			if (loggerFactoryName != null)
-				System.err.println("DebugTrace:" + e.toString() + "(" + loggerFactoryName + ")");
-		}
-
-		if (loggerFactory == null)
-			loggerFactory = new SystemOutLoggerFactory();
+		loggerMap.put("System.out", messgae -> System.out.println(appendTimestamp(messgae)));
+		loggerMap.put("System.err", messgae -> System.err.println(appendTimestamp(messgae)));
 	}
 
 	// Logger
-	private static final Logger logger = loggerFactory.getLogger(DebugTrace.class.getName());
+	private static Logger logger = null;
+
+	static {
+		String loggerName = null;
+		try {
+			loggerName = resource.getString("logger");
+			logger = loggerMap.get(loggerName);
+
+			if (logger == null) {
+				if (loggerName.indexOf('.') == -1)
+					loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
+				logger = (Logger)Class.forName(loggerName).newInstance();
+			}
+		}
+		catch (Exception e) {
+			if (loggerName != null)
+				System.err.println("DebugTrace:" + e.toString() + "(" + loggerName + ")");
+		}
+
+		if (logger == null)
+			logger = loggerMap.entrySet().iterator().next().getValue();
+	}
 
 	// Whether tracing is enabled
 	private static final boolean enabled = logger.isTraceEnabled();
@@ -181,8 +188,7 @@ public class DebugTrace {
 	private static long beforeThreadId;
 
 	static {
-		println("DebugTrace 1.0.0");
-		println("resource", resource);
+		println("DebugTrace 1.0.0 / logger wrapper", logger.getClass().getSimpleName());
 		println("");
 	}
 
@@ -679,7 +685,6 @@ public class DebugTrace {
 		if (ch >= ' ' && ch != '\u007F') {
 			if      (ch == '"' ) buff.append("\\\"");
 			else if (ch == '\'') buff.append("\\'" );
-			else if (ch == '/' ) buff.append("\\/" );
 			else if (ch == '\\') buff.append("\\\\");
 			else                 buff.append(ch);
 		} else {

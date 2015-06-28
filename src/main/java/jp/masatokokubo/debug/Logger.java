@@ -5,13 +5,14 @@
 	(C) Masato Kokubo
 */
 
-package jp.masatokokubo.debug.logging;
+package jp.masatokokubo.debug;
 
 /**
 	Interface of Logger classes.
 	@since 1.0.0
 	@author Masato Kokubo
 */
+@FunctionalInterface
 public interface Logger {
 	/**
 		Outputs a message string with trace level.
@@ -23,5 +24,7 @@ public interface Logger {
 		Returns whether logging at trace level is enabled.
 		@return true if logging at trace level is enabled; false otherwise
 	*/
-	boolean isTraceEnabled();
+	default boolean isTraceEnabled() {
+		return true;
+	}
 }

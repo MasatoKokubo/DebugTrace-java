@@ -5,7 +5,7 @@
 	(C) Masato Kokubo
 */
 
-package jp.masatokokubo.debug.logging;
+package jp.masatokokubo.debug;
 
 import java.util.logging.Level;
 
@@ -19,17 +19,17 @@ public class JdkLogger implements Logger {
 	private java.util.logging.Logger logger;
 
 	/**
-		Construct a Logger of the name.
-		@param name a name
+		Construct a Logger.
 	*/
-	public JdkLogger(String name) {
-		logger = java.util.logging.Logger.getLogger(name);
+	public JdkLogger() {
+		logger = java.util.logging.Logger.getLogger(DebugTrace.class.getName());
 	}
 
 	/**
 		Outputs a message string with trace level.
 		@param message a message string
 	*/
+	@Override
 	public void trace(String message) {
 		logger.log(Level.FINEST, message);
 	}
@@ -38,6 +38,7 @@ public class JdkLogger implements Logger {
 		Returns whether logging at trace level is enabled.
 		@return true if logging at trace level is enabled; false otherwise
 	*/
+	@Override
 	public boolean isTraceEnabled() {
 		return logger.isLoggable(Level.FINEST);
 	}

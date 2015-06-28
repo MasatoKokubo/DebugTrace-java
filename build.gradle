@@ -21,15 +21,15 @@ jar {
 					'Implementation-Version'  : version,
 					'Implementation-Vendor'   : 'Masato Kokubo',
 					'Implementation-Vendor-Id': 'jp.masatokokubo',
-					'Main-Class'              : 'jp.masatokokubo.debugtrace.DebugTrace'
+					'Main-Class'              : 'jp.masatokokubo.debug.DebugTrace'
 
 	}
 }
 
 javadoc {
-	title               = "$project.name / JDK $sourceCompatibility API Specification"
+	title               = "$project.name API Specification"
 	options.locale      = 'en'
-	options.windowTitle = "$project.name / JDK $sourceCompatibility"
+	options.windowTitle = "$project.name"
 	options.overview    = 'src/main/java/overview.html'
 
 	options.addBooleanOption('author', true)
@@ -40,4 +40,13 @@ javadoc.doLast {
 	new File("src/main/java/addtional.css").eachLine {
 		new File("build/docs/javadoc/stylesheet.css").append("$it\n")
 	}
+}
+
+//task binZip(type: Zip, dependsOn: jar, javadoc) {
+task zip(type: Zip) {
+	into('/'  , {from 'build/libs'})
+	into('/'  , {from 'LICENSE.txt', 'README.txt'})
+	into('doc', {from 'build/docs/javadoc'})
+	into('src/main', {from 'src/main'})
+	into('resource-sample', {from 'src/test/resource'})
 }

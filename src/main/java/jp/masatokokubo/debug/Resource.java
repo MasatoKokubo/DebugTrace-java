@@ -9,6 +9,7 @@ package jp.masatokokubo.debug;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 /**
 	Uses this class when gets resources.
@@ -27,10 +28,6 @@ public class Resource {
 	/** User defined ResourceBundle */
 	private ResourceBundle userResourceBundle;
 	public ResourceBundle userResourceBundle() {return userResourceBundle;}
-
-	public static interface Function<T, R> {
-		R apply(T t);
-	}
 
 	// Filter
 	private Function<String, String> filter;

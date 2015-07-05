@@ -4,7 +4,8 @@
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/log4j-1.2-api-2.3.jar"/>
-	<classpathentry kind="lib" path="libs/log4j-api-2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Java/apache-log4j-2.3-bin/log4j-1.2-api-2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Java/apache-log4j-2.3-bin/log4j-api-2.3.jar"/>
+	<classpathentry kind="lib" path="C:/Java/slf4j-1.7.12/slf4j-api-1.7.12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

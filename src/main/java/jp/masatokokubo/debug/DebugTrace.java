@@ -19,11 +19,17 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -57,7 +63,7 @@ public class DebugTrace {
 		primitiveTypeMap.put(Double   .class, double .class);
 	}
 
-	// Map of classes that dose not output the name
+	// Map of classes that dose not output the type name
 	private static final Map<Class<?>, Boolean> noOutputTypeMap = new HashMap<>();
 	static {
 		noOutputTypeMap.put(boolean  .class, Boolean.TRUE);
@@ -69,7 +75,7 @@ public class DebugTrace {
 		noOutputTypeMap.put(Timestamp.class, Boolean.TRUE);
 	}
 
-	// Map of component types that dose not output the name
+	// Map of component types that dose not output the type name
 	private static final Map<Class<?>, Boolean> noOutputComponentTypeMap = new HashMap<>();
 	static {
 		noOutputComponentTypeMap.put(boolean  .class, Boolean.TRUE);
@@ -118,21 +124,30 @@ public class DebugTrace {
 		}
 	);
 
-	private static final String threadChangeString    = resource.getString("threadChangeString"   ); // String to output when a thread has been changed
-	private static final String indentString          = resource.getString("indentString"         ); // String of indent
-	private static final String enterString           = resource.getString("enterString"          ); // String at enter
-	private static final String leaveString           = resource.getString("leaveString"          ); // String at leave
-	private static final String resultSetRowSeparator = resource.getString("resultSetRowSeparator"); // Line separator when output a ResultSet object
-	private static final String utilDateFormat        = resource.getString("utilDateFormat"       ); // Format when output a java.util.Date object
-	private static final String sqlDateFormat         = resource.getString("sqlDateFormat"        ); // Format when output a java.sql.Date object
-	private static final String timeFormat            = resource.getString("timeFormat"           ); // Format when output a Time object
-	private static final String timestampFormat       = resource.getString("timestampFormat"      ); // Format when output a Timestamp object
-	private static final int    arrayMax              = resource.getInt   ("arrayMax"             ); // Max length when output an array
-	private static final int    byteArrayMax          = resource.getInt   ("byteArrayMax"         ); // Max length when output a byte array
-	private static final int    mapMax                = resource.getInt   ("mapMax"               ); // Max count when output a map
-	private static final int    stringMax             = resource.getInt   ("stringMax"            ); // Max length when output a string
-	private static final int    resultSetMaxRows      = resource.getInt   ("resultSetMaxRows"     ); // Max rows when output a ResultSet object
-	private static final int    resultSetMaxColumns   = resource.getInt   ("resultSetMaxColumns"  ); // Max columns when output a ResultSet object
+	private static final String version                 = resource.getString("version"                ); // The version string
+	private static final String logLevel                = resource.getString("logLevel"               ); // Log Level
+	private static final String enterString             = resource.getString("enterString"            ); // String at enter
+	private static final String leaveString             = resource.getString("leaveString"            ); // String at leave
+	private static final String threadBoundaryString    = resource.getString("threadBoundaryString"   ); // String of threads boundary
+	private static final String classBoundaryString     = resource.getString("classBoundaryString"    ); // String of classes boundary
+	private static final String indentString            = resource.getString("indentString"           ); // String of indent
+	private static final String limitString             = resource.getString("limitString"            ); // String to represent that it has exceeded the limit
+	private static final String cyclicReferenceString   = resource.getString("cyclicReferenceString"  ); // String to represent that the cyclic reference occurs
+	private static final String varNameValueSeparator   = resource.getString("varNameValueSeparator"  ); // Separator between the variable name and value
+	private static final String keyValueSeparator       = resource.getString("keyValueSeparator"      ); // Separator between the key and value for Map object
+	private static final String fieldNameValueSeparator = resource.getString("fieldNameValueSeparator"); // Separator between the field name and value
+	private static final String indexFormat             = resource.getString("indexFormat"            ); // Format string of index of array and Collection
+	private static final String utilDateFormat          = resource.getString("utilDateFormat"         ); // Format string of java.util.Date
+	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string of java.sql.Date
+	private static final String timeFormat              = resource.getString("timeFormat"             ); // Format string of java.sql.Time
+	private static final String timestampFormat         = resource.getString("timestampFormat"        ); // Format string of java.sql.Timestamp
+	private static final int    arrayLimit              = resource.getInt   ("arrayLimit"             ); // Output limit of length for a array and elements for a Collection
+	private static final int    byteArrayLimit          = resource.getInt   ("byteArrayLimit"         ); // Output limit of length for a byte array
+	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Output limit of elements for a Map
+	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Output limit of length for a String
+	private static final int    rowsLimit               = resource.getInt   ("rowsLimit"              ); // Output limit of rows for a ResultSet
+	private static final int    columnsLimit            = resource.getInt   ("columnsLimit"           ); // Output limit of columns for a ResultSet
+
 
 	// Append timestamp
 	private static String appendTimestamp(String string) {
@@ -142,8 +157,8 @@ public class DebugTrace {
 	// Logger map
 	private static final Map<String, Logger> loggerMap = new LinkedHashMap<>();
 	static {
-		loggerMap.put("System.out", messgae -> System.out.println(appendTimestamp(messgae)));
-		loggerMap.put("System.err", messgae -> System.err.println(appendTimestamp(messgae)));
+		loggerMap.put("System.out", message -> System.out.println(appendTimestamp(message)));
+		loggerMap.put("System.err", message -> System.err.println(appendTimestamp(message)));
 	}
 
 	// Logger
@@ -153,25 +168,31 @@ public class DebugTrace {
 		String loggerName = null;
 		try {
 			loggerName = resource.getString("logger");
-			logger = loggerMap.get(loggerName);
-
-			if (logger == null) {
-				if (loggerName.indexOf('.') == -1)
-					loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
-				logger = (Logger)Class.forName(loggerName).newInstance();
+			if (loggerName != null) {
+				logger = loggerMap.get(loggerName);
+				if (logger == null) {
+					// not (System.out and System.err)
+					if (loggerName.indexOf('.') == -1)
+						loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
+					loggerName += "Logger";
+					logger = (Logger)Class.forName(loggerName).newInstance();
+				}
 			}
 		}
 		catch (Exception e) {
-			if (loggerName != null)
+			if (logger != null)
 				System.err.println("DebugTrace:" + e.toString() + "(" + loggerName + ")");
 		}
 
 		if (logger == null)
 			logger = loggerMap.entrySet().iterator().next().getValue();
+
+		// Set a logging level
+		logger.setLevel(logLevel);
 	}
 
 	// Whether tracing is enabled
-	private static final boolean enabled = logger.isTraceEnabled();
+	private static final boolean enabled = logger.isEnabled();
 
 	// Array of indent strings
 	private static final String[] indentStrings = new String[64];
@@ -187,8 +208,11 @@ public class DebugTrace {
 	// Before thread id
 	private static long beforeThreadId;
 
+	// Reflected Object List
+	private static final List<Object> reflectedObjects = new ArrayList<>();
+
 	static {
-		println("DebugTrace 1.0.0 / logger wrapper", logger.getClass().getSimpleName());
+		println("DebugTrace " + version + " / logger wrapper", logger.getClass().getSimpleName());
 		println("");
 	}
 
@@ -221,9 +245,7 @@ public class DebugTrace {
 		Returns a string corresponding to the current indent.
 		@return A string corresponding to the current indent
 	*/
-	private static String getIndentString() {
-		State state = getState();
-
+	private static String getIndentString(State state) {
 		return indentStrings[
 			state.nestLevel < 0 ? 0 :
 			state.nestLevel >= indentStrings.length ? indentStrings.length - 1
@@ -234,9 +256,27 @@ public class DebugTrace {
 		Initializes the nest level.
 	*/
 	public static void initNestLevel() {
-		State state = getState();
-		state.nestLevel       = 0;
-		state.beforeNestLevel = 0;
+		synchronized(stateMap) {
+			stateMap.clear();
+		}
+	}
+
+	/**
+		Up the nest level.
+		@param state a nest status of current thread
+	*/
+	private static void upNest(State state) {
+		state.beforeNestLevel = state.nestLevel;
+		++state.nestLevel;
+	}
+
+	/**
+		Down the nest level.
+		@param state a nest status of current thread
+	*/
+	private static void downNest(State state) {
+		state.beforeNestLevel = state.nestLevel;
+		--state.nestLevel;
 	}
 
 	/**
@@ -247,9 +287,9 @@ public class DebugTrace {
 		long threadId = thread.getId();
 		if (threadId !=  beforeThreadId) {
 			// Thread changing
-			logger.trace(""); // Line break
-			logger.trace(String.format(threadChangeString, thread.getName(), threadId));
-			logger.trace(""); // Line break
+			logger.log(""); // Line break
+			logger.log(String.format(threadBoundaryString, thread.getName(), threadId));
+			logger.log(""); // Line break
 
 			beforeThreadId = threadId;
 		}
@@ -272,12 +312,11 @@ public class DebugTrace {
 
 				State state = getState();
 				if (state.beforeNestLevel > state.nestLevel)
-					logger.trace(""); // Line break
+					logger.log(""); // Line break
 
-				logger.trace(getIndentString() + getCallerInfo(enterString));
+				logger.log(getIndentString(state) + getCallerInfo(enterString));
 
-				state.beforeNestLevel = state.nestLevel;
-				++state.nestLevel;
+				upNest(state);
 			}
 		}
 	}
@@ -291,10 +330,9 @@ public class DebugTrace {
 				printlnStart(); // Common start processing of output
 
 				State state = getState();
-				state.beforeNestLevel = state.nestLevel;
-				--state.nestLevel;
+				downNest(state);
 
-				logger.trace(getIndentString() + getCallerInfo(leaveString));
+				logger.log(getIndentString(state) + getCallerInfo(leaveString));
 
 				printlnEnd(); // Common end processing of output
 			}
@@ -319,7 +357,7 @@ public class DebugTrace {
 			synchronized(stateMap) {
 				printlnStart(); // Common start processing of output
 
-				logger.trace(getIndentString() + message);
+				logger.log(getIndentString(getState()) + message);
 
 				printlnEnd(); // Common end processing of output
 			}
@@ -336,12 +374,32 @@ public class DebugTrace {
 		synchronized(stateMap) {
 			printlnStart(); // Common start processing of output
 
-			StringBuilder buff = new StringBuilder(getIndentString());
-			buff.append(name).append(':').append(toString(value, isPrimitive, false));
-			logger.trace(buff.toString());
+			reflectedObjects.clear();
+
+			State state = getState();
+			List<String> strings = new ArrayList<>();
+			StringBuilder buff = new StringBuilder();
+
+			buff.append(name).append(varNameValueSeparator);
+
+			append(state, strings, buff, value, isPrimitive, false);
+			lineFeed(state, strings, buff);
+
+			strings.stream().forEach(logger::log);
 
 			printlnEnd(); // Common end processing of output
 		}
+	}
+
+	/**
+		Line Feed
+		@param state indent state
+		@param strings a string list (not accept null)
+		@param buff a string buffer (not accept null)
+	*/
+	private static void lineFeed(State state, List<String> strings, StringBuilder buff) {
+		strings.add(getIndentString(getState()) + buff.toString());
+		buff.setLength(0);
 	}
 
 	/**
@@ -496,17 +554,17 @@ public class DebugTrace {
 
 	/**
 		Returns a string representation of the value.
+		@param state indent state
+		@param strings a string list (not accept null)
+		@param buff a string buffer (not accept null)
 		@param value a value object
 		@param isPrimitive if the value is primitive type then true, otherwise false
 		@param isComponent if the value is component of an array, otherwise false
-		@return a string representation of the value
 	*/
-	public static String toString(Object value, boolean isPrimitive, boolean isComponent) {
-		String string = "null";
-
-		if (value != null) {
-			StringBuilder buff = new StringBuilder();
-
+	private static void append(State state, List<String> strings, StringBuilder buff, Object value, boolean isPrimitive, boolean isComponent) {
+		if (value == null) {
+			buff.append("null");
+		} else {
 			Class<?> type = value.getClass();
 			if (isPrimitive) {
 				type = primitiveTypeMap.get(type);
@@ -522,13 +580,13 @@ public class DebugTrace {
 				// Array
 				if (type == char[].class)
 					// String Array
-					append(buff, ((char[])value));
+					append(state, strings, buff, ((char[])value));
 				else if (type == byte[].class)
 					// Byte Array
-					append(buff, ((byte[])value));
+					append(state, strings, buff, ((byte[])value));
 				else
 					// Other Array
-					appendArray(buff, value);
+					appendArray(state, strings, buff, value);
 
 			} else if (value instanceof Boolean) {
 				// Boolean
@@ -537,7 +595,7 @@ public class DebugTrace {
 			} else if (value instanceof Character) {
 				// String
 				buff.append('\'');
-				append(buff, ((Character)value).charValue());
+				append(state, strings, buff, ((Character)value).charValue());
 				buff.append('\'');
 
 			} else if (value instanceof Number) {
@@ -567,25 +625,53 @@ public class DebugTrace {
 					// Other Date
 					buff.append(String.format(utilDateFormat, value));
 
+			} else if (value instanceof OptionalInt) {
+				// OptionalInt
+				if (((OptionalInt)value).isPresent())
+					append(state, strings, buff, ((OptionalInt)value).getAsInt(), true, true);
+				else
+					buff.append("empty");
+
+			} else if (value instanceof OptionalLong) {
+				// OptionalLong
+				if (((OptionalLong)value).isPresent())
+					append(state, strings, buff, ((OptionalLong)value).getAsLong(), true, true);
+				else
+					buff.append("empty");
+
+			} else if (value instanceof OptionalDouble) {
+				// OptionalDouble
+				if (((OptionalDouble)value).isPresent())
+					append(state, strings, buff, ((OptionalDouble)value).getAsDouble(), true, true);
+				else
+					buff.append("empty");
+
+			} else if (value instanceof Optional) {
+				// Optional
+				if (((Optional<?>)value).isPresent())
+					append(state, strings, buff, ((Optional<?>)value).get(), false, true);
+				else
+					buff.append("empty");
+
 			} else if (value instanceof CharSequence) {
 				// CharSequence
-				append(buff, (CharSequence)value);
+				append(state, strings, buff, (CharSequence)value);
 
-			} else if (value instanceof Iterable) {
-				// Iterable
-				append(buff, (Iterable<?>)value);
+			} else if (value instanceof Collection) {
+				// Collection
+				append(state, strings, buff, (Collection<?>)value);
 
 			} else if (value instanceof Map) {
 				// Map
-				append(buff, (Map<?,?>)value);
+				append(state, strings, buff, (Map<?,?>)value);
 
 			} else if (value instanceof Clob) {
 				// Clob
 				try {
 					long length = ((Clob)value).length();
-					if (length > (long)stringMax)
-						length = (long)(stringMax + 1);
-					append(buff, ((Clob)value).getSubString(1L, (int)length));
+					if (length > (long)stringLimit)
+						length = (long)(stringLimit + 1);
+					append(state, strings, buff, ((Clob)value).getSubString(1L, (int)length));
 				}
 				catch (SQLException e) {
 					buff.append(e);
@@ -595,9 +681,9 @@ public class DebugTrace {
 				// Blob
 				try {
 					long length = ((Blob)value).length();
-					if (length > (long)byteArrayMax)
-						length = (long)(byteArrayMax + 1);
-					append(buff, ((Blob)value).getBytes(1L, (int)length));
+					if (length > (long)byteArrayLimit)
+						length = (long)(byteArrayLimit + 1);
+					append(state, strings, buff, ((Blob)value).getBytes(1L, (int)length));
 				}
 				catch (SQLException e) {
 					buff.append(e);
@@ -605,20 +691,24 @@ public class DebugTrace {
 
 			} else if (value instanceof ResultSet) {
 				// ResultSet
-				append(buff, (ResultSet)value);
+				append(state, strings, buff, (ResultSet)value);
 
 			} else {
 				// Other
 				if (hasToString(value))
+					// Use toString method
 					buff.append(value);
-				else
-					buff.append(toReflectString(value));
+				else if (reflectedObjects.stream().anyMatch((object) -> value == object))
+					// Cyclic reference
+					buff.append(cyclicReferenceString).append(value);
+				else {
+					// Use Reflection
+					reflectedObjects.add(value);
+					appendReflectString(state, strings, buff, value);
+					reflectedObjects.remove(reflectedObjects.size() - 1);
+				}
 			}
-
-			string = buff.toString();
 		}
-
-		return string;
 	}
 
 	/**
@@ -677,11 +767,12 @@ public class DebugTrace {
 
 	/**
 		Appends a character representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
 		@param ch a character
-		@return the string buffer
 	*/
-	private static StringBuilder append(StringBuilder buff, char ch) {
+	private static void append(State state, List<String> strings, StringBuilder buff, char ch) {
 		if (ch >= ' ' && ch != '\u007F') {
 			if      (ch == '"' ) buff.append("\\\"");
 			else if (ch == '\'') buff.append("\\'" );
@@ -695,62 +786,59 @@ public class DebugTrace {
 			else if (ch == '\r') buff.append("\\r" ); // 0D CR
 			else buff.append("\\u").append(String.format("%04X", (short)ch));
 		}
-
-		return buff;
 	}
 
 	/**
 		Appends a CharSequence representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
 		@param charSequence a CharSequence object (not accept null)
-		@return the string buffer
 	*/
-	private static StringBuilder append(StringBuilder buff, CharSequence charSequence) {
+	private static void append(State state, List<String> strings, StringBuilder buff, CharSequence charSequence) {
 		buff.append('"');
 		for (int index = 0; index < charSequence.length(); ++index) {
-			if (index >= stringMax) {
-				buff.append("...");
+			if (index >= stringLimit) {
+				buff.append(limitString);
 				break;
 			}
-			append(buff, charSequence.charAt(index));
+			append(state, strings, buff, charSequence.charAt(index));
 		}
 		buff.append('"');
-
-		return buff;
 	}
 
 	/**
 		Appends a character array representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
 		@param chars a character array (not accept null)
-		@return the string buffer
 	*/
-	private static StringBuilder append(StringBuilder buff, char[] chars) {
+	private static void append(State state, List<String> strings, StringBuilder buff, char[] chars) {
 		buff.append('"');
 		for (int index = 0; index < chars.length; ++index) {
-			if (index >= stringMax) {
-				buff.append("...");
+			if (index >= stringLimit) {
+				buff.append(limitString);
 				break;
 			}
-			append(buff, chars[index]);
+			append(state, strings, buff, chars[index]);
 		}
 		buff.append('"');
-
-		return buff;
 	}
 
 	/**
 		Appends a byte array representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
 		@param bytes a byte array (not accept null)
-		@return the string buffer
 	*/
-	private static StringBuilder append(StringBuilder buff, byte[] bytes) {
+	private static void append(State state, List<String> strings, StringBuilder buff, byte[] bytes) {
 		buff.append('[');
 		for (int index = 0; index < bytes.length; ++index) {
 			if (index > 0) buff.append(", ");
-			if (index >= byteArrayMax) {
-				buff.append("...");
+			if (index >= byteArrayLimit) {
+				buff.append(limitString);
 				break;
 			}
 			int value = bytes[index];
@@ -763,122 +851,205 @@ public class DebugTrace {
 			buff.append(ch);
 		}
 		buff.append(']');
-
-		return buff;
 	}
 
 	/**
 		Appends an object array representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
 		@param array an object array (not accept null)
-		@return the string buffer
 	*/
-	private static StringBuilder appendArray(StringBuilder buff, Object array) {
+	private static void appendArray(State state, List<String> strings, StringBuilder buff, Object array) {
 		Class<?> componentType = array.getClass().getComponentType();
 
 		int length = Array.getLength(array);
 
+		boolean multiLine = length >= 2 && !componentType.isPrimitive();
+
 		buff.append('[');
-		for (int index = 0; index < length; ++index) {
-			if (index > 0) buff.append(", ");
-			if (index >= arrayMax) {
-				buff.append("...");
-				break;
-			}
-			Object value = Array.get(array, index);
-
-			buff.append(index).append(':').append(toString(value, componentType.isPrimitive(), true));
+		if (multiLine) {
+			lineFeed(state, strings, buff);
+			upNest(state);
 		}
-		buff.append(']');
 
-		return buff;
+		for (int index = 0; index < length; ++index) {
+			if (!multiLine && index > 0) buff.append(", ");
+
+			if (index < arrayLimit) {
+				buff.append(String.format(indexFormat, index));
+				Object value = Array.get(array, index);
+				append(state, strings, buff, value, componentType.isPrimitive(), true);
+			} else
+				buff.append(limitString);
+
+			if (multiLine) {
+				buff.append(",");
+				lineFeed(state, strings, buff);
+			}
+
+			if (index >= arrayLimit) break;
+		}
+
+		if (multiLine)
+			downNest(state);
+		buff.append(']');
 	}
 
 	/**
 		Appends an Iterable representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
-		@param iterable an Iterable object (not accept null)
-		@return the string buffer
+		@param collection a Collection object (not accept null)
 	*/
-	private static StringBuilder append(StringBuilder buff, Iterable<?> iterable) {
-		Iterator<?> iter = iterable.iterator();
-		buff.append('[');
-		for (int index = 0; iter.hasNext(); ++index) {
-			if (index > 0) buff.append(", ");
-			if (index >= arrayMax) {
-				buff.append("...");
-				break;
-			}
-			buff.append(index).append(':').append(toString(iter.next(), false, false));
-		}
-		buff.append(']');
+	private static void append(State state, List<String> strings, StringBuilder buff, Collection<?> collection) {
+		Iterator<?> iterator = collection.iterator();
 
-		return buff;
+		boolean multiLine = collection.size() >= 2;
+
+		buff.append('[');
+		if (multiLine) {
+			lineFeed(state, strings, buff);
+			upNest(state);
+		}
+
+		for (int index = 0; iterator.hasNext(); ++index) {
+			if (!multiLine && index > 0) buff.append(", ");
+
+			if (index < arrayLimit) {
+				buff.append(String.format(indexFormat, index));
+				append(state, strings, buff, iterator.next(), false, false);
+			} else
+				buff.append(limitString);
+
+			if (multiLine) {
+				buff.append(",");
+				lineFeed(state, strings, buff);
+			}
+
+			if (index >= arrayLimit) break;
+		}
+
+		if (multiLine)
+			downNest(state);
+		buff.append(']');
 	}
 
 	/**
 		Appends a Map representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
 		@param map a Map (not accept null)
-		@return the string buffer
 	*/
-	private static <K,V> StringBuilder append(StringBuilder buff, Map<K,V> map) {
-		Iterator<Map.Entry<K,V>> iter = map.entrySet().iterator();
-		buff.append('[');
-		for (int index = 0; iter.hasNext(); ++index) {
-			if (index > 0) buff.append(", ");
-			if (index >= mapMax) {
-				buff.append("...");
-				break;
-			}
-			Map.Entry<K,V> entry = iter.next();
-			buff.append(toString(entry.getKey(), false, false))
-				.append(':')
-				.append(toString(entry.getValue(), false, false));
-		}
-		buff.append(']');
+	private static <K,V> void append(State state, List<String> strings, StringBuilder buff, Map<K,V> map) {
+		Iterator<Map.Entry<K,V>> iterator = map.entrySet().iterator();
 
-		return buff;
+		boolean multiLine = map.size() >= 2;
+
+		buff.append('[');
+		if (multiLine) {
+			lineFeed(state, strings, buff);
+			upNest(state);
+		}
+
+		for (int index = 0; iterator.hasNext(); ++index) {
+			if (!multiLine && index > 0) buff.append(", ");
+
+			if (index < mapLimit) {
+				Map.Entry<K,V> entry = iterator.next();
+				append(state, strings, buff, entry.getKey(), false, false);
+				buff.append(keyValueSeparator);
+				append(state, strings, buff, entry.getValue(), false, false);
+			} else
+				buff.append(limitString);
+
+			if (multiLine) {
+				buff.append(",");
+				lineFeed(state, strings, buff);
+			}
+
+			if (index >= mapLimit) break;
+		}
+
+		if (multiLine)
+			downNest(state);
+		buff.append(']');
 	}
 
 	/**
 		Appends a ResultSet representation for log to the string buffer.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
 		@param resultSet a ResultSet object (not accept null)
-		@return the string buffer
 		@throws RuntimeException if an exception thrown from resultSet.beforeFirst method
 	*/
-	private static StringBuilder append(StringBuilder buff, ResultSet resultSet) {
+	private static void append(State state, List<String> strings, StringBuilder buff, ResultSet resultSet) {
 		try {
 			if (resultSet.getType() == ResultSet.TYPE_FORWARD_ONLY) {
 				buff.append(resultSet);
 			} else {
+
 				ResultSetMetaData metaData = resultSet.getMetaData();
 				int columnCount = metaData.getColumnCount();
 				int beforeRowNo = resultSet.getRow();
 				resultSet.beforeFirst();
+
+				boolean multiRowLine = true;
+				boolean multiColumnLine = columnCount >= 2;
+
 				buff.append('[');
+				if (multiRowLine) {
+					lineFeed(state, strings, buff);
+					upNest(state);
+				}
+
 				while (resultSet.next()) {
 					int rowNo = resultSet.getRow();
-					if (rowNo > resultSetMaxRows) {
-						buff.append("...");
-						break;
-					}
-					if (rowNo > 1) buff.append(resultSetRowSeparator);
-					buff.append('[');
-					for (int columnNo = 1; columnNo <= columnCount; ++columnNo) {
-						if (columnNo > 1) buff.append(", ");
-						if (columnNo > resultSetMaxColumns) {
-							buff.append("...");
-							break;
+					if (!multiRowLine && rowNo > 1) buff.append(", ");
+
+					if (rowNo <= rowsLimit) {
+						buff.append(String.format(indexFormat, rowNo));
+						buff.append('[');
+						if (multiColumnLine) {
+							lineFeed(state, strings, buff);
+							upNest(state);
 						}
-						buff.append(metaData.getColumnName(columnNo))
-							.append(':')
-							.append(toString(resultSet.getObject(columnNo), false, false));
+
+						for (int columnNo = 1; columnNo <= columnCount; ++columnNo) {
+							if (!multiColumnLine && columnNo > 1) buff.append(", ");
+
+							if (columnNo <= columnsLimit) {
+								buff.append(String.format(indexFormat, metaData.getColumnName(columnNo)));
+								append(state, strings, buff, resultSet.getObject(columnNo), false, false);
+							} else
+								buff.append(limitString);
+
+							if (multiColumnLine) {
+								buff.append(",");
+								lineFeed(state, strings, buff);
+							}
+
+							if (columnNo > columnsLimit) break;
+						}
+						buff.append(']');
+					} else
+						buff.append(limitString);
+
+					if (multiRowLine) {
+						buff.append(",");
+						lineFeed(state, strings, buff);
 					}
-					buff.append(']');
+
+					if (rowNo > rowsLimit) break;
 				}
+
+				if (multiRowLine)
+					downNest(state);
 				buff.append(']');
+
 				resultSet.absolute(beforeRowNo);
 			}
 		}
@@ -890,8 +1061,6 @@ public class DebugTrace {
 				throw new RuntimeException(e);
 			}
 		}
-
-		return buff;
 	}
 
 	/**
@@ -919,75 +1088,91 @@ public class DebugTrace {
 
 	/**
 		Returns a string representation of the object uses reflection.
+		@param state indent state
+		@param strings a string list (not accept null)
 		@param object an object (not accept null)
-		@return a string representation
 	*/
-	private static String toReflectString(Object object) {
-		StringBuilder buff = new StringBuilder();
-
+	private static void appendReflectString(State state, List<String> strings, StringBuilder buff, Object object) {
 		buff.append('[');
-		boolean first = true;
+		lineFeed(state, strings, buff);
+		upNest(state);
+
 		Class<?> clazz = object.getClass();
-		while (clazz != Object.class) {
-			// field
-			Field[] fields = clazz.getDeclaredFields();
-			for (Field field : fields) {
-				int modifiers = field.getModifiers();
-				if (Modifier.isStatic(modifiers)) continue; // static
+		appendReflectStringSub(state, strings, buff, object, clazz, clazz.getSuperclass() != Object.class);
 
-				String fieldName = field.getName();
+		downNest(state);
+		buff.append(']');
+	}
 
-				if (Modifier.isPublic(modifiers)) {
-					// public field
+	/**
+		Returns a string representation of the object uses reflection.
+		@param state indent state
+		@param strings a string list (not accept null)
+		@param object an object (not accept null)
+		@param clazz the class of the object (not accept null)
+		@param extended the class is extended (not accept null)
+	*/
+	private static void appendReflectStringSub(State state, List<String> strings, StringBuilder buff, Object object, Class<?> clazz, boolean extended) {
+		if (clazz == Object.class)
+			return;
+
+		// Call for the super class
+		appendReflectStringSub(state, strings, buff, object, clazz.getSuperclass(), extended);
+
+		if (extended) {
+			buff.append(String.format(classBoundaryString, clazz.getCanonicalName()));
+			lineFeed(state, strings, buff);
+		}
+
+		// field
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			int modifiers = field.getModifiers();
+			if (Modifier.isStatic(modifiers)) continue; // static
+
+			String fieldName = field.getName();
+
+			if (Modifier.isPublic(modifiers)) {
+				// public field
+				try {
+					buff.append(fieldName).append(fieldNameValueSeparator);
+					append(state, strings, buff, field.get(object), field.getType().isPrimitive(), false);
+
+					buff.append(",");
+					lineFeed(state, strings, buff);
+				}
+				catch (Exception e) {
+				}
+			} else {
+				// not public field
+				Method method = null;
+				for (String getterPrefix : getterPrefixes) {
+					String methodName = getterPrefix.length() == 0
+						? fieldName
+						: getterPrefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 					try {
-						Object value = field.get(object);
-						if (first)
-							first = false;
+						method = clazz.getDeclaredMethod(methodName);
+						if (method.getReturnType() != Void.TYPE)
+							break;
 						else
-							buff.append(", ");
-						buff.append(fieldName).append(':')
-							.append(toString(value, field.getType().isPrimitive(), false));
+							method = null;
 					}
 					catch (Exception e) {
 					}
-				} else {
-					// not public field
-					Method method = null;
-					for (String getterPrefix : getterPrefixes) {
-						String methodName = getterPrefix.length() == 0
-							? fieldName
-							: getterPrefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-						try {
-							method = clazz.getDeclaredMethod(methodName);
-							if (method.getReturnType() != Void.TYPE)
-								break;
-							else
-								method = null;
-						}
-						catch (Exception e) {
-						}
+				}
+				if (method != null) {
+					try {
+						buff.append(fieldName).append(fieldNameValueSeparator);
+						append(state, strings, buff, method.invoke(object), method.getReturnType().isPrimitive(), false);
+
+						buff.append(",");
+						lineFeed(state, strings, buff);
 					}
-					if (method != null) {
-						try {
-							Object value = method.invoke(object);
-							if (first)
-								first = false;
-							else
-								buff.append(", ");
-							buff.append(fieldName).append(':')
-								.append(toString(value, method.getReturnType().isPrimitive(), false));
-						}
-						catch (Exception e) {
-						}
+					catch (Exception e) {
 					}
 				}
 			}
-
-			clazz = clazz.getSuperclass();
 		}
-
-		buff.append(']');
-		return buff.toString();
 	}
 
 }

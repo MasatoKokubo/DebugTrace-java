@@ -15,16 +15,23 @@ package jp.masatokokubo.debug;
 @FunctionalInterface
 public interface Logger {
 	/**
-		Outputs a message string with trace level.
-		@param message a message string
+		Set a logging level
+		@param logLevelStr a logging level string
 	*/
-	void trace(String message);
+	default void setLevel(String logLevelStr) {
+	}
 
 	/**
-		Returns whether logging at trace level is enabled.
-		@return true if logging at trace level is enabled; false otherwise
+		Returns whether logging is enabled.
+		@return true if logging is enabled; false otherwise
 	*/
-	default boolean isTraceEnabled() {
+	default boolean isEnabled() {
 		return true;
 	}
+
+	/**
+		Output the log message.
+		@param message a log message
+	*/
+	void log(String message);
 }

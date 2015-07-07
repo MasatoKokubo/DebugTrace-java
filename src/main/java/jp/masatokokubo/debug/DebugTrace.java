@@ -1131,17 +1131,15 @@ public class DebugTrace {
 			if (Modifier.isStatic(modifiers)) continue; // static
 
 			String fieldName = field.getName();
+			buff.append(fieldName).append(fieldNameValueSeparator);
 
 			if (Modifier.isPublic(modifiers)) {
 				// public field
 				try {
-					buff.append(fieldName).append(fieldNameValueSeparator);
 					append(state, strings, buff, field.get(object), field.getType().isPrimitive(), false);
-
-					buff.append(",");
-					lineFeed(state, strings, buff);
 				}
 				catch (Exception e) {
+					buff.append("<" + e + ">");
 				}
 			} else {
 				// not public field
@@ -1162,16 +1160,15 @@ public class DebugTrace {
 				}
 				if (method != null) {
 					try {
-						buff.append(fieldName).append(fieldNameValueSeparator);
 						append(state, strings, buff, method.invoke(object), method.getReturnType().isPrimitive(), false);
-
-						buff.append(",");
-						lineFeed(state, strings, buff);
 					}
 					catch (Exception e) {
+						buff.append("<" + e + ">");
 					}
 				}
 			}
+			buff.append(",");
+			lineFeed(state, strings, buff);
 		}
 	}
 

@@ -136,6 +136,7 @@ public class DebugTrace {
 	private static final String varNameValueSeparator   = resource.getString("varNameValueSeparator"  ); // Separator between the variable name and value
 	private static final String keyValueSeparator       = resource.getString("keyValueSeparator"      ); // Separator between the key and value for Map object
 	private static final String fieldNameValueSeparator = resource.getString("fieldNameValueSeparator"); // Separator between the field name and value
+	private static final String lineNumberFormat        = resource.getString("lineNumberFormat"       ); // Format string of line number
 	private static final String indexFormat             = resource.getString("indexFormat"            ); // Format string of index of array and Collection
 	private static final String utilDateFormat          = resource.getString("utilDateFormat"         ); // Format string of java.util.Date
 	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string of java.sql.Date
@@ -208,12 +209,15 @@ public class DebugTrace {
 	// Before thread id
 	private static long beforeThreadId;
 
-	// Reflected Object List
+	// Reflection target map
+	private static final Map<Class<?>, Boolean> reflectionTargetMap = new HashMap<>();
+
+	// Reflected object list
 	private static final List<Object> reflectedObjects = new ArrayList<>();
 
 	static {
-		println("DebugTrace " + version + " / logger wrapper", logger.getClass().getSimpleName());
-		println("");
+		logger.log("DebugTrace " + version + " / logger wrapper: " + logger.getClass().getSimpleName());
+		logger.log("");
 	}
 
 	private DebugTrace() {}
@@ -253,11 +257,12 @@ public class DebugTrace {
 	}
 
 	/**
-		Initializes the nest level.
+		Add a reflection target class.
+		@param targetClass a reflection target class.
 	*/
-	public static void initNestLevel() {
+	public static void addReflectionTarget(Class<?> targetClass) {
 		synchronized(stateMap) {
-			stateMap.clear();
+			reflectionTargetMap.put(targetClass, true);
 		}
 	}
 
@@ -282,7 +287,7 @@ public class DebugTrace {
 	/**
 		Common start processing of output.
 	*/
-	private static void printlnStart() {
+	private static void printStart() {
 		Thread thread = Thread.currentThread();
 		long threadId = thread.getId();
 		if (threadId !=  beforeThreadId) {
@@ -298,7 +303,7 @@ public class DebugTrace {
 	/**
 		Common end processing of output.
 	*/
-	private static void printlnEnd() {
+	private static void printEnd() {
 		beforeThreadId = Thread.currentThread().getId();
 	}
 
@@ -308,7 +313,7 @@ public class DebugTrace {
 	public static void enter() {
 		if (enabled) {
 			synchronized(stateMap) {
-				printlnStart(); // Common start processing of output
+				printStart(); // Common start processing of output
 
 				State state = getState();
 				if (state.beforeNestLevel > state.nestLevel)
@@ -327,14 +332,14 @@ public class DebugTrace {
 	public static void leave() {
 		if (enabled) {
 			synchronized(stateMap) {
-				printlnStart(); // Common start processing of output
+				printStart(); // Common start processing of output
 
 				State state = getState();
 				downNest(state);
 
 				logger.log(getIndentString(state) + getCallerInfo(leaveString));
 
-				printlnEnd(); // Common end processing of output
+				printEnd(); // Common end processing of output
 			}
 		}
 	}
@@ -344,22 +349,33 @@ public class DebugTrace {
 	*/
 	private static String getCallerInfo(String baseString) {
 		StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
-		return String.format(baseString,
-			element.getClassName(), element.getMethodName(), element.getLineNumber());
+		return String.format(baseString, element.getClassName(), element.getMethodName(), element.getLineNumber());
+	}
+
+	/**
+		Returns a string of line number.
+		@since 1.2.0
+	*/
+	private static String getLineNumber() {
+		StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
+		return String.format(lineNumberFormat, element.getLineNumber());
 	}
 
 	/**
 		Outputs the message to the log.
 		@param message a message (accept null)
 	*/
-	public static void println(String message) {
+	public static void print(String message) {
 		if (enabled) {
 			synchronized(stateMap) {
-				printlnStart(); // Common start processing of output
+				printStart(); // Common start processing of output
 
-				logger.log(getIndentString(getState()) + message);
+				if (message.isEmpty())
+					logger.log("");
+				else
+					logger.log(getIndentString(getState()) + message + getLineNumber());
 
-				printlnEnd(); // Common end processing of output
+				printEnd(); // Common end processing of output
 			}
 		}
 	}
@@ -370,9 +386,9 @@ public class DebugTrace {
 		@param value a value (accept null)
 		@param isPrimitive if the value is primitive type then true
 	*/
-	private static void println(String name, Object value, boolean isPrimitive) {
+	private static void print(String name, Object value, boolean isPrimitive) {
 		synchronized(stateMap) {
-			printlnStart(); // Common start processing of output
+			printStart(); // Common start processing of output
 
 			reflectedObjects.clear();
 
@@ -383,16 +399,17 @@ public class DebugTrace {
 			buff.append(name).append(varNameValueSeparator);
 
 			append(state, strings, buff, value, isPrimitive, false);
+			buff.append(getLineNumber());
 			lineFeed(state, strings, buff);
 
 			strings.stream().forEach(logger::log);
 
-			printlnEnd(); // Common end processing of output
+			printEnd(); // Common end processing of output
 		}
 	}
 
 	/**
-		Line Feed
+		Line Feed.
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -407,9 +424,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a boolean value
 	*/
-	public static void println(String name, boolean value) {
+	public static void print(String name, boolean value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -417,9 +434,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a value
 	*/
-	public static void println(String name, char value) {
+	public static void print(String name, char value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -427,9 +444,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a value
 	*/
-	public static void println(String name, byte value) {
+	public static void print(String name, byte value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -437,9 +454,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a value
 	*/
-	public static void println(String name, short value) {
+	public static void print(String name, short value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -447,9 +464,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a int value
 	*/
-	public static void println(String name, int value) {
+	public static void print(String name, int value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -457,9 +474,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a long value
 	*/
-	public static void println(String name, long value) {
+	public static void print(String name, long value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -467,9 +484,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a float value
 	*/
-	public static void println(String name, float value) {
+	public static void print(String name, float value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -477,9 +494,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a value
 	*/
-	public static void println(String name, double value) {
+	public static void print(String name, double value) {
 		if (enabled)
-			println(name, value, true);
+			print(name, value, true);
 	}
 
 	/**
@@ -487,18 +504,18 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param value a value (accept null)
 	*/
-	public static void println(String name, Object value) {
+	public static void print(String name, Object value) {
 		if (enabled)
-			println(name, value, false);
+			print(name, value, false);
 	}
 
 	/**
 		Outputs a message to the log.
 		@param messageSupplier a message supplier (not accept null)
 	*/
-	public static void println(Supplier<String> messageSupplier) {
+	public static void print(Supplier<String> messageSupplier) {
 		if (enabled)
-			println(messageSupplier.get());
+			print(messageSupplier.get());
 	}
 
 	/**
@@ -507,9 +524,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param valueSupplier a value supplier (not accept null)
 	*/
-	public static <T> void println(String name, Supplier<T> valueSupplier) {
+	public static <T> void print(String name, Supplier<T> valueSupplier) {
 		if (enabled)
-			println(name, valueSupplier.get(), false);
+			print(name, valueSupplier.get(), false);
 	}
 
 	/**
@@ -517,9 +534,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param valueSupplier a boolean value supplier (not accept null)
 	*/
-	public static void println(String name, BooleanSupplier valueSupplier) {
+	public static void print(String name, BooleanSupplier valueSupplier) {
 		if (enabled)
-			println(name, valueSupplier.getAsBoolean(), true);
+			print(name, valueSupplier.getAsBoolean(), true);
 	}
 
 	/**
@@ -527,9 +544,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param valueSupplier an int value supplier (not accept null)
 	*/
-	public static void println(String name, IntSupplier valueSupplier) {
+	public static void print(String name, IntSupplier valueSupplier) {
 		if (enabled)
-			println(name, valueSupplier.getAsInt(), true);
+			print(name, valueSupplier.getAsInt(), true);
 	}
 
 	/**
@@ -537,9 +554,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param valueSupplier the long supplier (not accept null)
 	*/
-	public static void println(String name, LongSupplier valueSupplier) {
+	public static void print(String name, LongSupplier valueSupplier) {
 		if (enabled)
-			println(name, valueSupplier.getAsLong(), true);
+			print(name, valueSupplier.getAsLong(), true);
 	}
 
 	/**
@@ -547,9 +564,9 @@ public class DebugTrace {
 		@param name a name (accept null)
 		@param valueSupplier a double value supplier (not accept null)
 	*/
-	public static void println(String name, DoubleSupplier valueSupplier) {
+	public static void print(String name, DoubleSupplier valueSupplier) {
 		if (enabled)
-			println(name, valueSupplier.getAsDouble(), true);
+			print(name, valueSupplier.getAsDouble(), true);
 	}
 
 	/**
@@ -695,17 +712,26 @@ public class DebugTrace {
 
 			} else {
 				// Other
-				if (hasToString(value))
+				Boolean isRreflection = reflectionTargetMap.get(type);
+				if (isRreflection == null) {
+					isRreflection = !hasToString(type);
+					reflectionTargetMap.put(type, isRreflection);
+				}
+
+				if (isRreflection) {
+					// Use Reflection
+					if (reflectedObjects.stream().anyMatch((object) -> value == object))
+						// Cyclic reference
+						buff.append(cyclicReferenceString).append(value);
+					else {
+						// Use Reflection
+						reflectedObjects.add(value);
+						appendReflectString(state, strings, buff, value);
+						reflectedObjects.remove(reflectedObjects.size() - 1);
+					}
+				} else {
 					// Use toString method
 					buff.append(value);
-				else if (reflectedObjects.stream().anyMatch((object) -> value == object))
-					// Cyclic reference
-					buff.append(cyclicReferenceString).append(value);
-				else {
-					// Use Reflection
-					reflectedObjects.add(value);
-					appendReflectString(state, strings, buff, value);
-					reflectedObjects.remove(reflectedObjects.size() - 1);
 				}
 			}
 		}
@@ -1068,10 +1094,9 @@ public class DebugTrace {
 		@param object an object (not accept null)
 		@return true if this class or super classes without Object class has toString method; false otherwise
 	*/
-	private static boolean hasToString(Object object) {
+	private static boolean hasToString(Class<?> clazz) {
 		boolean result = false;
 
-		Class<?> clazz = object.getClass();
 		while (clazz != Object.class) {
 			try {
 				clazz.getDeclaredMethod("toString");
@@ -1131,10 +1156,10 @@ public class DebugTrace {
 			if (Modifier.isStatic(modifiers)) continue; // static
 
 			String fieldName = field.getName();
-			buff.append(fieldName).append(fieldNameValueSeparator);
 
 			if (Modifier.isPublic(modifiers)) {
 				// public field
+				buff.append(fieldName).append(fieldNameValueSeparator);
 				try {
 					append(state, strings, buff, field.get(object), field.getType().isPrimitive(), false);
 				}
@@ -1159,6 +1184,7 @@ public class DebugTrace {
 					}
 				}
 				if (method != null) {
+					buff.append(fieldName).append(fieldNameValueSeparator);
 					try {
 						append(state, strings, buff, method.invoke(object), method.getReturnType().isPrimitive(), false);
 					}

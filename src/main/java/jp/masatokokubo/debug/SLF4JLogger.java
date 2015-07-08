@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
 	A logger implementation using Log4J2.
-	@since 1.0.0
+	@since 1.1.0
 	@author Masato Kokubo
 */
 public class SLF4JLogger implements Logger {

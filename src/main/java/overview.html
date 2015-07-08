@@ -18,7 +18,7 @@ import jp.masatokoubo.debugtrace.DebugTrace;
 // main
 public static main(String[] args) {
   DebugTrace.enter();
-  DebugTrace.println("args", args);
+  DebugTrace.print("args", args);
 
   sub(args);
 
@@ -29,7 +29,7 @@ public static main(String[] args) {
 private static sub(String[] args) {
   DebugTrace.enter();
 
-  DebugTrace.println("args", args);
+  DebugTrace.print("args", args);
 
   DebugTrace.leave();
 }
@@ -192,6 +192,20 @@ private static sub(String[] args) {
 				Separator between the field name and value
 			</td>
 			<td class="code">:\\s</td>
+		</tr>
+
+		<tr>
+			<td>lineNumberFormat</td>
+			<td>
+				Format string of line number
+				<ul class="additinal">
+					<b>parameters:</b><br>
+					<span class="parameter">%1</span>: The <b>line numnber</b> of the call point
+				</ul>
+			</td>
+			<td class="code">
+				\\s(<span class="parameter">%1$d</span>)
+			</td>
 		</tr>
 
 		<tr>

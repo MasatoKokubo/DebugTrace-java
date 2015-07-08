@@ -30,7 +30,7 @@ import jp.masatokokubo.debug.DebugTrace;
 public class DebugTraceTest {
 	public static void main(String[] args) {
 	/**/DebugTrace.enter();
-	/**/DebugTrace.println("args", args);
+	/**/DebugTrace.print("args", args);
 
 		DebugTraceTest test = new DebugTraceTest();
 		test.test();
@@ -45,7 +45,7 @@ public class DebugTraceTest {
 	//	values.valuesOpt = Optional.of(new Values());
 		values.valuesOpt = Optional.of(values);
 
-	/**/DebugTrace.println("values", values);
+	/**/DebugTrace.print("values", values);
 
 		Thread[] thread = new Thread[5];
 		for (int index = 0; index < thread.length; ++index) {
@@ -75,25 +75,31 @@ public class DebugTraceTest {
 		List<Values> valueList = new ArrayList<>();
 		valueList.add(values);
 		valueList.add(values);
-	/**/DebugTrace.println("valueList", valueList);
+	/**/DebugTrace.print("valueList", valueList);
 
 		Map<Integer, List<Values>> valueListMap = new LinkedHashMap<>();
 		valueListMap.put(1, valueList);
 //		valueListMap.put(2, valueList);
-	/**/DebugTrace.println("valueListMap", valueListMap);
+	/**/DebugTrace.print("valueListMap", valueListMap);
 
 		Point[] points = IntStream.range(0, 501)
 			.mapToObj((index) -> new Point(index, index + 1))
 			.toArray(Point[]::new);
-	/**/DebugTrace.println("points", points);
+	/**/DebugTrace.print("points", points);
+
+	/**/DebugTrace.addReflectionTarget(Point.class);
+		Point[] points2 = IntStream.range(0, 10)
+			.mapToObj((index) -> new Point(index, index + 1))
+			.toArray(Point[]::new);
+	/**/DebugTrace.print("points2", points2);
 
 		int[] ints = new int[points.length];
 		IntStream.range(0, points.length)
 			.forEach((index) -> ints[index] = points[index].x() * points[index].y());
-	/**/DebugTrace.println("ints", ints);
+	/**/DebugTrace.print("ints", ints);
 
 		int[][][][][][] intss = new int[2][2][2][2][2][2];
-	/**/DebugTrace.println("intss", intss);
+	/**/DebugTrace.print("intss", intss);
 
 	/**/DebugTrace.leave();
 	}
@@ -163,6 +169,8 @@ public class DebugTraceTest {
 		public Point mul(Point p) {return new Point(x * p.x, y * p.y);}
 		public Point div(Point p) {return new Point(x / p.x, y / p.y);}
 		public Point mod(Point p) {return new Point(x % p.x, y % p.y);}
+
+		public String toString() {return String.format("Point(%1$d, %2$d)", x, y);}
 	}
 }
 

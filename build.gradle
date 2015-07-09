@@ -12,7 +12,8 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '1.2.0'
+version             = '1.2.1'
+project.archivesBaseName = 'debugtrace'
 
 compileJava {
 	options.encoding     = 'UTF-8'

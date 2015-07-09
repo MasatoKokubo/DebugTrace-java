@@ -155,6 +155,7 @@ public class DebugTraceTest {
 	public static class Point {
 		private int x;
 		private int y;
+		private int z; // dummy
 
 		public Point(int x, int y) {
 			this.x = x;

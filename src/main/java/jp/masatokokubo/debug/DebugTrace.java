@@ -1166,6 +1166,8 @@ public class DebugTrace {
 				catch (Exception e) {
 					buff.append("<" + e + ">");
 				}
+				buff.append(",");
+				lineFeed(state, strings, buff);
 			} else {
 				// not public field
 				Method method = null;
@@ -1191,10 +1193,10 @@ public class DebugTrace {
 					catch (Exception e) {
 						buff.append("<" + e + ">");
 					}
+					buff.append(",");
+					lineFeed(state, strings, buff);
 				}
 			}
-			buff.append(",");
-			lineFeed(state, strings, buff);
 		}
 	}
 

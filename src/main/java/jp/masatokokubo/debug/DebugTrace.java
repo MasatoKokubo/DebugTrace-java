@@ -353,12 +353,22 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns a string of line number.
-		@since 1.2.0
+		Outputs the message to the log.
+		@param message a message (accept null)
 	*/
-	private static String getLineNumber() {
-		StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
-		return String.format(lineNumberFormat, element.getLineNumber());
+	private static void printSub(String message) {
+		synchronized(stateMap) {
+			printStart(); // Common start processing of output
+
+			if (message.isEmpty())
+				logger.log("");
+			else {
+				StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
+				String lineNumber = String.format(lineNumberFormat, element.getLineNumber());
+				logger.log(getIndentString(getState()) + message + lineNumber);
+			}
+			printEnd(); // Common end processing of output
+		}
 	}
 
 	/**
@@ -366,18 +376,17 @@ public class DebugTrace {
 		@param message a message (accept null)
 	*/
 	public static void print(String message) {
-		if (enabled) {
-			synchronized(stateMap) {
-				printStart(); // Common start processing of output
+		if (enabled)
+			printSub(message);
+	}
 
-				if (message.isEmpty())
-					logger.log("");
-				else
-					logger.log(getIndentString(getState()) + message + getLineNumber());
-
-				printEnd(); // Common end processing of output
-			}
-		}
+	/**
+		Outputs a message to the log.
+		@param messageSupplier a message supplier (not accept null)
+	*/
+	public static void print(Supplier<String> messageSupplier) {
+		if (enabled)
+			printSub(messageSupplier.get());
 	}
 
 	/**
@@ -386,7 +395,7 @@ public class DebugTrace {
 		@param value a value (accept null)
 		@param isPrimitive if the value is primitive type then true
 	*/
-	private static void print(String name, Object value, boolean isPrimitive) {
+	private static void printSub(String name, Object value, boolean isPrimitive) {
 		synchronized(stateMap) {
 			printStart(); // Common start processing of output
 
@@ -397,9 +406,11 @@ public class DebugTrace {
 			StringBuilder buff = new StringBuilder();
 
 			buff.append(name).append(varNameValueSeparator);
-
 			append(state, strings, buff, value, isPrimitive, false);
-			buff.append(getLineNumber());
+
+			StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
+			String lineNumber = String.format(lineNumberFormat, element.getLineNumber());
+			buff.append(lineNumber);
 			lineFeed(state, strings, buff);
 
 			strings.stream().forEach(logger::log);
@@ -426,7 +437,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, boolean value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -436,7 +447,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, char value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -446,7 +457,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, byte value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -456,7 +467,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, short value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -466,7 +477,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, int value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -476,7 +487,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, long value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -486,7 +497,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, float value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -496,7 +507,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, double value) {
 		if (enabled)
-			print(name, value, true);
+			printSub(name, value, true);
 	}
 
 	/**
@@ -506,16 +517,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, Object value) {
 		if (enabled)
-			print(name, value, false);
-	}
-
-	/**
-		Outputs a message to the log.
-		@param messageSupplier a message supplier (not accept null)
-	*/
-	public static void print(Supplier<String> messageSupplier) {
-		if (enabled)
-			print(messageSupplier.get());
+			printSub(name, value, false);
 	}
 
 	/**
@@ -526,7 +528,7 @@ public class DebugTrace {
 	*/
 	public static <T> void print(String name, Supplier<T> valueSupplier) {
 		if (enabled)
-			print(name, valueSupplier.get(), false);
+			printSub(name, valueSupplier.get(), false);
 	}
 
 	/**
@@ -536,7 +538,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, BooleanSupplier valueSupplier) {
 		if (enabled)
-			print(name, valueSupplier.getAsBoolean(), true);
+			printSub(name, valueSupplier.getAsBoolean(), true);
 	}
 
 	/**
@@ -546,7 +548,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, IntSupplier valueSupplier) {
 		if (enabled)
-			print(name, valueSupplier.getAsInt(), true);
+			printSub(name, valueSupplier.getAsInt(), true);
 	}
 
 	/**
@@ -556,7 +558,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, LongSupplier valueSupplier) {
 		if (enabled)
-			print(name, valueSupplier.getAsLong(), true);
+			printSub(name, valueSupplier.getAsLong(), true);
 	}
 
 	/**
@@ -566,7 +568,7 @@ public class DebugTrace {
 	*/
 	public static void print(String name, DoubleSupplier valueSupplier) {
 		if (enabled)
-			print(name, valueSupplier.getAsDouble(), true);
+			printSub(name, valueSupplier.getAsDouble(), true);
 	}
 
 	/**

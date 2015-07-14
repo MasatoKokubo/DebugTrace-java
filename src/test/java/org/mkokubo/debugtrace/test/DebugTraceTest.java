@@ -4,7 +4,7 @@
 	Created on 2014/06/21.
 	(C) Masato Kokubo
 */
-package jp.masatokokubo.debug.test;
+package org.mkokubo.debugtrace.test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -20,7 +20,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.stream.IntStream;
 
-import jp.masatokokubo.debug.DebugTrace;
+import org.mkokubo.debugtrace.DebugTrace;
 
 /**
 	Test class for DebugTrace class.

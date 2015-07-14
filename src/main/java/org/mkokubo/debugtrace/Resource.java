@@ -4,7 +4,7 @@
 	Created on 2014/10/19.
 	(C) Masato Kokubo
 */
-package jp.masatokokubo.debug;
+package org.mkokubo.debugtrace;
 
 import java.util.Locale;
 import java.util.MissingResourceException;

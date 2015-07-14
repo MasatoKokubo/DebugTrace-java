@@ -5,7 +5,7 @@
 	(C) Masato Kokubo
 */
 
-package jp.masatokokubo.debug;
+package org.mkokubo.debugtrace;
 
 /**
 	Interface of Logger classes.

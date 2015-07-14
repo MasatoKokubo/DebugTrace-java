@@ -4,7 +4,7 @@
 	Created on 2014/10/11.
 	(C) Masato Kokubo
 */
-package jp.masatokokubo.debug;
+package org.mkokubo.debugtrace;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;

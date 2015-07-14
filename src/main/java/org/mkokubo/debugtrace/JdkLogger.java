@@ -5,7 +5,7 @@
 	(C) Masato Kokubo
 */
 
-package jp.masatokokubo.debug;
+package org.mkokubo.debugtrace;
 
 import java.util.HashMap;
 import java.util.Map;

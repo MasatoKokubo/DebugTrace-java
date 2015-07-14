@@ -12,7 +12,7 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '1.2.2'
+version             = '1.3.0'
 project.archivesBaseName = 'debugtrace'
 
 compileJava {
@@ -27,14 +27,14 @@ jar {
 		attributes	'Implementation-Title'    : project.name,
 					'Implementation-Version'  : version,
 					'Implementation-Vendor'   : 'Masato Kokubo',
-					'Implementation-Vendor-Id': 'jp.masatokokubo',
-					'Main-Class'              : 'jp.masatokokubo.debug.DebugTrace'
+					'Implementation-Vendor-Id': 'org.mkokubo',
+					'Main-Class'              : 'org.mkokubo.debugtrace.DebugTrace'
 
 	}
 }
 
 javadoc {
-	title               = "$project.name API Specification"
+	title               = "$project.name $version API Specification"
 	options.locale      = 'en'
 	options.windowTitle = "$project.name"
 	options.overview    = 'src/main/java/overview.html'

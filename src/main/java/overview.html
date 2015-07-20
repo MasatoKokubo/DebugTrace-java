@@ -40,26 +40,24 @@ public class Sample2 {
 
 	<div class="title">Log of when the sample code has been executed:</div>
 	<pre class="prettyprint">
-2015-07-10 15:05:27.617 DebugTrace 1.3.0 / logger wrapper: DebugTrace$$Lambda$2/1831932724
-2015-07-10 15:05:27.638 
-2015-07-10 15:05:27.639 
-2015-07-10 15:05:27.640 ______________________________ main ______________________________
-2015-07-10 15:05:27.640 
-2015-07-10 15:05:27.642 Enter sample.Sample2.main (8)
-2015-07-10 15:05:27.646 |  args = (String[] length:3)[
-2015-07-10 15:05:27.647 |  |  0: "aaa",
-2015-07-10 15:05:27.647 |  |  1: "bbb",
-2015-07-10 15:05:27.647 |  |  2: "ccc",
-2015-07-10 15:05:27.648 |  ] (9)
-2015-07-10 15:05:27.648 
-2015-07-10 15:05:27.649 |  Enter sample.Sample2.sub (18)
-2015-07-10 15:05:27.649 |  |  args = (String[] length:3)[
-2015-07-10 15:05:27.649 |  |  |  0: "aaa",
-2015-07-10 15:05:27.650 |  |  |  1: "bbb",
-2015-07-10 15:05:27.650 |  |  |  2: "ccc",
-2015-07-10 15:05:27.650 |  |  ] (20)
-2015-07-10 15:05:27.651 |  Leave sample.Sample2.sub (22)
-2015-07-10 15:05:27.651 Leave sample.Sample2.main (13)
+2015-07-17 08:52:34.610 DebugTrace 1.4.0 / logger wrapper: DebugTrace$$Lambda$2/1831932724
+2015-07-17 08:52:34.626 
+2015-07-17 08:52:34.626 ______________________________ main ______________________________
+2015-07-17 08:52:34.626 
+2015-07-17 08:52:34.626 Enter sample.Sample2.main (8)
+2015-07-17 08:52:34.626 |  args = (String[] length:3)[
+2015-07-17 08:52:34.626 |     0: "aaa",
+2015-07-17 08:52:34.626 |     1: "bbb",
+2015-07-17 08:52:34.626 |     2: "ccc",
+2015-07-17 08:52:34.641 |  ] (Sample2.java:9)
+2015-07-17 08:52:34.641 |  Enter sample.Sample2.sub (18)
+2015-07-17 08:52:34.641 |  |  args = (String[] length:3)[
+2015-07-17 08:52:34.641 |  |     0: "aaa",
+2015-07-17 08:52:34.641 |  |     1: "bbb",
+2015-07-17 08:52:34.641 |  |     2: "ccc",
+2015-07-17 08:52:34.641 |  |  ] (Sample2.java:20)
+2015-07-17 08:52:34.641 |  Leave sample.Sample2.sub (22)
+2015-07-17 08:52:34.641 Leave sample.Sample2.main (13)
 </pre>
 	<br>
 
@@ -116,11 +114,12 @@ public class Sample2 {
 					<b>parameters:</b><br>
 					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
 					<span class="parameter">%2</span>: The <b>method name</b> of the caller<br>
-					<span class="parameter">%3</span>: The <b>line numnber</b> of the call point
+					<span class="parameter">%3</span>: The <b>file name</b> of the caller<br>
+					<span class="parameter">%4</span>: The <b>line numnber</b> of the call point
 				</ul>
 			</td>
 			<td class="code">
-				Enter <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span>(<span class="parameter">%3$d</span>)
+				Enter <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%4$d</span>)
 			</td>
 		</tr>
 
@@ -132,11 +131,12 @@ public class Sample2 {
 					<b>parameters:</b><br>
 					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
 					<span class="parameter">%2</span>: The <b>method name</b> of the caller<br>
-					<span class="parameter">%3</span>: The <b>line numnber</b> of the call point
+					<span class="parameter">%3</span>: The <b>file name</b> of the caller<br>
+					<span class="parameter">%4</span>: The <b>line numnber</b> of the call point
 				</ul>
 			</td>
 			<td class="code">
-				Leave <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span>(<span class="parameter">%3$d</span>)
+				Leave <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%4$d</span>)
 			</td>
 		</tr>
 
@@ -172,7 +172,15 @@ public class Sample2 {
 					"\\s" is change to a space character
 				</ul>
 			</td>
-			<td class="code">\\s\\s</td>
+			<td class="code">|\\s\\s</td>
+		</tr>
+
+		<tr>
+			<td>dataIndentString</td>
+			<td>
+				A indent string<br>
+			</td>
+			<td class="code">\\s\\s\\s</td>
 		</tr>
 
 		<tr>
@@ -184,7 +192,7 @@ public class Sample2 {
 		<tr>
 			<td>cyclicReferenceString</td>
 			<td>String to represent that the cyclic reference occurs
-			<td class="code">\\s***\\s</td>
+			<td class="code">\\s*** cyclic reference ***\\s</td>
 		</tr>
 
 		<tr>
@@ -212,16 +220,19 @@ public class Sample2 {
 		</tr>
 
 		<tr>
-			<td>lineNumberFormat</td>
+			<td>printSuffixFormat</td>
 			<td>
-				Format string of line number
+				Format string of print suffix
 				<ul class="additinal">
 					<b>parameters:</b><br>
-					<span class="parameter">%1</span>: The <b>line numnber</b> of the call point
+					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
+					<span class="parameter">%2</span>: The <b>method name</b> of the caller<br>
+					<span class="parameter">%3</span>: The <b>file name</b> of the caller<br>
+					<span class="parameter">%4</span>: The <b>line numnber</b> of the call point
 				</ul>
 			</td>
 			<td class="code">
-				\\s(<span class="parameter">%1$d</span>)
+				\\s(<span class="parameter">%3$s</span>:<span class="parameter">%4$d</span>)
 			</td>
 		</tr>
 
@@ -320,18 +331,6 @@ public class Sample2 {
 			<td>stringLimit</td>
 			<td>Output limit of length for a <b>String</b></td>
 			<td>8192</td>
-		</tr>
-
-		<tr>
-			<td>rowsLimit</td>
-			<td>Output limit of rows for a <b>ResultSet</b></td>
-			<td>512</td>
-		</tr>
-
-		<tr>
-			<td>columnsLimit</td>
-			<td>Output limit of columns for a <b>ResultSet</b></td>
-			<td>512</td>
 		</tr>
 	</table>
 	<br>

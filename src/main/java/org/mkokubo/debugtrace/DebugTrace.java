@@ -14,8 +14,6 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -48,6 +46,7 @@ public class DebugTrace {
 	private static class State {
 		public int nestLevel       = 0; // Nest Level
 		public int beforeNestLevel = 0; // Before Nest Level
+		public int dataNestLevel   = 0; // Data Nest Level
 	}
 
 	// Map for wrppaer classes of primitive type to primitive type
@@ -130,13 +129,14 @@ public class DebugTrace {
 	private static final String leaveString             = resource.getString("leaveString"            ); // String at leave
 	private static final String threadBoundaryString    = resource.getString("threadBoundaryString"   ); // String of threads boundary
 	private static final String classBoundaryString     = resource.getString("classBoundaryString"    ); // String of classes boundary
-	private static final String indentString            = resource.getString("indentString"           ); // String of indent
+	private static final String indentString            = resource.getString("indentString"           ); // String of method call indent
+	private static final String dataIndentString        = resource.getString("dataIndentString"       ); // String of data indent
 	private static final String limitString             = resource.getString("limitString"            ); // String to represent that it has exceeded the limit
 	private static final String cyclicReferenceString   = resource.getString("cyclicReferenceString"  ); // String to represent that the cyclic reference occurs
 	private static final String varNameValueSeparator   = resource.getString("varNameValueSeparator"  ); // Separator between the variable name and value
 	private static final String keyValueSeparator       = resource.getString("keyValueSeparator"      ); // Separator between the key and value for Map object
 	private static final String fieldNameValueSeparator = resource.getString("fieldNameValueSeparator"); // Separator between the field name and value
-	private static final String lineNumberFormat        = resource.getString("lineNumberFormat"       ); // Format string of line number
+	private static final String printSuffixFormat       = resource.getString("printSuffixFormat"      ); // Format string of print suffix
 	private static final String indexFormat             = resource.getString("indexFormat"            ); // Format string of index of array and Collection
 	private static final String utilDateFormat          = resource.getString("utilDateFormat"         ); // Format string of java.util.Date
 	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string of java.sql.Date
@@ -146,9 +146,6 @@ public class DebugTrace {
 	private static final int    byteArrayLimit          = resource.getInt   ("byteArrayLimit"         ); // Output limit of length for a byte array
 	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Output limit of elements for a Map
 	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Output limit of length for a String
-	private static final int    rowsLimit               = resource.getInt   ("rowsLimit"              ); // Output limit of rows for a ResultSet
-	private static final int    columnsLimit            = resource.getInt   ("columnsLimit"           ); // Output limit of columns for a ResultSet
-
 
 	// Append timestamp
 	private static String appendTimestamp(String string) {
@@ -203,6 +200,14 @@ public class DebugTrace {
 			.forEach(index -> indentStrings[index] = indentStrings[index - 1] + indentString);
 	}
 
+	// Array of data indent strings
+	private static final String[] dataIndentStrings = new String[64];
+	static {
+		dataIndentStrings[0] = "";
+		IntStream.iterate(1, index -> index + 1).limit(dataIndentStrings.length - 1)
+			.forEach(index -> dataIndentStrings[index] = dataIndentStrings[index - 1] + dataIndentString);
+	}
+
 	// Map of thread id to the indent state
 	private static final Map<Long,  State> stateMap = new HashMap<>();
 
@@ -217,7 +222,6 @@ public class DebugTrace {
 
 	static {
 		logger.log("DebugTrace " + version + " / logger wrapper: " + logger.getClass().getSimpleName());
-		logger.log("");
 	}
 
 	private DebugTrace() {}
@@ -253,7 +257,12 @@ public class DebugTrace {
 		return indentStrings[
 			state.nestLevel < 0 ? 0 :
 			state.nestLevel >= indentStrings.length ? indentStrings.length - 1
-				: state.nestLevel];
+				: state.nestLevel]
+			+ dataIndentStrings[
+			state.dataNestLevel < 0 ? 0 :
+			state.dataNestLevel >= dataIndentStrings.length ? dataIndentStrings.length - 1
+				: state.dataNestLevel];
+
 	}
 
 	/**
@@ -282,6 +291,24 @@ public class DebugTrace {
 	private static void downNest(State state) {
 		state.beforeNestLevel = state.nestLevel;
 		--state.nestLevel;
+	}
+
+	/**
+		Up the data nest level.
+		@param state a nest status of current thread
+		@since 1.4.0
+	*/
+	private static void upDataNest(State state) {
+		++state.dataNestLevel;
+	}
+
+	/**
+		Down the data nest level.
+		@param state a nest status of current thread
+		@since 1.4.0
+	*/
+	private static void downDataNest(State state) {
+		--state.dataNestLevel;
 	}
 
 	/**
@@ -349,7 +376,11 @@ public class DebugTrace {
 	*/
 	private static String getCallerInfo(String baseString) {
 		StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
-		return String.format(baseString, element.getClassName(), element.getMethodName(), element.getLineNumber());
+		return String.format(baseString,
+			element.getClassName(),
+			element.getMethodName(),
+			element.getFileName(),
+			element.getLineNumber());
 	}
 
 	/**
@@ -364,8 +395,12 @@ public class DebugTrace {
 				logger.log("");
 			else {
 				StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
-				String lineNumber = String.format(lineNumberFormat, element.getLineNumber());
-				logger.log(getIndentString(getState()) + message + lineNumber);
+				String suffix = String.format(printSuffixFormat,
+					element.getClassName(),
+					element.getMethodName(),
+					element.getFileName(),
+					element.getLineNumber());
+				logger.log(getIndentString(getState()) + message + suffix);
 			}
 			printEnd(); // Common end processing of output
 		}
@@ -409,8 +444,12 @@ public class DebugTrace {
 			append(state, strings, buff, value, isPrimitive, false);
 
 			StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
-			String lineNumber = String.format(lineNumberFormat, element.getLineNumber());
-			buff.append(lineNumber);
+			String suffix = String.format(printSuffixFormat,
+				element.getClassName(),
+				element.getMethodName(),
+				element.getFileName(),
+				element.getLineNumber());
+			buff.append(suffix);
 			lineFeed(state, strings, buff);
 
 			strings.stream().forEach(logger::log);
@@ -708,10 +747,6 @@ public class DebugTrace {
 					buff.append(e);
 				}
 
-			} else if (value instanceof ResultSet) {
-				// ResultSet
-				append(state, strings, buff, (ResultSet)value);
-
 			} else {
 				// Other
 				Boolean isRreflection = reflectionTargetMap.get(type);
@@ -862,13 +897,23 @@ public class DebugTrace {
 		@param bytes a byte array (not accept null)
 	*/
 	private static void append(State state, List<String> strings, StringBuilder buff, byte[] bytes) {
+		boolean multiLine = bytes.length > 16 && byteArrayLimit > 16;
+
 		buff.append('[');
+		if (multiLine) {
+			lineFeed(state, strings, buff);
+			upDataNest(state);
+		}
+
+		int offset = 0;
 		for (int index = 0; index < bytes.length; ++index) {
-			if (index > 0) buff.append(", ");
+			if (offset > 0) buff.append(" ");
+
 			if (index >= byteArrayLimit) {
 				buff.append(limitString);
 				break;
 			}
+
 			int value = bytes[index];
 			if (value < 0) value += 256;
 			char ch = (char)(value / 16 + '0');
@@ -877,6 +922,18 @@ public class DebugTrace {
 			ch = (char)(value % 16 + '0');
 			if (ch > '9') ch += 'A' - '9' - 1;
 			buff.append(ch);
+			++offset;
+
+			if (multiLine && offset == 16) {
+				lineFeed(state, strings, buff);
+				offset = 0;
+			}
+		}
+
+		if (multiLine) {
+			if (buff.length() > 0)
+				lineFeed(state, strings, buff);
+			downDataNest(state);
 		}
 		buff.append(']');
 	}
@@ -898,7 +955,7 @@ public class DebugTrace {
 		buff.append('[');
 		if (multiLine) {
 			lineFeed(state, strings, buff);
-			upNest(state);
+			upDataNest(state);
 		}
 
 		for (int index = 0; index < length; ++index) {
@@ -920,7 +977,7 @@ public class DebugTrace {
 		}
 
 		if (multiLine)
-			downNest(state);
+			downDataNest(state);
 		buff.append(']');
 	}
 
@@ -939,7 +996,7 @@ public class DebugTrace {
 		buff.append('[');
 		if (multiLine) {
 			lineFeed(state, strings, buff);
-			upNest(state);
+			upDataNest(state);
 		}
 
 		for (int index = 0; iterator.hasNext(); ++index) {
@@ -960,7 +1017,7 @@ public class DebugTrace {
 		}
 
 		if (multiLine)
-			downNest(state);
+			downDataNest(state);
 		buff.append(']');
 	}
 
@@ -979,7 +1036,7 @@ public class DebugTrace {
 		buff.append('[');
 		if (multiLine) {
 			lineFeed(state, strings, buff);
-			upNest(state);
+			upDataNest(state);
 		}
 
 		for (int index = 0; iterator.hasNext(); ++index) {
@@ -1002,93 +1059,8 @@ public class DebugTrace {
 		}
 
 		if (multiLine)
-			downNest(state);
+			downDataNest(state);
 		buff.append(']');
-	}
-
-	/**
-		Appends a ResultSet representation for log to the string buffer.
-		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
-		@param resultSet a ResultSet object (not accept null)
-		@throws RuntimeException if an exception thrown from resultSet.beforeFirst method
-	*/
-	private static void append(State state, List<String> strings, StringBuilder buff, ResultSet resultSet) {
-		try {
-			if (resultSet.getType() == ResultSet.TYPE_FORWARD_ONLY) {
-				buff.append(resultSet);
-			} else {
-
-				ResultSetMetaData metaData = resultSet.getMetaData();
-				int columnCount = metaData.getColumnCount();
-				int beforeRowNo = resultSet.getRow();
-				resultSet.beforeFirst();
-
-				boolean multiRowLine = true;
-				boolean multiColumnLine = columnCount >= 2;
-
-				buff.append('[');
-				if (multiRowLine) {
-					lineFeed(state, strings, buff);
-					upNest(state);
-				}
-
-				while (resultSet.next()) {
-					int rowNo = resultSet.getRow();
-					if (!multiRowLine && rowNo > 1) buff.append(", ");
-
-					if (rowNo <= rowsLimit) {
-						buff.append(String.format(indexFormat, rowNo));
-						buff.append('[');
-						if (multiColumnLine) {
-							lineFeed(state, strings, buff);
-							upNest(state);
-						}
-
-						for (int columnNo = 1; columnNo <= columnCount; ++columnNo) {
-							if (!multiColumnLine && columnNo > 1) buff.append(", ");
-
-							if (columnNo <= columnsLimit) {
-								buff.append(String.format(indexFormat, metaData.getColumnName(columnNo)));
-								append(state, strings, buff, resultSet.getObject(columnNo), false, false);
-							} else
-								buff.append(limitString);
-
-							if (multiColumnLine) {
-								buff.append(",");
-								lineFeed(state, strings, buff);
-							}
-
-							if (columnNo > columnsLimit) break;
-						}
-						buff.append(']');
-					} else
-						buff.append(limitString);
-
-					if (multiRowLine) {
-						buff.append(",");
-						lineFeed(state, strings, buff);
-					}
-
-					if (rowNo > rowsLimit) break;
-				}
-
-				if (multiRowLine)
-					downNest(state);
-				buff.append(']');
-
-				resultSet.absolute(beforeRowNo);
-			}
-		}
-		catch (SQLException e) {
-			try {
-				resultSet.beforeFirst();
-			}
-			catch (SQLException e2) {
-				throw new RuntimeException(e);
-			}
-		}
 	}
 
 	/**
@@ -1122,12 +1094,12 @@ public class DebugTrace {
 	private static void appendReflectString(State state, List<String> strings, StringBuilder buff, Object object) {
 		buff.append('[');
 		lineFeed(state, strings, buff);
-		upNest(state);
+		upDataNest(state);
 
 		Class<?> clazz = object.getClass();
 		appendReflectStringSub(state, strings, buff, object, clazz, clazz.getSuperclass() != Object.class);
 
-		downNest(state);
+		downDataNest(state);
 		buff.append(']');
 	}
 

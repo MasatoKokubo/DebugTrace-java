@@ -12,7 +12,7 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '1.4.0'
+version             = '1.4.1'
 project.archivesBaseName = 'debugtrace'
 
 compileJava {
@@ -27,9 +27,7 @@ jar {
 		attributes	'Implementation-Title'    : project.name,
 					'Implementation-Version'  : version,
 					'Implementation-Vendor'   : 'Masato Kokubo',
-					'Implementation-Vendor-Id': 'org.mkokubo',
-					'Main-Class'              : 'org.mkokubo.debugtrace.DebugTrace'
-
+					'Implementation-Vendor-Id': 'org.mkokubo'
 	}
 }
 

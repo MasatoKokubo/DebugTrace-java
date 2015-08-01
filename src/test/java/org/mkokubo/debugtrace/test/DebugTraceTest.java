@@ -101,6 +101,10 @@ public class DebugTraceTest {
 		int[][][][][][] intss = new int[2][2][2][2][2][2];
 	/**/DebugTrace.print("intss", intss);
 
+		Point p = new Point(10, 11) {};
+	/**/DebugTrace.print("p", p);
+
+
 	/**/DebugTrace.leave();
 	}
 

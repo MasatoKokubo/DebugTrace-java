@@ -799,6 +799,8 @@ public class DebugTrace {
 			if (nest > 0 || (isComponent ? !noOutputComponentTypeMap.containsKey(type) : !noOutputTypeMap.containsKey(type))) {
 				// Output the type name
 				typeName = type.getCanonicalName();
+				if (typeName == null)
+					typeName = type.getName();
 				if (typeName.startsWith("java.") && !typeName.equals("java.util.Date"))
 					typeName = type.getSimpleName();
 

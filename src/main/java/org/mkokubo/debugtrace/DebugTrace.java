@@ -94,6 +94,9 @@ public class DebugTrace {
 	// Prefixes of getter methods
 	private static final String[] getterPrefixes = {"", "get", "is"};
 
+	// The string part of package of Groovy runtime class
+	private static final String groovyRuntimePackage = ".groovy.runtime.";
+
 	// Resources
 	private static final Resource resource = new Resource(DebugTrace.class,
 		string -> {
@@ -375,7 +378,7 @@ public class DebugTrace {
 		Returns a string of the caller information.
 	*/
 	private static String getCallerInfo(String baseString) {
-		StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
+		StackTraceElement element = getStackTraceElement();
 		return String.format(baseString,
 			element.getClassName(),
 			element.getMethodName(),
@@ -394,7 +397,7 @@ public class DebugTrace {
 			if (message.isEmpty())
 				logger.log("");
 			else {
-				StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
+				StackTraceElement element = getStackTraceElement();
 				String suffix = String.format(printSuffixFormat,
 					element.getClassName(),
 					element.getMethodName(),
@@ -443,7 +446,7 @@ public class DebugTrace {
 			buff.append(name).append(varNameValueSeparator);
 			append(state, strings, buff, value, isPrimitive, false);
 
-			StackTraceElement element = new Throwable().getStackTrace()[2]; // Element of before call of the stack traces
+			StackTraceElement element = getStackTraceElement();
 			String suffix = String.format(printSuffixFormat,
 				element.getClassName(),
 				element.getMethodName(),
@@ -456,6 +459,28 @@ public class DebugTrace {
 
 			printEnd(); // Common end processing of output
 		}
+	}
+
+	/**
+		Returns a caller stack trace element.
+		@returns a caller stack trace element
+	*/
+	private static StackTraceElement getStackTraceElement() {
+		StackTraceElement result = null;
+
+		String myClassName = DebugTrace.class.getName();
+
+		StackTraceElement[] elements = new Throwable().getStackTrace();
+		for (int index = 3; index < elements.length; ++index) {
+			StackTraceElement element = elements[index];
+			String className = element.getClassName();
+			if (className.indexOf(myClassName) == -1 && className.indexOf(groovyRuntimePackage) == -1) {
+				result = element;
+				break;
+			}
+		}
+
+		return result;
 	}
 
 	/**

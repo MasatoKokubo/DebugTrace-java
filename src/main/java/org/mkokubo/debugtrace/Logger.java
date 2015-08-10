@@ -15,7 +15,7 @@ package org.mkokubo.debugtrace;
 @FunctionalInterface
 public interface Logger {
 	/**
-		Set a logging level
+		Set the logging level
 		@param logLevelStr a logging level string
 	*/
 	default void setLevel(String logLevelStr) {
@@ -30,7 +30,7 @@ public interface Logger {
 	}
 
 	/**
-		Output the log message.
+		Output the message to the log.
 		@param message a log message
 	*/
 	void log(String message);

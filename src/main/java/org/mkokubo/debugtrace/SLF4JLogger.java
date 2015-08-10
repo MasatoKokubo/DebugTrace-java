@@ -41,7 +41,7 @@ public class SLF4JLogger implements Logger {
 	private Consumer<String> logConsumer;
 	
 	/**
-		Construct a Logger.
+		Construct a SLF4JLogger.
 	*/
 	public SLF4JLogger() {
 		logger = LoggerFactory.getLogger(DebugTrace.class);
@@ -49,8 +49,7 @@ public class SLF4JLogger implements Logger {
 	}
 
 	/**
-		Set a logging level
-		@param levelStr a logging level string
+		{@inheritDoc}
 	*/
 	@Override
 	public void setLevel(String levelStr) {
@@ -67,8 +66,7 @@ public class SLF4JLogger implements Logger {
 	}
 
 	/**
-		Returns whether logging is enabled.
-		@return true if logging is enabled; false otherwise
+		{@inheritDoc}
 	*/
 	@Override
 	public boolean isEnabled() {
@@ -81,8 +79,7 @@ public class SLF4JLogger implements Logger {
 	}
 
 	/**
-		Output the log message.
-		@param message a log message
+		{@inheritDoc}
 	*/
 	@Override
 	public void log(String message) {

@@ -2,15 +2,25 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" href="../../../build/docs/javadoc/stylesheet.css" title="Style">
-	<link rel="stylesheet" type="text/css" href="addtional.css" title="Style">
+	<link rel="stylesheet" type="text/css" href="addtional_ja.css" title="Style">
 </head>
 <body>
-	<p>
+	<p class="en">
 		DebugTrace class has some logging methods.<br>
 	</p>
-	The following are a sample code used DebugTrace methods and a log of when the sample was executed.<br>
-	Log bodys are automatically indent.<br>
-	<div class="title">Sample code:</div>
+	<p class="ja">
+		DebugTrace クラスには、ログ出力用のメソッドがあります。<br>
+	</p>
+	<div class="en">
+		The following are a sample source used DebugTrace methods and a log of when the sample was executed.<br>
+		Log bodys are automatically indent.<br>
+	</div>
+	<div class="ja">
+		以下は、DebugTrace のメソッドを使用したサンプルソースとそれを実行した際のログです。<br>
+		ログの内容は、自動的にインデントされます。<br>
+	</div>
+	<div class="title en">Sample source:</div>
+	<div class="title ja">サンプルソース:</div>
 	<pre class="prettyprint lang-java linenums">
 package sample;
 
@@ -38,7 +48,8 @@ public class Sample2 {
 }
 </pre>
 
-	<div class="title">Log of when the sample code has been executed:</div>
+	<div class="title en">Log of when the sample has been executed:</div>
+	<div class="title ja">上のサンプルが実行された際のログ:</div>
 	<pre class="prettyprint">
 2015-07-17 08:52:34.610 DebugTrace 1.4.0 / logger wrapper: DebugTrace$$Lambda$2/1831932724
 2015-07-17 08:52:34.626 
@@ -61,19 +72,26 @@ public class Sample2 {
 </pre>
 	<br>
 
-	DebugTrace read DebugTrace.properties file in the classpath on startup.
-	You can specify following properties in the <b>DebugTrace.properties</b> file.<br>
+	<div class="en">
+		DebugTrace read <b>DebugTrace.properties</b> file in the classpath on startup.<br>
+		You can specify following properties in the <b>DebugTrace.properties</b> file.<br>
+	</div>
+	<div class="ja">
+		DebugTrace は、開始時のクラスパスにある <b>DebugTrace.properties</b> を読み込みます。<br>
+		<b>DebugTrace.properties</b> ファイルには、以下のプロパティを指定できます。<br>
+	</div>
 	<br>
 
-	<div class="title">Properties of DebugTrace.properties file:</div>
+	<div class="title en">Properties of DebugTrace.properties file:</div>
+	<div class="title ja">DebugTrace.properties のプロパティ一覧:</div>
 
 	<table class="additinal">
 		<tr><th>Name</th><th>Value</th><th>Default</th></tr>
 
 		<tr>
 			<td>logger</td>
-			<td>
-				Logger<br>
+			<td class="en">
+				Logger DebugTrace uses<br>
 				Select from follows.
 				<ul class="additinal">
 					<span class="selection">Jdk</span> : When you use <b>JDK Logger</b><br>
@@ -84,18 +102,40 @@ public class Sample2 {
 					<span class="selection">System.err</span> : When you use <b>System.err</b><br>
 				</ul>
 			</td>
+			<td class="ja">
+				DebugTrace が使用するロガー<br>
+				以下から選択してください。
+				<ul class="additinal">
+					<span class="selection">Jdk</span> : <b>JDK Logger</b> を使用<br>
+					<span class="selection">Log4j</span> : <b>Log4J 1</b> を使用<br>
+					<span class="selection">Log4j2</span> : <b>Log4J 2</b> を使用<br>
+					<span class="selection">SLF4J</span> : <b>SLF4J</b> を使用<br>
+					<span class="selection">System.out</span> : <b>System.out</b> を使用<br>
+					<span class="selection">System.err</span> : <b>System.err</b> を使用<br>
+				</ul>
+			</td>
 			<td><span class="selection">System.out</span></td>
 		</tr>
 
 		<tr>
 			<td>logLevel</td>
-			<td>
-				Log Level<br>
+			<td class="en">
+				Log level DebugTrace outputs<br>
 				Select from follows.
 				<ul class="additinal">
 					<span class="selection">default</span> : The lowest level for each logger</b><br>
 					<span class="selection">finest, finer, fine, config, info, warning, severe</span> : <b>JDK Logger</b><br>
 					<span class="selection">trace, debug, info, warn, error, fatal</span> : <b>Log4J 1 or 2</b><br>
+					<span class="selection">trace, debug, info, warn, error</span> : <b>SLF4J</b><br>
+				</ul>
+			</td>
+			<td class="ja">
+				DebugTrace が出力するログレベル<br>
+				以下から選択してください。
+				<ul class="additinal">
+					<span class="selection">default</span> : それぞれのロガーの最低レベル</b><br>
+					<span class="selection">finest, finer, fine, config, info, warning, severe</span> : <b>JDK Logger</b><br>
+					<span class="selection">trace, debug, info, warn, error, fatal</span> : <b>Log4J 1 か 2</b><br>
 					<span class="selection">trace, debug, info, warn, error</span> : <b>SLF4J</b><br>
 				</ul>
 			</td>
@@ -108,8 +148,9 @@ public class Sample2 {
 
 		<tr>
 			<td>enterString</td>
-			<td>
-				Log string used after enter method<br>
+
+			<td class="en">
+				String used after enter method<br>
 				<ul class="additinal">
 					<b>parameters:</b><br>
 					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
@@ -118,6 +159,18 @@ public class Sample2 {
 					<span class="parameter">%4</span>: The <b>line numnber</b> of the call point
 				</ul>
 			</td>
+
+			<td class="ja">
+				enter メソッドで使用される文字列<br>
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: コールした<b>クラス名</b><br>
+					<span class="parameter">%2</span>: コールした<b>メソッド名</b><br>
+					<span class="parameter">%3</span>: コールしたソースの<b>ファイル名</b><br>
+					<span class="parameter">%4</span>: コールしたソースの<b>行番号</b>
+				</ul>
+			</td>
+
 			<td class="code">
 				Enter <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%4$d</span>)
 			</td>
@@ -125,8 +178,9 @@ public class Sample2 {
 
 		<tr>
 			<td>leaveString</td>
-			<td>
-				Log string used before leave method
+
+			<td class="en">
+				String used before leave method
 				<ul class="additinal">
 					<b>parameters:</b><br>
 					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
@@ -135,6 +189,18 @@ public class Sample2 {
 					<span class="parameter">%4</span>: The <b>line numnber</b> of the call point
 				</ul>
 			</td>
+
+			<td class="ja">
+				leave メソッドで使用される文字列<br>
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: コールした<b>クラス名</b><br>
+					<span class="parameter">%2</span>: コールした<b>メソッド名</b><br>
+					<span class="parameter">%3</span>: コールしたソースの<b>ファイル名</b><br>
+					<span class="parameter">%4</span>: コールしたソースの<b>行番号</b>
+				</ul>
+			</td>
+
 			<td class="code">
 				Leave <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%4$d</span>)
 			</td>
@@ -142,87 +208,143 @@ public class Sample2 {
 
 		<tr>
 			<td>threadBoundaryString</td>
-			<td>
-				Threads boundary string<br>
+
+			<td class="en">
+				String that is output in the threads boundary.<br>
 				<ul class="additinal">
 					<b>parameter:</b><br>
 					<span class="parameter">%1</span>: The <b>thread name</b>
 				</ul>
 			</td>
+
+			<td class="ja">
+				クラス境界で出力される文字列<br>
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: The <b>class name</b>
+				</ul>
+			</td>
+
 			<td class="code">______________________________ <span class="parameter">%1$s</span> ______________________________</td>
 		</tr>
 
 		<tr>
 			<td>classBoundaryString</td>
-			<td>
-				Classes boundary string<br>
+
+			<td class="en">
+				String that is output in the classes boundary.<br>
 				<ul class="additinal">
 					<b>parameter:</b><br>
 					<span class="parameter">%1</span>: The <b>class name</b>
 				</ul>
 			</td>
+
+			<td class="ja">
+				クラス境界で出力される文字列<br>
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: The <b>class name</b>
+				</ul>
+			</td>
+
 			<td class="code">____ <span class="parameter">%1$s</span> ____</td>
 		</tr>
 
 		<tr>
 			<td>indentString</td>
-			<td>
-				A indent string<br>
+
+			<td class="en">
+				String of one code indent<br>
 				<ul class="additinal">
 					"\\s" is change to a space character
 				</ul>
 			</td>
+
+			<td class="ja">
+				コードインデント1つ分の文字列<br>
+				<ul class="additinal">
+					"\\s" → 空白文字に変換
+				</ul>
+			</td>
+
 			<td class="code">|\\s\\s</td>
 		</tr>
 
 		<tr>
 			<td>dataIndentString</td>
-			<td>
-				A indent string<br>
+
+			<td class="en">
+				String of one data indent<br>
 			</td>
+
+			<td class="ja">
+				データインデント1つ分の文字列<br>
+			</td>
+
 			<td class="code">\\s\\s\\s</td>
 		</tr>
 
 		<tr>
 			<td>limitString</td>
-			<td>String to represent that it has exceeded the limit
+			<td class="en">String to represent that it has exceeded the limit
+			<td class="ja">リミットを超えた際に出力される文字列</td>
 			<td class="code">...</td>
 		</tr>
 
 		<tr>
 			<td>cyclicReferenceString</td>
-			<td>String to represent that the cyclic reference occurs
+			<td class="en">String to represent that the cyclic reference occurs
+			<td class="ja">循環参照になった場合に出力される文字列</td>
 			<td class="code">\\s*** cyclic reference ***\\s</td>
 		</tr>
 
 		<tr>
 			<td>varNameValueSeparator</td>
-			<td>
+
+			<td class="en">
 				Separator between the variable name and value
 			</td>
+
+			<td class="ja">
+				変数名と値のセパレータ
+			</td>
+
 			<td class="code">\\s=\\s</td>
 		</tr>
 
 		<tr>
 			<td>keyValueSeparator</td>
-			<td>
+
+			<td class="en">
 				Separator between the key and value for Map object
 			</td>
+
+			<td class="ja">
+				マップオブジェクトのキーと値のセパレータ
+			</td>
+
 			<td class="code">:\\s</td>
 		</tr>
 
 		<tr>
 			<td>fieldNameValueSeparator</td>
-			<td>
+
+			<td class="en">
 				Separator between the field name and value
 			</td>
+
+			<td class="ja">
+				フィールド名と値のセパレータ
+			</td>
+
 			<td class="code">:\\s</td>
 		</tr>
 
 		<tr>
 			<td>printSuffixFormat</td>
-			<td>
-				Format string of print suffix
+
+			<td class="en">
+				Output format of print method suffix
 				<ul class="additinal">
 					<b>parameters:</b><br>
 					<span class="parameter">%1</span>: The <b>class name</b> of the caller<br>
@@ -231,6 +353,18 @@ public class Sample2 {
 					<span class="parameter">%4</span>: The <b>line numnber</b> of the call point
 				</ul>
 			</td>
+
+			<td class="ja">
+				print メソッドで出力される内容の行末のフォーマット
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: コールした<b>クラス名</b><br>
+					<span class="parameter">%2</span>: コールした<b>メソッド名</b><br>
+					<span class="parameter">%3</span>: コールしたソースの<b>ファイル名</b><br>
+					<span class="parameter">%4</span>: コールしたソースの<b>行番号</b>
+				</ul>
+			</td>
+
 			<td class="code">
 				\\s(<span class="parameter">%3$s</span>:<span class="parameter">%4$d</span>)
 			</td>
@@ -238,25 +372,45 @@ public class Sample2 {
 
 		<tr>
 			<td>indexFormat</td>
-			<td>
-				Format string of <b>index</b> of array and Collection<br>
+
+			<td class="en">
+				Output format of index of array and Collection<br>
 				<ul class="additinal">
 					<b>parameter:</b><br>
 					<span class="parameter">%1</span>: The <b>index</b>
 				</ul>
 			</td>
+
+			<td class="ja">
+				配列およびコレクションのインデックスのフォーマット<br>
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: <b>インデックス</b >
+				</ul>
+			</td>
+
 			<td class="code"><span class="parameter">%1$d</span>:\\s</td>
 		</tr>
 
 		<tr>
 			<td>utilDateFormat</td>
-			<td>
-				Format string of <b>java.util.Date</b>
+
+			<td class="en">
+				Output format of <b>java.util.Date</b>
 				<ul class="additinal">
 					<b>parameter:</b><br>
 					<span class="parameter">%1</span>: a <b>java.util.Date</b><br>
 				</ul>
 			</td>
+
+			<td class="ja">
+				<b>java.util.Date</b> の出力フォーマット
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: a <b>java.util.Date</b><br>
+				</ul>
+			</td>
+
 			<td class="code">
 				<span class="parameter">%1$tY</span>-<span class="parameter">%1$tm</span>-<span class="parameter">%1$td</span>
 				<span class="parameter">%1$tH</span>:<span class="parameter">%1$tM</span>:<span class="parameter">%1$tS</span>
@@ -265,13 +419,23 @@ public class Sample2 {
 
 		<tr>
 			<td>sqlDateFormat</td>
-			<td>
-				Format string of <b>java.sql.Date</b>
+
+			<td class="en">
+				Output format of <b>java.sql.Date</b>
 				<ul class="additinal">
 					<b>parameter:</b><br>
 					<span class="parameter">%1</span>: a <b>java.sql.Date</b><br>
 				</ul>
 			</td>
+
+			<td class="ja">
+				<b>java.sql.Date</b> の出力フォーマット
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: a <b>java.sql.Date</b><br>
+				</ul>
+			</td>
+
 			<td class="code">
 				<span class="parameter">%1$tY</span>-<span class="parameter">%1$tm</span>-<span class="parameter">%1$td</span>
 			</td>
@@ -279,13 +443,23 @@ public class Sample2 {
 
 		<tr>
 			<td>timeFormat</td>
-			<td>
-				Format string of <b>java.sql.Time</b>
+
+			<td class="en">
+				Output format of <b>java.sql.Time</b>
 				<ul class="additinal">
 					<b>parameter:</b><br>
 					<span class="parameter">%1</span>: a <b>java.sql.Time</b><br>
 				</ul>
 			</td>
+
+			<td class="ja">
+				<b>java.sql.Time</b> の出力フォーマット
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: a <b>java.sql.Time</b><br>
+				</ul>
+			</td>
+
 			<td>
 				<span class="parameter">%1$tH</span>:<span class="parameter">%1$tM</span>:<span class="parameter">%1$tS</span>
 			</td>
@@ -293,13 +467,23 @@ public class Sample2 {
 
 		<tr>
 			<td>timestampFormat</td>
-			<td>
-				Format string of <b>java.sql.Timestamp</b>
+
+			<td class="en">
+				Output format of <b>java.sql.Timestamp</b>
 				<ul class="additinal">
 					<b>parameter:</b><br>
 					<span class="parameter">%1</span>: a <b>java.sql.Timestamp</b><br>
 				</ul>
 			</td>
+
+			<td class="ja">
+				<b>java.sql.Timestamp</b> の出力フォーマット
+				<ul class="additinal">
+					<b>パラメータ:</b><br>
+					<span class="parameter">%1</span>: a <b>java.sql.Timestamp</b><br>
+				</ul>
+			</td>
+
 			<td class="code">
 				<span class="parameter">%1$tY</span>-<span class="parameter">%1$tm</span>-<span class="parameter">%1$td</span>
 				<span class="parameter">%1$tH</span>:<span class="parameter">%1$tM</span>:<span class="parameter">%1$tS</span>.<span class="parameter">%1$tL</span>
@@ -308,34 +492,44 @@ public class Sample2 {
 
 		<tr>
 			<td>arrayLimit</td>
-			<td>
-					Output limit of length for a <b>array</b> and<br>
-					elements for a <b>Collection</b>
+			<td class="en">
+				Output limit for elements of a <b>array</b> and <b>Collection</b>
+			</td>
+			<td class="ja">
+				<b>配列</b>および<b>コレクション</b>の要素の出力制限数
 			</td>
 			<td>512</td>
 		</tr>
 
 		<tr>
 			<td>byteArrayLimit</td>
-			<td>Output limit of length for a <b>byte array</b></td>
+			<td class="en">Output limit for elements of a <b>byte array (byte[])</b></td>
+			<td class="ja"><b>バイト配列 (byte[]) </b>要素の出力制限数</td>
 			<td>8192</td>
 		</tr>
 
 		<tr>
 			<td>mapLimit</td>
-			<td>Output limit of elements for a <b>Map</b></td>
+			<td class="en">Output limit for elements of a <b>Map</b></td>
+			<td class="ja"><b>Map</b> の要素の出力制限数</td>
 			<td>512</td>
 		</tr>
 
 		<tr>
 			<td>stringLimit</td>
-			<td>Output limit of length for a <b>String</b></td>
+			<td class="en">Output limit for elements of a <b>String</b></td>
+			<td class="ja"><b>String</b> の要素の出力制限数</td>
 			<td>8192</td>
 		</tr>
 	</table>
 	<br>
 
-	The logger name of DebugTrace is <b>"org.mkokubo.debugtrace.DebugTrace"</b>.<br>
+	<div class="en">
+		The logger name of DebugTrace is <b>"org.mkokubo.debugtrace.DebugTrace"</b>.<br>
+	</div>
+	<div class="ja">
+		DebugTrace のロガー名は <b>org.mkokubo.debugtrace.DebugTrace</b> です。<br>
+	</div>
 	<br>
 	<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=Sunburst"></script>
 </body>

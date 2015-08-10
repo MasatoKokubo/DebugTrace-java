@@ -1,5 +1,18 @@
 
 /* Followings are additional for DebugTrace. */
+body, div.block, dd {
+	font-family: 'Meiryo UI', sans-serif;
+}
+
+.contentContainer .description dl dd, .contentContainer .details dl dd, .serializedFormContainer dl dd {
+	font-family: 'Meiryo UI',monospace;
+	font-size: 12px;
+}
+
+pre, code, tt, dt code, table tr td dt code {
+	font-family: 'Courier New', monospace;
+}
+
 .title {
 	font-family: sans-serif;
 	font-weight: bold;
@@ -62,4 +75,4 @@ table.additinal tr td {
 	padding: 4px;
 }
 
-.ja {display: none;}
+.en {display: none;}

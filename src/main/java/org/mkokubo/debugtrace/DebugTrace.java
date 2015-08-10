@@ -429,8 +429,8 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a value (accept null)
+		@param name the name (accept null)
+		@param value the value (accept null)
 		@param isPrimitive if the value is primitive type then true
 	*/
 	private static void printSub(String name, Object value, boolean isPrimitive) {
@@ -495,9 +495,9 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a boolean value
+		Outputs the name and the boolean value to the log.
+		@param name the name (accept null)
+		@param value the boolean value
 	*/
 	public static void print(String name, boolean value) {
 		if (enabled)
@@ -505,9 +505,9 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a value
+		Outputs the name and the char value to the log.
+		@param name the name (accept null)
+		@param value the char value
 	*/
 	public static void print(String name, char value) {
 		if (enabled)
@@ -515,9 +515,9 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a value
+		Outputs the name and the byte value to the log.
+		@param name the name (accept null)
+		@param value the byte value
 	*/
 	public static void print(String name, byte value) {
 		if (enabled)
@@ -525,9 +525,9 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a value
+		Outputs the name and the short value to the log.
+		@param name the name (accept null)
+		@param value the short value
 	*/
 	public static void print(String name, short value) {
 		if (enabled)
@@ -535,9 +535,9 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a int value
+		Outputs the name and the int value to the log.
+		@param name the name (accept null)
+		@param value the int value
 	*/
 	public static void print(String name, int value) {
 		if (enabled)
@@ -546,8 +546,8 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a long value
+		@param name the name (accept null)
+		@param value the long value
 	*/
 	public static void print(String name, long value) {
 		if (enabled)
@@ -556,8 +556,8 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a float value
+		@param name the name (accept null)
+		@param value the float value
 	*/
 	public static void print(String name, float value) {
 		if (enabled)
@@ -566,8 +566,8 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a value
+		@param name the name (accept null)
+		@param value the double value
 	*/
 	public static void print(String name, double value) {
 		if (enabled)
@@ -576,8 +576,8 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
-		@param name a name (accept null)
-		@param value a value (accept null)
+		@param name the name (accept null)
+		@param value the value (accept null)
 	*/
 	public static void print(String name, Object value) {
 		if (enabled)
@@ -585,10 +585,10 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs a value to the log.
+		Outputs the name and value to the log.
 		@param <T> type of the value
-		@param name a name (accept null)
-		@param valueSupplier a value supplier (not accept null)
+		@param name the name (accept null)
+		@param valueSupplier the value supplier (not accept null)
 	*/
 	public static <T> void print(String name, Supplier<T> valueSupplier) {
 		if (enabled)
@@ -596,9 +596,9 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs a boolean value to the log.
-		@param name a name (accept null)
-		@param valueSupplier a boolean value supplier (not accept null)
+		Outputs the name and boolean value to the log.
+		@param name the name (accept null)
+		@param valueSupplier the boolean supplier (not accept null)
 	*/
 	public static void print(String name, BooleanSupplier valueSupplier) {
 		if (enabled)
@@ -607,8 +607,8 @@ public class DebugTrace {
 
 	/**
 		Outputs a int value to the log.
-		@param name a name (accept null)
-		@param valueSupplier an int value supplier (not accept null)
+		@param name the name (accept null)
+		@param valueSupplier the int supplier (not accept null)
 	*/
 	public static void print(String name, IntSupplier valueSupplier) {
 		if (enabled)
@@ -617,7 +617,7 @@ public class DebugTrace {
 
 	/**
 		Outputs a long value to the log.
-		@param name a name (accept null)
+		@param name the name (accept null)
 		@param valueSupplier the long supplier (not accept null)
 	*/
 	public static void print(String name, LongSupplier valueSupplier) {
@@ -627,8 +627,8 @@ public class DebugTrace {
 
 	/**
 		Outputs a double value to the log.
-		@param name a name (accept null)
-		@param valueSupplier a double value supplier (not accept null)
+		@param name the name (accept null)
+		@param valueSupplier the double supplier (not accept null)
 	*/
 	public static void print(String name, DoubleSupplier valueSupplier) {
 		if (enabled)
@@ -640,7 +640,7 @@ public class DebugTrace {
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
-		@param value a value object
+		@param value the value object
 		@param isPrimitive if the value is primitive type then true, otherwise false
 		@param isComponent if the value is component of an array, otherwise false
 	*/
@@ -803,7 +803,7 @@ public class DebugTrace {
 		Returns the type name to be output to the log.<br>
 		If dose not output, returns null.
 		@param type the type of the value
-		@param value a value object
+		@param value the value object
 		@param isComponent if the value is component of an array, otherwise false
 		@param nest current nest count
 		@return the type name to be output to the log

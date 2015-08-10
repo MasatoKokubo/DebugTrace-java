@@ -17,20 +17,32 @@ import java.util.function.Function;
 	@author Masato Kokubo
 */
 public class Resource {
-	/** English ResourceBundle (default) */
 	private ResourceBundle enResourceBundle;
+	/**
+		Returns the english ResourceBundle.
+		@return the english ResourceBundle
+	*/
 	public ResourceBundle enResourceBundle() {return enResourceBundle;}
 
-	/** Default ResourceBundle as default locale */
 	private ResourceBundle defaultResourceBundle;
+	/**
+		Returns the default locale ResourceBundle.
+		@return the default locale ResourceBundle
+	*/
 	public ResourceBundle defaultResourceBundle() {return defaultResourceBundle;}
 
-	/** User defined ResourceBundle */
 	private ResourceBundle userResourceBundle;
+	/**
+		Returns the user defined ResourceBundle.
+		@return the user defined ResourceBundle
+	*/
 	public ResourceBundle userResourceBundle() {return userResourceBundle;}
 
-	// Filter
 	private Function<String, String> filter;
+	/**
+		Returns the filter function.
+		@return the filter functions
+	*/
 	public Function<String, String> filter() {return filter;}
 
 	/**

@@ -13,7 +13,7 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '1.4.2'
+version             = '1.4.3'
 project.archivesBaseName = 'debugtrace'
 
 compileJava {
@@ -21,6 +21,17 @@ compileJava {
 	options.deprecation  = true
 	options.debug        = true
 	options.compilerArgs = ['-Xlint']
+}
+
+task compileJava_ja(type:JavaCompile) {
+	options.encoding     = compileJava.options.encoding
+	options.deprecation  = compileJava.options.deprecation
+	options.debug        = compileJava.options.debug
+	options.compilerArgs = compileJava.options.compilerArgs
+
+	classpath      = compileJava.classpath
+	source         = files('src/main_ja/java')
+	destinationDir = file('build/classes/main_ja')
 }
 
 jar {
@@ -34,10 +45,10 @@ jar {
 
 javadoc {
 	title               = "$project.name $version API Specification"
+	options.encoding     = 'UTF-8'
 	options.locale      = 'en'
 	options.windowTitle = "$project.name"
 	options.overview    = 'src/main/java/overview.html'
-
 	options.addBooleanOption('author', true)
 	options.addStringOption ('bottom', '<div class="copyright">&copy;2015 Masato Kokubo</div>')
 }
@@ -48,11 +59,34 @@ javadoc.doLast {
 	}
 }
 
+task javadoc_ja(type:Javadoc) {
+	dependsOn = ['compileJava_ja']
+
+	title               = "$project.name $version API 仕様"
+	options.encoding    = javadoc.options.encoding
+	options.locale      = 'ja'
+	options.windowTitle = javadoc.options.windowTitle
+	options.overview    = javadoc.options.overview
+	options.addBooleanOption('author', true)
+	options.addStringOption ('bottom', '<div class="copyright">&copy;2015 小久保 雅人</div>')
+
+	classpath      = javadoc.classpath
+	source         = fileTree('src/main_ja/java').include('**/*.java')
+	destinationDir = file('build/docs/javadoc_ja')
+}
+
+javadoc_ja.doLast {
+	new File("src/main/java/addtional_ja.css").eachLine {
+		new File("build/docs/javadoc_ja/stylesheet.css").append("$it\n")
+	}
+}
+
 task zip(type: Zip) {
 	classifier = 'bin'
 
-	into('/'  , {from 'build/libs'})
-	into('/'  , {from 'LICENSE.txt', 'README.txt'})
-	into('doc', {from 'build/docs/javadoc'})
+	into('/'     , {from 'build/libs'})
+	into('/'     , {from 'LICENSE.txt', 'README.txt'})
+	into('doc'   , {from 'build/docs/javadoc'})
+	into('doc_ja', {from 'build/docs/javadoc_ja'})
 	into('resources-sample', {from 'src/test/resources'})
 }

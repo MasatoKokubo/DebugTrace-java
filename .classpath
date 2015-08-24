@@ -3,10 +3,8 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer"/>
 	<classpathentry kind="output" path="bin"/>
-	<classpathentry sourcepath="C:/Users/masato/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.3/2083f2f885111e2d672a28b5657c465360559663/log4j-api-2.3-sources.jar" kind="lib" path="C:/Users/masato/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.3/8d85ef2675d1b45fe78adad021f809bdf12f2eeb/log4j-api-2.3.jar"/>
-	<classpathentry sourcepath="C:/Users/masato/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/677abe279b68c5e7490d6d50c6951376238d7d3e/log4j-1.2.17-sources.jar" kind="lib" path="C:/Users/masato/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar"/>
-	<classpathentry sourcepath="C:/Users/masato/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.12/58697792617f38bf86d8e26bc004aac505e516a9/slf4j-api-1.7.12-sources.jar" kind="lib" path="C:/Users/masato/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.12/8e20852d05222dc286bf1c71d78d0531e177c317/slf4j-api-1.7.12.jar"/>
 </classpath>

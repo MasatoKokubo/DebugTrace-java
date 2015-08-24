@@ -1189,6 +1189,8 @@ public class DebugTrace {
 				if (method != null) {
 					buff.append(fieldName).append(fieldNameValueSeparator);
 					try {
+						if (!Modifier.isPublic(method.getModifiers()))
+							method.setAccessible(true);
 						append(state, strings, buff, method.invoke(object), method.getReturnType().isPrimitive(), false);
 					}
 					catch (Exception e) {

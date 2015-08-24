@@ -166,8 +166,8 @@ public class DebugTraceTest {
 			this.y = y;
 		}
 
-		public int x() {return x;}
-		public int y() {return y;}
+		protected int x() {return x;}
+		private int y() {return y;}
 
 		public Point add(Point p) {return new Point(x + p.x, y + p.y);}
 		public Point sub(Point p) {return new Point(x - p.x, y - p.y);}
@@ -175,7 +175,7 @@ public class DebugTraceTest {
 		public Point div(Point p) {return new Point(x / p.x, y / p.y);}
 		public Point mod(Point p) {return new Point(x % p.x, y % p.y);}
 
-		public String toString() {return String.format("Point(%1$d, %2$d)", x, y);}
+	//	public String toString() {return String.format("Point(%1$d, %2$d)", x, y);}
 	}
 }
 

@@ -13,7 +13,7 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '1.4.4'
+version             = '1.5.0'
 project.archivesBaseName = 'debugtrace'
 
 compileJava {

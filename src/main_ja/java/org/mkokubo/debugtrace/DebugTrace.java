@@ -34,6 +34,14 @@ public class DebugTrace {
 	public static void addReflectionTarget(Class<?> targetClass) {}
 
 	/**
+		値を表示しないプロパティを追加します。の
+		@param targetClass プロパティの対象クラス
+		@param propertyNames 対象のプロパティ名配列
+		@since 1.5.0
+	*/
+	public static void addNonPrintProperties(Class<?> targetClass, String... propertyNames) {}
+
+	/**
 		このメソッドをデバッグするメソッドの開始時にコールしてください。
 	*/
 	public static void enter() {}

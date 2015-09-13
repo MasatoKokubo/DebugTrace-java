@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -135,6 +136,7 @@ public class DebugTrace {
 	private static final String indentString            = resource.getString("indentString"           ); // String of method call indent
 	private static final String dataIndentString        = resource.getString("dataIndentString"       ); // String of data indent
 	private static final String limitString             = resource.getString("limitString"            ); // String to represent that it has exceeded the limit
+	private static final String nonPrintString          = resource.getString("nonPrintString"         ); // String of value in the case of properties that do not display the value (@since 1.5.0)
 	private static final String cyclicReferenceString   = resource.getString("cyclicReferenceString"  ); // String to represent that the cyclic reference occurs
 	private static final String varNameValueSeparator   = resource.getString("varNameValueSeparator"  ); // Separator between the variable name and value
 	private static final String keyValueSeparator       = resource.getString("keyValueSeparator"      ); // Separator between the key and value for Map object
@@ -223,6 +225,9 @@ public class DebugTrace {
 	// Reflected object list
 	private static final List<Object> reflectedObjects = new ArrayList<>();
 
+	// Non print property map (@since 1.5.0)
+	private static final Map<String, Boolean> nonPrintPropertyMap = new HashMap<>();
+
 	static {
 		logger.log("DebugTrace " + version + " / logger wrapper: " + logger.getClass().getSimpleName());
 	}
@@ -275,6 +280,20 @@ public class DebugTrace {
 	public static void addReflectionTarget(Class<?> targetClass) {
 		synchronized(stateMap) {
 			reflectionTargetMap.put(targetClass, true);
+		}
+	}
+
+	/**
+		Specifies properties that do not display the value.
+		@param targetClass a target class.
+		@param propertyNames target property names.
+		@since 1.5.0
+	*/
+	public static void addNonPrintProperties(Class<?> targetClass, String... propertyNames) {
+		String prefix = targetClass.getName() + ".";
+		synchronized(stateMap) {
+			Arrays.stream(propertyNames)
+				.forEach(propertyName -> nonPrintPropertyMap.put(prefix + propertyName, true));
 		}
 	}
 
@@ -774,13 +793,13 @@ public class DebugTrace {
 
 			} else {
 				// Other
-				Boolean isRreflection = reflectionTargetMap.get(type);
-				if (isRreflection == null) {
-					isRreflection = !hasToString(type);
-					reflectionTargetMap.put(type, isRreflection);
+				Boolean isReflection = reflectionTargetMap.get(type);
+				if (isReflection == null) {
+					isReflection = !hasToString(type);
+					reflectionTargetMap.put(type, isReflection);
 				}
 
-				if (isRreflection) {
+				if (isReflection) {
 					// Use Reflection
 					if (reflectedObjects.stream().anyMatch((object) -> value == object))
 						// Cyclic reference
@@ -1150,6 +1169,8 @@ public class DebugTrace {
 			lineFeed(state, strings, buff);
 		}
 
+		String classNamePrefix = clazz.getName() + ".";
+
 		// field
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
@@ -1157,6 +1178,13 @@ public class DebugTrace {
 			if (Modifier.isStatic(modifiers)) continue; // static
 
 			String fieldName = field.getName();
+
+			if (nonPrintPropertyMap.containsKey(classNamePrefix + fieldName)) {
+				// non print property
+				buff.append(fieldName).append(fieldNameValueSeparator).append(nonPrintString);
+				lineFeed(state, strings, buff);
+				continue;
+			}
 
 			if (Modifier.isPublic(modifiers)) {
 				// public field
@@ -1170,7 +1198,7 @@ public class DebugTrace {
 				buff.append(",");
 				lineFeed(state, strings, buff);
 			} else {
-				// not public field
+				// non public field
 				Method method = null;
 				for (String getterPrefix : getterPrefixes) {
 					String methodName = getterPrefix.length() == 0

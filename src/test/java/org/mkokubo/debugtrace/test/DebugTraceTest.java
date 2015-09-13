@@ -29,6 +29,7 @@ import org.mkokubo.debugtrace.DebugTrace;
 */
 public class DebugTraceTest {
 	public static void main(String[] args) {
+	/**/DebugTrace.addNonPrintProperties(ValuesBase2.class, "sqlDate", "int2Opt", "string2Opt");
 	/**/DebugTrace.enter();
 	/**/DebugTrace.print("args", args);
 

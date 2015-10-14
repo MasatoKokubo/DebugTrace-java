@@ -10,7 +10,7 @@
 		</layout>
 	</appender>
 
-	<logger name="jp.masatokokubo.debug.DebugTrace">
+	<logger name="org.mkokubo.debugtrace.DebugTrace">
 		<level value ="trace"/>
 		<appender-ref ref="Console"/>
 	</logger>

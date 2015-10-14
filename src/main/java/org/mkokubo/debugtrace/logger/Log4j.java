@@ -1,24 +1,22 @@
 /*
-	Log4jLogger.java
-
-	Created on 2014/10/11.
+	Log4j.java
 	(C) Masato Kokubo
 */
-
-package org.mkokubo.debugtrace;
+package org.mkokubo.debugtrace.logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.mkokubo.debugtrace.DebugTrace;
 
 /**
 	A logger implementation using Log4J.
 	@since 1.0.0
 	@author Masato Kokubo
 */
-public class Log4jLogger implements Logger {
+public class Log4j implements Logger {
 	// Level Map
 	private static final Map<String, Level> levelMap = new HashMap<>();
 	static {
@@ -38,9 +36,9 @@ public class Log4jLogger implements Logger {
 	private Level level = Level.TRACE;
 
 	/**
-		Construct a Log4jLogger.
+		Construct a Log4j.
 	*/
-	public Log4jLogger() {
+	public Log4j() {
 		logger = LogManager.getLogger(DebugTrace.class);
 	}
 

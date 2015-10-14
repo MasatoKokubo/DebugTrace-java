@@ -1,7 +1,5 @@
 /*
 	DebugTrace.java
-
-	Created on 2014/10/11.
 	(C) Masato Kokubo
 */
 package org.mkokubo.debugtrace;
@@ -22,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +32,9 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
+
+import org.mkokubo.debugtrace.logger.Logger;
+import org.mkokubo.debugtrace.logger.SystemOut;
 
 /**
 	A utility class for debugging.<br>
@@ -152,18 +152,6 @@ public class DebugTrace {
 	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Output limit of elements for a Map
 	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Output limit of length for a String
 
-	// Append timestamp
-	private static String appendTimestamp(String string) {
-		return String.format(timestampFormat, new Timestamp(System.currentTimeMillis())) + " " + string;
-	}
-
-	// Logger map
-	private static final Map<String, Logger> loggerMap = new LinkedHashMap<>();
-	static {
-		loggerMap.put("System.out", message -> System.out.println(appendTimestamp(message)));
-		loggerMap.put("System.err", message -> System.err.println(appendTimestamp(message)));
-	}
-
 	// Logger
 	private static Logger logger = null;
 
@@ -172,23 +160,17 @@ public class DebugTrace {
 		try {
 			loggerName = resource.getString("logger");
 			if (loggerName != null) {
-				logger = loggerMap.get(loggerName);
-				if (logger == null) {
-					// not (System.out and System.err)
-					if (loggerName.indexOf('.') == -1)
-						loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
-					loggerName += "Logger";
-					logger = (Logger)Class.forName(loggerName).newInstance();
-				}
+				if (loggerName.indexOf('.') == -1)
+					loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
+				logger = (Logger)Class.forName(loggerName).newInstance();
 			}
 		}
 		catch (Exception e) {
-			if (logger != null)
-				System.err.println("DebugTrace:" + e.toString() + "(" + loggerName + ")");
+			System.err.println("DebugTrace: " + e.toString() + "(" + loggerName + ")");
 		}
 
 		if (logger == null)
-			logger = loggerMap.entrySet().iterator().next().getValue();
+			logger = new SystemOut();
 
 		// Set a logging level
 		logger.setLevel(logLevel);
@@ -229,10 +211,19 @@ public class DebugTrace {
 	private static final Map<String, Boolean> nonPrintPropertyMap = new HashMap<>();
 
 	static {
-		logger.log("DebugTrace " + version + " / logger wrapper: " + logger.getClass().getSimpleName());
+		logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getSimpleName());
 	}
 
 	private DebugTrace() {}
+
+	/**
+		Append timestamp
+		@param string a string
+		@return a string appended a timestamp string
+	*/
+	public static String appendTimestamp(String string) {
+		return String.format(timestampFormat, new Timestamp(System.currentTimeMillis())) + " " + string;
+	}
 
 	/**
 		Returns indent state.
@@ -1206,7 +1197,7 @@ public class DebugTrace {
 						: getterPrefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 					try {
 						method = clazz.getDeclaredMethod(methodName);
-						if (method.getReturnType() != Void.TYPE)
+						if (method.getReturnType() == field.getType())
 							break;
 						else
 							method = null;

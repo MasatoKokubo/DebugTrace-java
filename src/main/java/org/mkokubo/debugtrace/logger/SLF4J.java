@@ -1,17 +1,15 @@
 /*
-	SLF4JLogger.java
-
-	Created on 2015/07/04.
+	SLF4J.java
 	(C) Masato Kokubo
 */
-
-package org.mkokubo.debugtrace;
+package org.mkokubo.debugtrace.logger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import org.apache.log4j.Level;
+import org.mkokubo.debugtrace.DebugTrace;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -19,7 +17,7 @@ import org.slf4j.LoggerFactory;
 	@since 1.1.0
 	@author Masato Kokubo
 */
-public class SLF4JLogger implements Logger {
+public class SLF4J implements Logger {
 	// Level Map
 	private static final Map<String, Level> levelMap = new HashMap<>();
 	static {
@@ -41,9 +39,9 @@ public class SLF4JLogger implements Logger {
 	private Consumer<String> logConsumer;
 	
 	/**
-		Construct a SLF4JLogger.
+		Construct a SLF4J.
 	*/
-	public SLF4JLogger() {
+	public SLF4J() {
 		logger = LoggerFactory.getLogger(DebugTrace.class);
 		logConsumer = logger::trace;
 	}

@@ -1,22 +1,21 @@
 /*
-	JdkLogger.java
-
-	Created on 2014/10/11.
+	Jdk.java
 	(C) Masato Kokubo
 */
-
-package org.mkokubo.debugtrace;
+package org.mkokubo.debugtrace.logger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
+import org.mkokubo.debugtrace.DebugTrace;
 
 /**
 	A logger implementation using JDK Logger.
 	@since 1.0.0
 	@author Masato Kokubo
 */
-public class JdkLogger implements Logger {
+public class Jdk implements Logger {
 	// Level Map
 	private static final Map<String, Level> levelMap = new HashMap<>();
 	static {
@@ -37,9 +36,9 @@ public class JdkLogger implements Logger {
 	private Level level = Level.FINEST;
 
 	/**
-		Construct a JdkLogger.
+		Construct a Jdk.
 	*/
-	public JdkLogger() {
+	public Jdk() {
 		logger = java.util.logging.Logger.getLogger(DebugTrace.class.getName());
 	}
 

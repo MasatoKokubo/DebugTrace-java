@@ -1,7 +1,5 @@
 /*
 	Resource.java
-
-	Created on 2014/10/19.
 	(C) Masato Kokubo
 */
 package org.mkokubo.debugtrace;

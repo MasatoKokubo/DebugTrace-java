@@ -1,7 +1,5 @@
 /*
 	DebugTraceTest.java
-
-	Created on 2014/06/21.
 	(C) Masato Kokubo
 */
 package org.mkokubo.debugtrace.test;
@@ -169,6 +167,7 @@ public class DebugTraceTest {
 
 		protected int x() {return x;}
 		private int y() {return y;}
+		public long z() {return (long)z;}
 
 		public Point add(Point p) {return new Point(x + p.x, y + p.y);}
 		public Point sub(Point p) {return new Point(x - p.x, y - p.y);}

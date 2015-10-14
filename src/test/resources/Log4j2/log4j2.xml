@@ -7,7 +7,7 @@
 	</appenders>
 
 	<loggers>
-		<logger name="jp.masatokokubo.debug.DebugTrace" level="trace"/>
+		<logger name="org.mkokubo.debugtrace.DebugTrace" level="trace"/>
 		<root level="error">
 			<appender-ref ref="Console"/>
 		</root>

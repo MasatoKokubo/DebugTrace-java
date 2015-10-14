@@ -1,11 +1,8 @@
 /*
 	Logger.java
-
-	Created on 2014/10/11.
 	(C) Masato Kokubo
 */
-
-package org.mkokubo.debugtrace;
+package org.mkokubo.debugtrace.logger;
 
 /**
 	Interface of Logger classes.

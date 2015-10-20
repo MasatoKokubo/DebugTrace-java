@@ -1,23 +1,21 @@
 /*
-	Log4j2Logger.java
-
-	Created on 2014/10/13.
+	JdkLogger.java
 	(C) Masato Kokubo
 */
 
-package org.mkokubo.debugtrace;
+package org.mkokubo.debugtrace.logger;
 
 
 /**
-	Log4J2 を使用するロガーの実装です。
+	Jdk を使用するロガーの実装です。
 	@since 1.0.0
 	@author 小久保 雅人
 */
-public class Log4j2Logger implements Logger {
+public class Jdk implements Logger {
 	/**
-		Log4j2Logger を構築します。
+		JdkLogger を構築します。
 	*/
-	public Log4j2Logger() {}
+	public Jdk() {}
 
 	/**
 		{@inheritDoc}

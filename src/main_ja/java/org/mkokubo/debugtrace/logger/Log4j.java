@@ -1,6 +1,6 @@
 /*
 	Log4jLogger.java
-	(C) Masato Kokubo
+	(C) 2015 Masato Kokubo
 */
 
 package org.mkokubo.debugtrace.logger;
@@ -12,8 +12,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 
 /**
-	Log4j を使用するロガーの実装です。
+	Log4j を使用するロガーです。
+
 	@since 1.0.0
+
 	@author 小久保 雅人
 */
 public class Log4j implements Logger {

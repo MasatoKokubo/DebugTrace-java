@@ -1,6 +1,7 @@
 /*
 	Jdk.java
-	(C) Masato Kokubo
+
+	(C) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace.logger;
 
@@ -11,8 +12,10 @@ import java.util.logging.Level;
 import org.mkokubo.debugtrace.DebugTrace;
 
 /**
-	A logger implementation using JDK Logger.
+	A logger using JDK Logger.
+
 	@since 1.0.0
+
 	@author Masato Kokubo
 */
 public class Jdk implements Logger {

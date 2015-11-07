@@ -1,14 +1,16 @@
 /*
 	JdkLogger.java
-	(C) Masato Kokubo
+	(C) 2015 Masato Kokubo
 */
 
 package org.mkokubo.debugtrace.logger;
 
 
 /**
-	Jdk を使用するロガーの実装です。
+	Jdk を使用するロガーです。
+
 	@since 1.0.0
+
 	@author 小久保 雅人
 */
 public class Jdk implements Logger {

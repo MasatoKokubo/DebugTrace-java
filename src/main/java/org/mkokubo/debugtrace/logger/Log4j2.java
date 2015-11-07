@@ -1,6 +1,7 @@
 /*
 	Log4j2.java
-	(C) Masato Kokubo
+
+	(C) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace.logger;
 
@@ -12,8 +13,10 @@ import org.apache.logging.log4j.LogManager;
 import org.mkokubo.debugtrace.DebugTrace;
 
 /**
-	A logger implementation using Log4J2.
+	A logger using Log4J2.
+
 	@since 1.0.0
+
 	@author Masato Kokubo
 */
 public class Log4j2 implements Logger {

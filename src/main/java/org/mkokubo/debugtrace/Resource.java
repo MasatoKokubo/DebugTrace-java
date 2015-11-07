@@ -1,6 +1,7 @@
 /*
 	Resource.java
-	(C) Masato Kokubo
+
+	(C) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace;
 
@@ -11,13 +12,16 @@ import java.util.function.Function;
 
 /**
 	Uses this class when gets resources.
+
 	@since 1.0.0
+
 	@author Masato Kokubo
 */
 public class Resource {
 	private ResourceBundle enResourceBundle;
 	/**
 		Returns the english ResourceBundle.
+
 		@return the english ResourceBundle
 	*/
 	public ResourceBundle enResourceBundle() {return enResourceBundle;}
@@ -25,6 +29,7 @@ public class Resource {
 	private ResourceBundle defaultResourceBundle;
 	/**
 		Returns the default locale ResourceBundle.
+
 		@return the default locale ResourceBundle
 	*/
 	public ResourceBundle defaultResourceBundle() {return defaultResourceBundle;}
@@ -32,6 +37,7 @@ public class Resource {
 	private ResourceBundle userResourceBundle;
 	/**
 		Returns the user defined ResourceBundle.
+
 		@return the user defined ResourceBundle
 	*/
 	public ResourceBundle userResourceBundle() {return userResourceBundle;}
@@ -39,12 +45,14 @@ public class Resource {
 	private Function<String, String> filter;
 	/**
 		Returns the filter function.
+
 		@return the filter functions
 	*/
 	public Function<String, String> filter() {return filter;}
 
 	/**
 		Construct a Resource.
+
 		@param baseClass the base class of a ResourceBundle
 	*/
 	public Resource(Class<?> baseClass) {
@@ -53,7 +61,9 @@ public class Resource {
 
 	/**
 		Construct a Resource.
+
 		@param baseClass the base class of a ResourceBundle
+
 		@param filter a filter function
 	*/
 	public Resource(Class<?> baseClass, Function<String, String> filter) {
@@ -62,6 +72,7 @@ public class Resource {
 
 	/**
 		Construct a Resource.
+
 		@param baseName the base name of a ResourceBundle
 	*/
 	public Resource(String baseName) {
@@ -70,6 +81,7 @@ public class Resource {
 
 	/**
 		Construct a Resource.
+
 		@param baseName the base name of a ResourceBundle
 		@param filter a filter function
 	*/
@@ -98,8 +110,11 @@ public class Resource {
 
 	/**
 		Gets and returns a string resource property value.
+
 		@param key the key of a string resource property
+
 		@return the value of the string resource property
+
 		@throws MissingResourceException if the key dose not found
 	*/
 	public String getString(String key) {
@@ -146,8 +161,11 @@ public class Resource {
 
 	/**
 		Gets and returns an int resource property value.
+
 		@param key the key of an int resource property
+
 		@return the value of the int resource property
+
 		@throws MissingResourceException if the key dose not found
 		@throws NumberFormatException if the resource property value can not convert to int
 	*/

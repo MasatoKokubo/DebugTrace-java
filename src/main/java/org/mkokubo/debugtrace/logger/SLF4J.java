@@ -1,6 +1,7 @@
 /*
 	SLF4J.java
-	(C) Masato Kokubo
+
+	(C) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace.logger;
 
@@ -13,8 +14,10 @@ import org.mkokubo.debugtrace.DebugTrace;
 import org.slf4j.LoggerFactory;
 
 /**
-	A logger implementation using Log4J2.
+	A logger using Log4J2.
+
 	@since 1.1.0
+
 	@author Masato Kokubo
 */
 public class SLF4J implements Logger {

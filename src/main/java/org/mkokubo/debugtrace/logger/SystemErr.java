@@ -1,14 +1,17 @@
 /*
 	SystemErr.java
-	(C) Masato Kokubo
+
+	(C) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace.logger;
 
 import org.mkokubo.debugtrace.DebugTrace;
 
 /**
-	A logger implementation using System.err.
+	A logger using System.err.
+
 	@since 1.6.0
+
 	@author Masato Kokubo
 */
 public class SystemErr implements Logger {

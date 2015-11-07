@@ -1,6 +1,7 @@
 /*
 	DebugTrace.java
-	(C) Masato Kokubo
+
+	(C) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace;
 
@@ -40,7 +41,9 @@ import org.mkokubo.debugtrace.logger.SystemOut;
 	A utility class for debugging.<br>
 	Call DebugTrace.enter and DebugTrace.leave methods when enter and leave your methods,
 	then outputs execution trace of the program.
+
 	@since 1.0.0
+
 	@author Masato Kokubo
 */
 public class DebugTrace {
@@ -218,7 +221,9 @@ public class DebugTrace {
 
 	/**
 		Append timestamp
+
 		@param string a string
+
 		@return a string appended a timestamp string
 	*/
 	public static String appendTimestamp(String string) {
@@ -244,12 +249,14 @@ public class DebugTrace {
 
 	/**
 		Returns whether tracing is enabled.
+
 		@return true if tracing is enabled; false otherwise
 	*/
 	public static boolean isEnabled() {return enabled;}
 
 	/**
 		Returns a string corresponding to the current indent.
+
 		@return A string corresponding to the current indent
 	*/
 	private static String getIndentString(State state) {
@@ -266,6 +273,7 @@ public class DebugTrace {
 
 	/**
 		Add a reflection target class.
+
 		@param targetClass a reflection target class.
 	*/
 	public static void addReflectionTarget(Class<?> targetClass) {
@@ -276,8 +284,10 @@ public class DebugTrace {
 
 	/**
 		Specifies properties that do not display the value.
+
 		@param targetClass a target class.
 		@param propertyNames target property names.
+
 		@since 1.5.0
 	*/
 	public static void addNonPrintProperties(Class<?> targetClass, String... propertyNames) {
@@ -290,6 +300,7 @@ public class DebugTrace {
 
 	/**
 		Up the nest level.
+
 		@param state a nest status of current thread
 	*/
 	private static void upNest(State state) {
@@ -299,6 +310,7 @@ public class DebugTrace {
 
 	/**
 		Down the nest level.
+
 		@param state a nest status of current thread
 	*/
 	private static void downNest(State state) {
@@ -308,7 +320,9 @@ public class DebugTrace {
 
 	/**
 		Up the data nest level.
+
 		@param state a nest status of current thread
+
 		@since 1.4.0
 	*/
 	private static void upDataNest(State state) {
@@ -317,7 +331,9 @@ public class DebugTrace {
 
 	/**
 		Down the data nest level.
+
 		@param state a nest status of current thread
+
 		@since 1.4.0
 	*/
 	private static void downDataNest(State state) {
@@ -398,6 +414,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the message to the log.
+
 		@param message a message (accept null)
 	*/
 	private static void printSub(String message) {
@@ -421,6 +438,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the message to the log.
+
 		@param message a message (accept null)
 	*/
 	public static void print(String message) {
@@ -430,6 +448,7 @@ public class DebugTrace {
 
 	/**
 		Outputs a message to the log.
+
 		@param messageSupplier a message supplier (not accept null)
 	*/
 	public static void print(Supplier<String> messageSupplier) {
@@ -439,6 +458,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
+
 		@param name the name (accept null)
 		@param value the value (accept null)
 		@param isPrimitive if the value is primitive type then true
@@ -473,6 +493,7 @@ public class DebugTrace {
 
 	/**
 		Returns a caller stack trace element.
+
 		@returns a caller stack trace element
 	*/
 	private static StackTraceElement getStackTraceElement() {
@@ -495,6 +516,7 @@ public class DebugTrace {
 
 	/**
 		Line Feed.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -506,6 +528,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and the boolean value to the log.
+
 		@param name the name (accept null)
 		@param value the boolean value
 	*/
@@ -516,6 +539,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and the char value to the log.
+
 		@param name the name (accept null)
 		@param value the char value
 	*/
@@ -526,6 +550,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and the byte value to the log.
+
 		@param name the name (accept null)
 		@param value the byte value
 	*/
@@ -536,6 +561,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and the short value to the log.
+
 		@param name the name (accept null)
 		@param value the short value
 	*/
@@ -546,6 +572,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and the int value to the log.
+
 		@param name the name (accept null)
 		@param value the int value
 	*/
@@ -556,6 +583,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
+
 		@param name the name (accept null)
 		@param value the long value
 	*/
@@ -566,6 +594,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
+
 		@param name the name (accept null)
 		@param value the float value
 	*/
@@ -576,6 +605,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
+
 		@param name the name (accept null)
 		@param value the double value
 	*/
@@ -586,6 +616,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
+
 		@param name the name (accept null)
 		@param value the value (accept null)
 	*/
@@ -596,7 +627,9 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and value to the log.
+
 		@param <T> type of the value
+
 		@param name the name (accept null)
 		@param valueSupplier the value supplier (not accept null)
 	*/
@@ -607,6 +640,7 @@ public class DebugTrace {
 
 	/**
 		Outputs the name and boolean value to the log.
+
 		@param name the name (accept null)
 		@param valueSupplier the boolean supplier (not accept null)
 	*/
@@ -617,6 +651,7 @@ public class DebugTrace {
 
 	/**
 		Outputs a int value to the log.
+
 		@param name the name (accept null)
 		@param valueSupplier the int supplier (not accept null)
 	*/
@@ -627,6 +662,7 @@ public class DebugTrace {
 
 	/**
 		Outputs a long value to the log.
+
 		@param name the name (accept null)
 		@param valueSupplier the long supplier (not accept null)
 	*/
@@ -637,6 +673,7 @@ public class DebugTrace {
 
 	/**
 		Outputs a double value to the log.
+
 		@param name the name (accept null)
 		@param valueSupplier the double supplier (not accept null)
 	*/
@@ -647,6 +684,7 @@ public class DebugTrace {
 
 	/**
 		Returns a string representation of the value.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -812,10 +850,12 @@ public class DebugTrace {
 	/**
 		Returns the type name to be output to the log.<br>
 		If dose not output, returns null.
+
 		@param type the type of the value
 		@param value the value object
 		@param isComponent if the value is component of an array, otherwise false
 		@param nest current nest count
+
 		@return the type name to be output to the log
 	*/
 	@SuppressWarnings("rawtypes")
@@ -867,6 +907,7 @@ public class DebugTrace {
 
 	/**
 		Appends a character representation for log to the string buffer.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -890,6 +931,7 @@ public class DebugTrace {
 
 	/**
 		Appends a CharSequence representation for log to the string buffer.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -909,6 +951,7 @@ public class DebugTrace {
 
 	/**
 		Appends a character array representation for log to the string buffer.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -928,6 +971,7 @@ public class DebugTrace {
 
 	/**
 		Appends a byte array representation for log to the string buffer.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -977,6 +1021,7 @@ public class DebugTrace {
 
 	/**
 		Appends an object array representation for log to the string buffer.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -1020,6 +1065,7 @@ public class DebugTrace {
 
 	/**
 		Appends an Iterable representation for log to the string buffer.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -1060,6 +1106,7 @@ public class DebugTrace {
 
 	/**
 		Appends a Map representation for log to the string buffer.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param buff a string buffer (not accept null)
@@ -1102,7 +1149,9 @@ public class DebugTrace {
 
 	/**
 		Returns true, if this class or super classes without Object class has toString method.
+
 		@param object an object (not accept null)
+
 		@return true if this class or super classes without Object class has toString method; false otherwise
 	*/
 	private static boolean hasToString(Class<?> clazz) {
@@ -1124,6 +1173,7 @@ public class DebugTrace {
 
 	/**
 		Returns a string representation of the object uses reflection.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param object an object (not accept null)
@@ -1142,6 +1192,7 @@ public class DebugTrace {
 
 	/**
 		Returns a string representation of the object uses reflection.
+
 		@param state indent state
 		@param strings a string list (not accept null)
 		@param object an object (not accept null)

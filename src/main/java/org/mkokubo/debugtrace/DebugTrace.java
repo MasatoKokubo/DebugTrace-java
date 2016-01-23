@@ -210,7 +210,7 @@ public class DebugTrace {
 	// Reflected object list
 	private static final List<Object> reflectedObjects = new ArrayList<>();
 
-	// Non print property map (@since 1.5.0)
+	// Non-printing property map (@since 1.5.0)
 	private static final Map<String, Boolean> nonPrintPropertyMap = new HashMap<>();
 
 	static {
@@ -415,7 +415,7 @@ public class DebugTrace {
 	/**
 		Outputs the message to the log.
 
-		@param message a message (accept null)
+		@param message a message
 	*/
 	private static void printSub(String message) {
 		synchronized(stateMap) {
@@ -439,7 +439,7 @@ public class DebugTrace {
 	/**
 		Outputs the message to the log.
 
-		@param message a message (accept null)
+		@param message a message
 	*/
 	public static void print(String message) {
 		if (enabled)
@@ -449,7 +449,7 @@ public class DebugTrace {
 	/**
 		Outputs a message to the log.
 
-		@param messageSupplier a message supplier (not accept null)
+		@param messageSupplier a message supplier
 	*/
 	public static void print(Supplier<String> messageSupplier) {
 		if (enabled)
@@ -459,7 +459,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the value (accept null)
 		@param isPrimitive if the value is primitive type then true
 	*/
@@ -518,8 +518,8 @@ public class DebugTrace {
 		Line Feed.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
+		@param strings a string list
+		@param buff a string buffer
 	*/
 	private static void lineFeed(State state, List<String> strings, StringBuilder buff) {
 		strings.add(getIndentString(getState()) + buff.toString());
@@ -529,7 +529,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and the boolean value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the boolean value
 	*/
 	public static void print(String name, boolean value) {
@@ -540,7 +540,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and the char value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the char value
 	*/
 	public static void print(String name, char value) {
@@ -551,7 +551,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and the byte value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the byte value
 	*/
 	public static void print(String name, byte value) {
@@ -562,7 +562,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and the short value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the short value
 	*/
 	public static void print(String name, short value) {
@@ -573,7 +573,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and the int value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the int value
 	*/
 	public static void print(String name, int value) {
@@ -584,7 +584,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the long value
 	*/
 	public static void print(String name, long value) {
@@ -595,7 +595,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the float value
 	*/
 	public static void print(String name, float value) {
@@ -606,7 +606,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the double value
 	*/
 	public static void print(String name, double value) {
@@ -617,7 +617,7 @@ public class DebugTrace {
 	/**
 		Outputs the name and value to the log.
 
-		@param name the name (accept null)
+		@param name the name
 		@param value the value (accept null)
 	*/
 	public static void print(String name, Object value) {
@@ -630,8 +630,8 @@ public class DebugTrace {
 
 		@param <T> type of the value
 
-		@param name the name (accept null)
-		@param valueSupplier the value supplier (not accept null)
+		@param name the name
+		@param valueSupplier the value supplier
 	*/
 	public static <T> void print(String name, Supplier<T> valueSupplier) {
 		if (enabled)
@@ -641,8 +641,8 @@ public class DebugTrace {
 	/**
 		Outputs the name and boolean value to the log.
 
-		@param name the name (accept null)
-		@param valueSupplier the boolean supplier (not accept null)
+		@param name the name
+		@param valueSupplier the boolean supplier
 	*/
 	public static void print(String name, BooleanSupplier valueSupplier) {
 		if (enabled)
@@ -652,8 +652,8 @@ public class DebugTrace {
 	/**
 		Outputs a int value to the log.
 
-		@param name the name (accept null)
-		@param valueSupplier the int supplier (not accept null)
+		@param name the name
+		@param valueSupplier the int supplier
 	*/
 	public static void print(String name, IntSupplier valueSupplier) {
 		if (enabled)
@@ -663,8 +663,8 @@ public class DebugTrace {
 	/**
 		Outputs a long value to the log.
 
-		@param name the name (accept null)
-		@param valueSupplier the long supplier (not accept null)
+		@param name the name
+		@param valueSupplier the long supplier
 	*/
 	public static void print(String name, LongSupplier valueSupplier) {
 		if (enabled)
@@ -674,8 +674,8 @@ public class DebugTrace {
 	/**
 		Outputs a double value to the log.
 
-		@param name the name (accept null)
-		@param valueSupplier the double supplier (not accept null)
+		@param name the name
+		@param valueSupplier the double supplier
 	*/
 	public static void print(String name, DoubleSupplier valueSupplier) {
 		if (enabled)
@@ -686,8 +686,8 @@ public class DebugTrace {
 		Returns a string representation of the value.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
+		@param strings a string list
+		@param buff a string buffer
 		@param value the value object
 		@param isPrimitive if the value is primitive type then true, otherwise false
 		@param isComponent if the value is component of an array, otherwise false
@@ -909,8 +909,8 @@ public class DebugTrace {
 		Appends a character representation for log to the string buffer.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
+		@param strings a string list
+		@param buff a string buffer
 		@param ch a character
 	*/
 	private static void append(State state, List<String> strings, StringBuilder buff, char ch) {
@@ -933,9 +933,9 @@ public class DebugTrace {
 		Appends a CharSequence representation for log to the string buffer.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
-		@param charSequence a CharSequence object (not accept null)
+		@param strings a string list
+		@param buff a string buffer
+		@param charSequence a CharSequence object
 	*/
 	private static void append(State state, List<String> strings, StringBuilder buff, CharSequence charSequence) {
 		buff.append('"');
@@ -953,9 +953,9 @@ public class DebugTrace {
 		Appends a character array representation for log to the string buffer.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
-		@param chars a character array (not accept null)
+		@param strings a string list
+		@param buff a string buffer
+		@param chars a character array
 	*/
 	private static void append(State state, List<String> strings, StringBuilder buff, char[] chars) {
 		buff.append('"');
@@ -973,9 +973,9 @@ public class DebugTrace {
 		Appends a byte array representation for log to the string buffer.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
-		@param bytes a byte array (not accept null)
+		@param strings a string list
+		@param buff a string buffer
+		@param bytes a byte array
 	*/
 	private static void append(State state, List<String> strings, StringBuilder buff, byte[] bytes) {
 		boolean multiLine = bytes.length > 16 && byteArrayLimit > 16;
@@ -1023,9 +1023,9 @@ public class DebugTrace {
 		Appends an object array representation for log to the string buffer.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
-		@param array an object array (not accept null)
+		@param strings a string list
+		@param buff a string buffer
+		@param array an object array
 	*/
 	private static void appendArray(State state, List<String> strings, StringBuilder buff, Object array) {
 		Class<?> componentType = array.getClass().getComponentType();
@@ -1067,9 +1067,9 @@ public class DebugTrace {
 		Appends an Iterable representation for log to the string buffer.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
-		@param collection a Collection object (not accept null)
+		@param strings a string list
+		@param buff a string buffer
+		@param collection a Collection object
 	*/
 	private static void append(State state, List<String> strings, StringBuilder buff, Collection<?> collection) {
 		Iterator<?> iterator = collection.iterator();
@@ -1108,9 +1108,9 @@ public class DebugTrace {
 		Appends a Map representation for log to the string buffer.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param buff a string buffer (not accept null)
-		@param map a Map (not accept null)
+		@param strings a string list
+		@param buff a string buffer
+		@param map a Map
 	*/
 	private static <K,V> void append(State state, List<String> strings, StringBuilder buff, Map<K,V> map) {
 		Iterator<Map.Entry<K,V>> iterator = map.entrySet().iterator();
@@ -1150,7 +1150,7 @@ public class DebugTrace {
 	/**
 		Returns true, if this class or super classes without Object class has toString method.
 
-		@param object an object (not accept null)
+		@param object an object
 
 		@return true if this class or super classes without Object class has toString method; false otherwise
 	*/
@@ -1175,8 +1175,8 @@ public class DebugTrace {
 		Returns a string representation of the object uses reflection.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param object an object (not accept null)
+		@param strings a string list
+		@param object an object
 	*/
 	private static void appendReflectString(State state, List<String> strings, StringBuilder buff, Object object) {
 		buff.append('[');
@@ -1194,10 +1194,10 @@ public class DebugTrace {
 		Returns a string representation of the object uses reflection.
 
 		@param state indent state
-		@param strings a string list (not accept null)
-		@param object an object (not accept null)
-		@param clazz the class of the object (not accept null)
-		@param extended the class is extended (not accept null)
+		@param strings a string list
+		@param object an object
+		@param clazz the class of the object
+		@param extended the class is extended
 	*/
 	private static void appendReflectStringSub(State state, List<String> strings, StringBuilder buff, Object object, Class<?> clazz, boolean extended) {
 		if (clazz == Object.class)
@@ -1221,27 +1221,11 @@ public class DebugTrace {
 
 			String fieldName = field.getName();
 
-			if (nonPrintPropertyMap.containsKey(classNamePrefix + fieldName)) {
-				// non print property
-				buff.append(fieldName).append(fieldNameValueSeparator).append(nonPrintString);
-				lineFeed(state, strings, buff);
-				continue;
-			}
+			Object value = null;
+			Method method = null;
 
-			if (Modifier.isPublic(modifiers)) {
-				// public field
-				buff.append(fieldName).append(fieldNameValueSeparator);
-				try {
-					append(state, strings, buff, field.get(object), field.getType().isPrimitive(), false);
-				}
-				catch (Exception e) {
-					buff.append("<" + e + ">");
-				}
-				buff.append(",");
-				lineFeed(state, strings, buff);
-			} else {
+			if (!Modifier.isPublic(modifiers)) {
 				// non public field
-				Method method = null;
 				for (String getterPrefix : getterPrefixes) {
 					String methodName = getterPrefix.length() == 0
 						? fieldName
@@ -1256,20 +1240,37 @@ public class DebugTrace {
 					catch (Exception e) {
 					}
 				}
+			}
+
+			try {
 				if (method != null) {
-					buff.append(fieldName).append(fieldNameValueSeparator);
-					try {
-						if (!Modifier.isPublic(method.getModifiers()))
-							method.setAccessible(true);
-						append(state, strings, buff, method.invoke(object), method.getReturnType().isPrimitive(), false);
-					}
-					catch (Exception e) {
-						buff.append("<" + e + ">");
-					}
-					buff.append(",");
-					lineFeed(state, strings, buff);
+					// has a getter method
+					if (!Modifier.isPublic(method.getModifiers()))
+						// non public method
+						method.setAccessible(true);
+					value = method.invoke(object);
+				} else {
+					// does not have a getter method
+					if (!Modifier.isPublic(modifiers))
+						// non public field
+						field.setAccessible(true);
+					value = field.get(object);
 				}
 			}
+			catch (Exception e) {
+				value = "<" + e + ">";
+			}
+
+			buff.append(fieldName).append(fieldNameValueSeparator);
+
+			if (value != null && nonPrintPropertyMap.containsKey(classNamePrefix + fieldName))
+				// the property is non-printing and the value is not null
+				buff.append(nonPrintString);
+			else
+				append(state, strings, buff, value, field.getType().isPrimitive(), false);
+
+			buff.append(",");
+			lineFeed(state, strings, buff);
 		}
 	}
 

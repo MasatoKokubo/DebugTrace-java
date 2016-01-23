@@ -1,6 +1,6 @@
 /*
 	DebugTraceTest.java
-	(C) Masato Kokubo
+	(C) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace.test;
 
@@ -27,7 +27,7 @@ import org.mkokubo.debugtrace.DebugTrace;
 */
 public class DebugTraceTest {
 	public static void main(String[] args) {
-	/**/DebugTrace.addNonPrintProperties(ValuesBase2.class, "sqlDate", "int2Opt", "string2Opt");
+	/**/DebugTrace.addNonPrintProperties(ValuesBase2.class, "sqlDate", "int2Opt", "string2Opt", "nullValue", "nonNullValue");
 	/**/DebugTrace.enter();
 	/**/DebugTrace.print("args", args);
 
@@ -81,26 +81,26 @@ public class DebugTraceTest {
 //		valueListMap.put(2, valueList);
 	/**/DebugTrace.print("valueListMap", valueListMap);
 
-		Point[] points = IntStream.range(0, 501)
-			.mapToObj((index) -> new Point(index, index + 1))
+		Point[] points = IntStream.range(0, 51)
+			.mapToObj((index) -> new Point(index, index + 1, index + 2))
 			.toArray(Point[]::new);
 	/**/DebugTrace.print("points", points);
 
 	/**/DebugTrace.addReflectionTarget(Point.class);
 		Point[] points2 = IntStream.range(0, 10)
-			.mapToObj((index) -> new Point(index, index + 1))
+			.mapToObj((index) -> new Point(index, index + 1, index + 2))
 			.toArray(Point[]::new);
 	/**/DebugTrace.print("points2", points2);
 
 		int[] ints = new int[points.length];
 		IntStream.range(0, points.length)
-			.forEach((index) -> ints[index] = points[index].x() * points[index].y());
+			.forEach((index) -> ints[index] = points[index].x() * points[index].y() * (int)points[index].z());
 	/**/DebugTrace.print("ints", ints);
 
 		int[][][][][][] intss = new int[2][2][2][2][2][2];
 	/**/DebugTrace.print("intss", intss);
 
-		Point p = new Point(10, 11) {};
+		Point p = new Point(10, 11, 12) {};
 	/**/DebugTrace.print("p", p);
 
 
@@ -135,6 +135,8 @@ public class DebugTraceTest {
 		public Optional<String> string1Opt   = Optional      .empty(                     );
 		public Optional<String> string2Opt   = Optional      .of   ( "ABCDEF"            );
 		public Optional<Values> valuesOpt    = Optional      .empty(                     );
+		public String           nullValue    = null;
+		public String           nonNullValue = "non null";
 	}
 
 	public static class Values extends ValuesBase2 {
@@ -158,24 +160,23 @@ public class DebugTraceTest {
 	public static class Point {
 		private int x;
 		private int y;
-		private int z; // dummy
+		private int z;
 
-		public Point(int x, int y) {
+		public Point(int x, int y, int z) {
 			this.x = x;
 			this.y = y;
+			this.z = z;
 		}
 
-		protected int x() {return x;}
-		private int y() {return y;}
-		public long z() {return (long)z;}
+		protected int x() {return -x;}
+		private int y() {return -y;}
+		public long z() {return (long)-z;}
 
-		public Point add(Point p) {return new Point(x + p.x, y + p.y);}
-		public Point sub(Point p) {return new Point(x - p.x, y - p.y);}
-		public Point mul(Point p) {return new Point(x * p.x, y * p.y);}
-		public Point div(Point p) {return new Point(x / p.x, y / p.y);}
-		public Point mod(Point p) {return new Point(x % p.x, y % p.y);}
-
-	//	public String toString() {return String.format("Point(%1$d, %2$d)", x, y);}
+		public Point add(Point p) {return new Point(x + p.x, y + p.y, y + p.z);}
+		public Point sub(Point p) {return new Point(x - p.x, y - p.y, y - p.z);}
+		public Point mul(Point p) {return new Point(x * p.x, y * p.y, y * p.z);}
+		public Point div(Point p) {return new Point(x / p.x, y / p.y, y / p.z);}
+		public Point mod(Point p) {return new Point(x % p.x, y % p.y, y % p.z);}
 	}
 }
 

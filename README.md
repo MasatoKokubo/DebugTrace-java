@@ -1,7 +1,7 @@
 DebugTrace
 ===========
 
-DebugTrace can be used in Java 8 or later.
+DebugTrace can be used in Java 8 and later.
 
 The following are a java sample source used DebugTrace methods and a log of when the java sample was executed.  
 Log bodys are automatically indent.

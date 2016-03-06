@@ -83,10 +83,11 @@ You can specify following properties in the `DebugTrace.properties` file.
 |`sqlDateFormat`|Output format of **java.sql.Date**<br>**parameter:**<br>`%1`: a **java.sql.Date**|`%1$tY-%1$tm-%1$td`|
 |`timeFormat`|Output format of **java.sql.Time**<br>**parameter:**<br>`%1`: a **java.sql.Time**<br>|`%1$tH:%1$tM:%1$tS`|
 |`timestampFormat`|Output format of **java.sql.Timestamp**<br>**parameter:**<br>`%1`: a **java.sql.Timestamp**<br>|`%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL`|
-|`arrayLimit`|Output limit for elements of a **array** and **Collection**|512|
-|`byteArrayLimit`|Output limit for elements of a **byte array (byte[])**|8192|
-|`mapLimit`|Output limit for elements of a **Map**|512|
-|`stringLimit`|Output limit for elements of a **String**|8192|
+|`arrayLimit`|Limit of **array** and **Collection** elements to output|512|
+|`byteArrayLimit`|Limit of **byte array (byte[])** elements to output|8192|
+|`mapLimit`|Limit of **Map** elements to output|512|
+|`stringLimit`|Limit of **String** characters to output|8192|
+|`outputIndexLength`|Length of array and Collection to output index|9|
 
 The logger name of DebugTrace is `org.mkokubo.debugtrace.DebugTrace`.   
 

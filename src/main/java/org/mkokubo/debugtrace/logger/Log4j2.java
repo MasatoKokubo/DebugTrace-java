@@ -1,7 +1,7 @@
 /*
 	Log4j2.java
 
-	(C) 2015 Masato Kokubo
+	Copyright (c) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace.logger;
 

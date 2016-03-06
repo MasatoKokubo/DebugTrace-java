@@ -1,3 +1,5 @@
+// Copyright (c) 2015 Masato Kokubo
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
@@ -13,7 +15,7 @@ dependencies {
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '1.7.0'
+version             = '1.8.0'
 project.archivesBaseName = 'debugtrace'
 
 compileJava {

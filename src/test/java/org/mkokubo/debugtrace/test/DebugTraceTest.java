@@ -148,6 +148,14 @@ public class DebugTraceTest {
 		public long          [] longs        = new long          [] {                     -123456789123456789L  ,                       123456789123456789L  };
 		public float         [] floats       = new float         [] {                     -1234.5678F           ,                       1234.5678F           };
 		public double        [] doubles      = new double        [] {                     -123456789.123456789D ,                       123456789.123456789D };
+		public Boolean       [] c_booleans   = new Boolean       [] {                      false                ,                       true                 };
+		public Character     [] c_characters = new Character     [] {                      'A'                  ,                       'B'                  };
+		public Byte          [] c_bytes      = new Byte          [] {              (byte )-127                  ,                (byte )127                  };
+		public Short         [] c_shorts     = new Short         [] {              (short)-32767                ,                (short)32767                };
+		public Integer       [] c_integers   = new Integer       [] {                     -123456789            ,                       123456789            };
+		public Long          [] c_longs      = new Long          [] {                     -123456789123456789L  ,                       123456789123456789L  };
+		public Float         [] c_floats     = new Float         [] {                     -1234.5678F           ,                       1234.5678F           };
+		public Double        [] c_doubles    = new Double        [] {                     -123456789.123456789D ,                       123456789.123456789D };
 		public BigInteger    [] bigIntegers  = new BigInteger    [] {new BigInteger     ("-123456789123456789" ), new BigInteger      ("123456789123456789" )};
 		public BigDecimal    [] bigDecimals  = new BigDecimal    [] {new BigDecimal     ("-123456789.123456789"), new BigDecimal      ("123456789.123456789")};
 		public String        [] strings      = new String        [] {"ABC\b\t\n\f\r\\\"  'EFG"                  , "ABC\b\t\n\f\r\\\"  'EFG"                  };

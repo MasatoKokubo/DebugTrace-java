@@ -1,7 +1,7 @@
 /*
 	DebugTrace.java
 
-	(C) 2015 Masato Kokubo
+	Copyright (c) 2015 Masato Kokubo
 */
 package org.mkokubo.debugtrace;
 
@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -56,6 +59,14 @@ public class DebugTrace {
 	// Map for wrppaer classes of primitive type to primitive type
 	private static final Map<Class<?>, Class<?>> primitiveTypeMap = new HashMap<>();
 	static {
+		primitiveTypeMap.put(boolean  .class, boolean.class);
+		primitiveTypeMap.put(char     .class, char   .class);
+		primitiveTypeMap.put(byte     .class, byte   .class);
+		primitiveTypeMap.put(short    .class, short  .class);
+		primitiveTypeMap.put(int      .class, int    .class);
+		primitiveTypeMap.put(long     .class, long   .class);
+		primitiveTypeMap.put(float    .class, float  .class);
+		primitiveTypeMap.put(double   .class, double .class);
 		primitiveTypeMap.put(Boolean  .class, boolean.class);
 		primitiveTypeMap.put(Character.class, char   .class);
 		primitiveTypeMap.put(Byte     .class, byte   .class);
@@ -66,33 +77,69 @@ public class DebugTrace {
 		primitiveTypeMap.put(Double   .class, double .class);
 	}
 
-	// Map of classes that dose not output the type name
-	private static final Map<Class<?>, Boolean> noOutputTypeMap = new HashMap<>();
+	// Set of classes that dose not output the type name
+	private static final Set<Class<?>> noOutputTypeSet = new HashSet<>();
 	static {
-		noOutputTypeMap.put(boolean  .class, Boolean.TRUE);
-		noOutputTypeMap.put(char     .class, Boolean.TRUE);
-		noOutputTypeMap.put(int      .class, Boolean.TRUE);
-		noOutputTypeMap.put(String   .class, Boolean.TRUE);
-		noOutputTypeMap.put(Date     .class, Boolean.TRUE);
-		noOutputTypeMap.put(Time     .class, Boolean.TRUE);
-		noOutputTypeMap.put(Timestamp.class, Boolean.TRUE);
+		noOutputTypeSet.add(boolean  .class);
+		noOutputTypeSet.add(char     .class);
+		noOutputTypeSet.add(int      .class);
+		noOutputTypeSet.add(String   .class);
+		noOutputTypeSet.add(Date     .class);
+		noOutputTypeSet.add(Time     .class);
+		noOutputTypeSet.add(Timestamp.class);
 	}
 
-	// Map of component types that dose not output the type name
-	private static final Map<Class<?>, Boolean> noOutputComponentTypeMap = new HashMap<>();
+	// Set of component types of array that dose not output the type name
+	private static final Set<Class<?>> noOutputComponentTypeSet = new HashSet<>();
 	static {
-		noOutputComponentTypeMap.put(boolean  .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(char     .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(byte     .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(short    .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(int      .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(long     .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(float    .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(double   .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(String   .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(Date     .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(Time     .class, Boolean.TRUE);
-		noOutputComponentTypeMap.put(Timestamp.class, Boolean.TRUE);
+		noOutputComponentTypeSet.add(boolean  .class);
+		noOutputComponentTypeSet.add(char     .class);
+		noOutputComponentTypeSet.add(byte     .class);
+		noOutputComponentTypeSet.add(short    .class);
+		noOutputComponentTypeSet.add(int      .class);
+		noOutputComponentTypeSet.add(long     .class);
+		noOutputComponentTypeSet.add(float    .class);
+		noOutputComponentTypeSet.add(double   .class);
+		noOutputComponentTypeSet.add(Boolean  .class);
+		noOutputComponentTypeSet.add(Character.class);
+		noOutputComponentTypeSet.add(Byte     .class);
+		noOutputComponentTypeSet.add(Short    .class);
+		noOutputComponentTypeSet.add(Integer  .class);
+		noOutputComponentTypeSet.add(Long     .class);
+		noOutputComponentTypeSet.add(Float    .class);
+		noOutputComponentTypeSet.add(Double   .class);
+		noOutputComponentTypeSet.add(String   .class);
+		noOutputComponentTypeSet.add(BigInteger.class);
+		noOutputComponentTypeSet.add(BigDecimal.class);
+		noOutputComponentTypeSet.add(Date     .class);
+		noOutputComponentTypeSet.add(Time     .class);
+		noOutputComponentTypeSet.add(Timestamp.class);
+	}
+
+	// Set of component types of array that output on the single line
+	private static final Set<Class<?>> singleLineComponentTypeSet = new HashSet<>();
+	static {
+		singleLineComponentTypeSet.add(boolean   .class);
+		singleLineComponentTypeSet.add(char      .class);
+		singleLineComponentTypeSet.add(byte      .class);
+		singleLineComponentTypeSet.add(short     .class);
+		singleLineComponentTypeSet.add(int       .class);
+		singleLineComponentTypeSet.add(long      .class);
+		singleLineComponentTypeSet.add(float     .class);
+		singleLineComponentTypeSet.add(double    .class);
+		singleLineComponentTypeSet.add(Boolean   .class);
+		singleLineComponentTypeSet.add(Character .class);
+		singleLineComponentTypeSet.add(Byte      .class);
+		singleLineComponentTypeSet.add(Short     .class);
+		singleLineComponentTypeSet.add(Integer   .class);
+		singleLineComponentTypeSet.add(Long      .class);
+		singleLineComponentTypeSet.add(Float     .class);
+		singleLineComponentTypeSet.add(Double    .class);
+		singleLineComponentTypeSet.add(BigInteger.class);
+		singleLineComponentTypeSet.add(BigDecimal.class);
+		singleLineComponentTypeSet.add(Date      .class);
+		singleLineComponentTypeSet.add(Time      .class);
+		singleLineComponentTypeSet.add(Timestamp .class);
 	}
 
 	// Prefixes of getter methods
@@ -150,10 +197,11 @@ public class DebugTrace {
 	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string of java.sql.Date
 	private static final String timeFormat              = resource.getString("timeFormat"             ); // Format string of java.sql.Time
 	private static final String timestampFormat         = resource.getString("timestampFormat"        ); // Format string of java.sql.Timestamp
-	private static final int    arrayLimit              = resource.getInt   ("arrayLimit"             ); // Output limit of length for a array and elements for a Collection
-	private static final int    byteArrayLimit          = resource.getInt   ("byteArrayLimit"         ); // Output limit of length for a byte array
-	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Output limit of elements for a Map
-	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Output limit of length for a String
+	private static final int    arrayLimit              = resource.getInt   ("arrayLimit"             ); // Limit of array and Collection elements to output
+	private static final int    byteArrayLimit          = resource.getInt   ("byteArrayLimit"         ); // Limit of byte array elements to output
+	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Limit of Map elements to output
+	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Limit of String characters to output
+	private static final int    outputIndexLength       = resource.getInt   ("outputIndexLength"      ); // Length of array and Collection to output index
 
 	// Logger
 	private static Logger logger = null;
@@ -871,7 +919,7 @@ public class DebugTrace {
 				length = Array.getLength(value);
 		} else {
 			// Not Array
-			if (nest > 0 || (isComponent ? !noOutputComponentTypeMap.containsKey(type) : !noOutputTypeMap.containsKey(type))) {
+			if (nest > 0 || (isComponent ? !noOutputComponentTypeSet.contains(type) : !noOutputTypeSet.contains(type))) {
 				// Output the type name
 				typeName = type.getCanonicalName();
 				if (typeName == null)
@@ -1032,7 +1080,7 @@ public class DebugTrace {
 
 		int length = Array.getLength(array);
 
-		boolean multiLine = length >= 2 && !componentType.isPrimitive();
+		boolean multiLine = length >= 2 && !singleLineComponentTypeSet.contains(componentType);
 
 		buff.append('[');
 		if (multiLine) {
@@ -1044,7 +1092,8 @@ public class DebugTrace {
 			if (!multiLine && index > 0) buff.append(", ");
 
 			if (index < arrayLimit) {
-				buff.append(String.format(indexFormat, index));
+				if (length >= outputIndexLength)
+					buff.append(String.format(indexFormat, index));
 				Object value = Array.get(array, index);
 				append(state, strings, buff, value, componentType.isPrimitive(), true);
 			} else
@@ -1064,7 +1113,7 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends an Iterable representation for log to the string buffer.
+		Appends a Collection representation for log to the string buffer.
 
 		@param state indent state
 		@param strings a string list
@@ -1086,7 +1135,8 @@ public class DebugTrace {
 			if (!multiLine && index > 0) buff.append(", ");
 
 			if (index < arrayLimit) {
-				buff.append(String.format(indexFormat, index));
+				if (collection.size() >= outputIndexLength)
+					buff.append(String.format(indexFormat, index));
 				append(state, strings, buff, iterator.next(), false, false);
 			} else
 				buff.append(limitString);

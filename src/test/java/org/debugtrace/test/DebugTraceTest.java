@@ -2,7 +2,7 @@
 	DebugTraceTest.java
 	(C) 2015 Masato Kokubo
 */
-package org.mkokubo.debugtrace.test;
+package org.debugtrace.test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -18,7 +18,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.stream.IntStream;
 
-import org.mkokubo.debugtrace.DebugTrace;
+import org.debugtrace.DebugTrace;
 
 /**
 	Test class for DebugTrace class.

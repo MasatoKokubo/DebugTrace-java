@@ -3,7 +3,7 @@
 
 	Copyright (c) 2015 Masato Kokubo
 */
-package org.mkokubo.debugtrace;
+package org.debugtrace;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -37,8 +37,8 @@ import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
-import org.mkokubo.debugtrace.logger.Logger;
-import org.mkokubo.debugtrace.logger.SystemOut;
+import org.debugtrace.logger.Logger;
+import org.debugtrace.logger.SystemOut;
 
 /**
 	A utility class for debugging.<br>

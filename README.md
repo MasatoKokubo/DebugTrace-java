@@ -10,7 +10,7 @@ Log bodys are automatically indent.
 
 	package sample;
 
-	import org.mkokubo.debugtrace.DebugTrace;
+	import org.debugtrace.DebugTrace;
 
 	// Sample2
 	public class Sample2 {
@@ -89,7 +89,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 |`stringLimit`|Limit of **String** characters to output|8192|
 |`outputIndexLength`|Length of array and Collection to output index|9|
 
-The logger name of DebugTrace is `org.mkokubo.debugtrace.DebugTrace`.   
+The logger name of DebugTrace is `org.debugtrace.DebugTrace`.   
 
 #### License
 

@@ -3,9 +3,9 @@
 
 	Copyright (c) 2015 Masato Kokubo
 */
-package org.mkokubo.debugtrace.logger;
+package org.debugtrace.logger;
 
-import org.mkokubo.debugtrace.DebugTrace;
+import org.debugtrace.DebugTrace;
 
 /**
 	A logger using System.err.

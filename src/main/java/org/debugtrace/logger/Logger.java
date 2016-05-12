@@ -3,7 +3,7 @@
 
 	Copyright (c) 2015 Masato Kokubo
 */
-package org.mkokubo.debugtrace.logger;
+package org.debugtrace.logger;
 
 /**
 	Interface of Logger classes.

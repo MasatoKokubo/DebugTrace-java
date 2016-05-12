@@ -3,7 +3,7 @@
 
 	Copyright (c) 2015 Masato Kokubo
 */
-package org.mkokubo.debugtrace;
+package org.debugtrace;
 
 import java.util.Locale;
 import java.util.MissingResourceException;

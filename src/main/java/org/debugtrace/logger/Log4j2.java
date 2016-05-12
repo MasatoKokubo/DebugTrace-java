@@ -3,14 +3,14 @@
 
 	Copyright (c) 2015 Masato Kokubo
 */
-package org.mkokubo.debugtrace.logger;
+package org.debugtrace.logger;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.mkokubo.debugtrace.DebugTrace;
+import org.debugtrace.DebugTrace;
 
 /**
 	A logger using Log4J2.

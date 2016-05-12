@@ -1,6 +1,6 @@
 package sample;
 
-import org.mkokubo.debugtrace.DebugTrace;
+import org.debugtrace.DebugTrace;
 
 public class Sample1 {
   public static void main(String[] args) {

@@ -1,5 +1,6 @@
 /*
 	DebugTraceTest.java
+
 	(C) 2015 Masato Kokubo
 */
 package org.debugtrace.test;
@@ -22,6 +23,7 @@ import org.debugtrace.DebugTrace;
 
 /**
 	Test class for DebugTrace class.
+
 	@since 1.0.0
 	@author Masato Kokubo
 */
@@ -32,19 +34,14 @@ public class DebugTraceTest {
 	/**/DebugTrace.print("args", args);
 
 		DebugTraceTest test = new DebugTraceTest();
-		test.test();
+		test.test1();
+		test.test2();
 
 	/**/DebugTrace.leave();
 	}
 
-	private void test() {
+	private void test1() {
 	/**/DebugTrace.enter();
-
-		Values values = new Values();
-	//	values.valuesOpt = Optional.of(new Values());
-		values.valuesOpt = Optional.of(values);
-
-	/**/DebugTrace.print("values", values);
 
 		Thread[] thread = new Thread[5];
 		for (int index = 0; index < thread.length; ++index) {
@@ -70,6 +67,17 @@ public class DebugTraceTest {
 			}
 		}
 
+	/**/DebugTrace.leave();
+	}
+
+	private void test2() {
+	/**/DebugTrace.enter();
+
+		Values values = new Values();
+	//	values.valuesOpt = Optional.of(new Values());
+		values.valuesOpt = Optional.of(values);
+
+	/**/DebugTrace.print("values", values);
 
 		List<Values> valueList = new ArrayList<>();
 		valueList.add(values);
@@ -133,7 +141,7 @@ public class DebugTraceTest {
 		public OptionalDouble   double1Opt   = OptionalDouble.empty(                     );
 		public OptionalDouble   double2Opt   = OptionalDouble.of   ( 30.3                );
 		public Optional<String> string1Opt   = Optional      .empty(                     );
-		public Optional<String> string2Opt   = Optional      .of   ( "ABCDEF"            );
+		public Optional<String> string2Opt   = Optional      .of   ( "あいうえお"           );
 		public Optional<Values> valuesOpt    = Optional      .empty(                     );
 		public String           nullValue    = null;
 		public String           nonNullValue = "non null";

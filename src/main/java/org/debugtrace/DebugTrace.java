@@ -1,7 +1,7 @@
 /*
 	DebugTrace.java
 
-	Copyright (c) 2015 Masato Kokubo
+	(c) 2015 Masato Kokubo
 */
 package org.debugtrace;
 
@@ -38,7 +38,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import org.debugtrace.logger.Logger;
-import org.debugtrace.logger.SystemOut;
+import org.debugtrace.logger.Std;
 
 /**
 	A utility class for debugging.<br>
@@ -221,7 +221,7 @@ public class DebugTrace {
 		}
 
 		if (logger == null)
-			logger = new SystemOut();
+			logger = new Std.Out();
 
 		// Set a logging level
 		logger.setLevel(logLevel);
@@ -262,7 +262,10 @@ public class DebugTrace {
 	private static final Map<String, Boolean> nonPrintPropertyMap = new HashMap<>();
 
 	static {
-		logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getSimpleName());
+	// 2.1.0
+	//	logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getSimpleName());
+		logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getName());
+	////
 	}
 
 	private DebugTrace() {}
@@ -421,7 +424,10 @@ public class DebugTrace {
 
 				State state = getState();
 				if (state.beforeNestLevel > state.nestLevel)
-					logger.log(""); // Line break
+				// 2.1.0
+				//	logger.log(""); // Line break
+					logger.log(getIndentString(state)); // Line break
+				////
 
 				logger.log(getIndentString(state) + getCallerInfo(enterString));
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Masato Kokubo
+// (c) 2015 Masato Kokubo
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -8,14 +8,14 @@ repositories {
 }
 
 dependencies {
-	compile 'org.apache.logging.log4j:log4j-api:2.3'
+	compile 'org.apache.logging.log4j:log4j-api:2.6'
 	compile 'log4j:log4j:1.2.17'
-	compile 'org.slf4j:slf4j-api:1.7.12'
+	compile 'org.slf4j:slf4j-api:1.7.21'
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '2.0.0'
+version             = '2.1.0'
 project.archivesBaseName = 'debugtrace'
 
 compileJava {

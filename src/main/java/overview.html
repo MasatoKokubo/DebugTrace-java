@@ -50,24 +50,24 @@ public class Sample2 {
 	<div class="title en">Log of when the sample has been executed:</div>
 	<div class="title ja">上のサンプルが実行された際のログ:</div>
 	<pre class="prettyprint">
-2015-10-15 06:16:33.227 DebugTrace 1.6.0 / logger: SystemOut
-2015-10-15 06:16:33.250 
-2015-10-15 06:16:33.250 ______________________________ main ______________________________
-2015-10-15 06:16:33.251 
-2015-10-15 06:16:33.259 Enter sample.Sample2.main (8)
-2015-10-15 06:16:33.262 |  args = (String[] length:3)[
-2015-10-15 06:16:33.265 |     0: "aaa",
-2015-10-15 06:16:33.266 |     1: "bbb",
-2015-10-15 06:16:33.266 |     2: "ccc",
-2015-10-15 06:16:33.267 |  ] (Sample2.java:9)
-2015-10-15 06:16:33.268 |  Enter sample.Sample2.sub (18)
-2015-10-15 06:16:33.270 |  |  args = (String[] length:3)[
-2015-10-15 06:16:33.271 |  |     0: "aaa",
-2015-10-15 06:16:33.273 |  |     1: "bbb",
-2015-10-15 06:16:33.274 |  |     2: "ccc",
-2015-10-15 06:16:33.274 |  |  ] (Sample2.java:20)
-2015-10-15 06:16:33.280 |  Leave sample.Sample2.sub (22)
-2015-10-15 06:16:33.282 Leave sample.Sample2.main (13)
+2016-07-09 19:00:10.146 DebugTrace 2.1.0 / logger: org.debugtrace.logger.Std$Out
+2016-07-09 19:00:10.171 
+2016-07-09 19:00:10.172 ______________________________ main ______________________________
+2016-07-09 19:00:10.173 
+2016-07-09 19:00:10.176 sample.Sample2.main (Sample2.java:13)
+2016-07-09 19:00:10.181 | args = (String[] length:3)[
+2016-07-09 19:00:10.182 |   "aaa",
+2016-07-09 19:00:10.184 |   "bbb",
+2016-07-09 19:00:10.184 |   "ccc",
+2016-07-09 19:00:10.185 | ] (Sample2.java:14)
+2016-07-09 19:00:10.185 | sample.Sample2.sub (Sample2.java:23)
+2016-07-09 19:00:10.188 | | args = (String[] length:3)[
+2016-07-09 19:00:10.189 | |   "aaa",
+2016-07-09 19:00:10.190 | |   "bbb",
+2016-07-09 19:00:10.190 | |   "ccc",
+2016-07-09 19:00:10.193 | | ] (Sample2.java:25)
+2016-07-09 19:00:10.194 | sample.Sample2.sub (Sample2.java:27)
+2016-07-09 19:00:10.194 sample.Sample2.main (Sample2.java:18)
 </pre>
 	<br>
 
@@ -97,8 +97,8 @@ public class Sample2 {
 					<span class="selection">Log4j</span> : When you use <b>Log4J 1</b><br>
 					<span class="selection">Log4j2</span> : When you use <b>Log4J 2</b><br>
 					<span class="selection">SLF4J</span> : When you use <b>SLF4J</b><br>
-					<span class="selection">SystemOut</span> : When you use <b>System.out</b><br>
-					<span class="selection">SystemErr</span> : When you use <b>System.err</b><br>
+					<span class="selection">Std$Out</span> : When you output the <b>standard output</b><br>
+					<span class="selection">Std$Err</span> : When you output the <b>standard error output</b><br>
 				</ul>
 			</td>
 			<td class="ja">
@@ -109,11 +109,11 @@ public class Sample2 {
 					<span class="selection">Log4j</span> : <b>Log4J 1</b> を使用<br>
 					<span class="selection">Log4j2</span> : <b>Log4J 2</b> を使用<br>
 					<span class="selection">SLF4J</span> : <b>SLF4J</b> を使用<br>
-					<span class="selection">SystemOut</span> : <b>System.out</b> を使用<br>
-					<span class="selection">SystemErr</span> : <b>System.err</b> を使用<br>
+					<span class="selection">Std$Out</span> : <b>標準出力</b>に出力<br>
+					<span class="selection">Std$Err</span> : <b>標準エラー出力</b>に出力<br>
 				</ul>
 			</td>
-			<td><span class="selection">SystemOut</span></td>
+			<td><span class="selection">Std$Out</span></td>
 		</tr>
 
 		<tr>
@@ -171,7 +171,7 @@ public class Sample2 {
 			</td>
 
 			<td class="code">
-				Enter <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%3$s</span>:<span class="parameter">%4$d</span>)
+				<span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%3$s</span>:<span class="parameter">%4$d</span>)
 			</td>
 		</tr>
 
@@ -201,7 +201,7 @@ public class Sample2 {
 			</td>
 
 			<td class="code">
-				Leave <span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%3$s</span>:<span class="parameter">%4$d</span>)
+				<span class="parameter">%1$s</span>.<span class="parameter">%2$s</span> (<span class="parameter">%3$s</span>:<span class="parameter">%4$d</span>)
 			</td>
 		</tr>
 
@@ -266,7 +266,7 @@ public class Sample2 {
 				</ul>
 			</td>
 
-			<td class="code">|\\s\\s</td>
+			<td class="code">|\\s</td>
 		</tr>
 
 		<tr>
@@ -280,7 +280,7 @@ public class Sample2 {
 				データインデント1つ分の文字列<br>
 			</td>
 
-			<td class="code">\\s\\s\\s</td>
+			<td class="code">\\s\\s</td>
 		</tr>
 
 		<tr>

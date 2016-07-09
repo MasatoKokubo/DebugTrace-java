@@ -1,25 +1,25 @@
 
 /* Followings are additional for DebugTrace. */
 body, div.block, dd {
-	font-family: 'Meiryo UI', sans-serif;
+	font-family: 'Verdana', sans-serif;
 }
 
 .contentContainer .description dl dd, .contentContainer .details dl dd, .serializedFormContainer dl dd {
-	font-family: 'Meiryo UI',monospace;
+	font-family: 'Consolas', monospace;
 	font-size: 12px;
 }
 
 pre, code, tt, dt code, table tr td dt code {
-	font-family: 'Courier New', monospace;
+	font-family: 'Consolas', monospace;
 }
 
 .title {
-	font-family: sans-serif;
+	font-family: 'Verdana', sans-serif;
 	font-weight: bold;
 }
 
 .code {
-	font-family: monospace;
+	font-family: 'Consolas', monospace;
 }
 
 .parameter {

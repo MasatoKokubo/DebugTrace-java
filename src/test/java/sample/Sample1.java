@@ -1,3 +1,8 @@
+/*
+	Sample1.java
+
+	(c) 2015 Masato Kokubo
+*/
 package sample;
 
 import org.debugtrace.DebugTrace;

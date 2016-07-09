@@ -2,12 +2,12 @@
 <configuration status="WARN">
 	<appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p %msg%n"/>
+			<PatternLayout pattern="[Log4j2] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %msg%n"/>
 		</Console>
 	</appenders>
 
 	<loggers>
-		<logger name="org.mkokubo.debugtrace.DebugTrace" level="trace"/>
+		<logger name="org.debugtrace.DebugTrace" level="trace"/>
 		<root level="error">
 			<appender-ref ref="Console"/>
 		</root>

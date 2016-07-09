@@ -37,24 +37,24 @@ Log bodys are automatically indent.
 
 #### Log of when the java sample has been executed:
 
-	2015-10-15 06:16:33.227 DebugTrace 1.6.0 / logger: SystemOut
-	2015-10-15 06:16:33.250 
-	2015-10-15 06:16:33.250 ______________________________ main ______________________________
-	2015-10-15 06:16:33.251 
-	2015-10-15 06:16:33.259 Enter sample.Sample2.main (8)
-	2015-10-15 06:16:33.262 |  args = (String[] length:3)[
-	2015-10-15 06:16:33.265 |     0: "aaa",
-	2015-10-15 06:16:33.266 |     1: "bbb",
-	2015-10-15 06:16:33.266 |     2: "ccc",
-	2015-10-15 06:16:33.267 |  ] (Sample2.java:9)
-	2015-10-15 06:16:33.268 |  Enter sample.Sample2.sub (18)
-	2015-10-15 06:16:33.270 |  |  args = (String[] length:3)[
-	2015-10-15 06:16:33.271 |  |     0: "aaa",
-	2015-10-15 06:16:33.273 |  |     1: "bbb",
-	2015-10-15 06:16:33.274 |  |     2: "ccc",
-	2015-10-15 06:16:33.274 |  |  ] (Sample2.java:20)
-	2015-10-15 06:16:33.280 |  Leave sample.Sample2.sub (22)
-	2015-10-15 06:16:33.282 Leave sample.Sample2.main (13)
+	2016-07-09 19:00:10.146 DebugTrace 2.1.0 / logger: org.debugtrace.logger.Std$Out
+	2016-07-09 19:00:10.171 
+	2016-07-09 19:00:10.172 ______________________________ main ______________________________
+	2016-07-09 19:00:10.173 
+	2016-07-09 19:00:10.176 sample.Sample2.main (Sample2.java:13)
+	2016-07-09 19:00:10.181 | args = (String[] length:3)[
+	2016-07-09 19:00:10.182 |   "aaa",
+	2016-07-09 19:00:10.184 |   "bbb",
+	2016-07-09 19:00:10.184 |   "ccc",
+	2016-07-09 19:00:10.185 | ] (Sample2.java:14)
+	2016-07-09 19:00:10.185 | sample.Sample2.sub (Sample2.java:23)
+	2016-07-09 19:00:10.188 | | args = (String[] length:3)[
+	2016-07-09 19:00:10.189 | |   "aaa",
+	2016-07-09 19:00:10.190 | |   "bbb",
+	2016-07-09 19:00:10.190 | |   "ccc",
+	2016-07-09 19:00:10.193 | | ] (Sample2.java:25)
+	2016-07-09 19:00:10.194 | sample.Sample2.sub (Sample2.java:27)
+	2016-07-09 19:00:10.194 sample.Sample2.main (Sample2.java:18)
 
 DebugTrace read `DebugTrace.properties` file in the classpath on startup.  
 You can specify following properties in the `DebugTrace.properties` file.  
@@ -63,14 +63,14 @@ You can specify following properties in the `DebugTrace.properties` file.
 
 |Name|Value|Default|
 |:--|:--|:--|
-|`logger`| Logger DebugTrace uses<br>Select from follows.<br>`Jdk` : When you use **JDK Logger**<br>`Log4j` : When you use **Log4J 1**<br>`Log4j2` : When you use **Log4J 2**<br>`SLF4J` : When you use **SLF4J**<br>`SystemOut` : When you use **System.out**<br>`SystemErr` : When you use **System.err**<br>|`SystemOut`|
+|`logger`| Logger DebugTrace uses<br>Select from follows.<br>`Jdk` : When you use **JDK Logger**<br>`Log4j` : When you use **Log4J 1**<br>`Log4j2` : When you use **Log4J 2**<br>`SLF4J` : When you use **SLF4J**<br>`Std$Out`: When you output the **standard output**<br>`Std$Err` : When you output the **standard error output**<br>|`Std$Out`|
 |`logLevel`|Log level DebugTrace outputs<br>Select from follows.`default` : The lowest level for each logger**<br>`finest,` `finer`, `fine`, `config`, `info`, `warning`, `severe` : **JDK Logger**<br>`trace`, `debug`, `info`, `warn`, `error`, `fatal` : **Log4J 1 or 2**<br>`trace`, `debug`, `info`, `warn`, `error` : **SLF4J**<br>|`finest`: JDK Logger<br>`trace`: Log4J 1, 2 or SLF4J|
-|`enterString`|String used after enter method<br>**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`Enter %1$s.%2$s (%3$s:%4$d)`|
-|`leaveString`|String used before leave method**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`Leave %1$s.%2$s (%3$s:%4$d)`|
+|`enterString`|String used after enter method<br>**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`%1$s.%2$s (%3$s:%4$d)`|
+|`leaveString`|String used before leave method**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`%1$s.%2$s (%3$s:%4$d)`|
 |`threadBoundaryString`|String that is output in the threads boundary.<br>**parameter:**<br>`%1`: The **thread name**|`______________________________ %1$s ______________________________`|
 |`classBoundaryString`|String that is output in the classes boundary.<br>**parameter:**<br>`%1`: The **class name**|`____ %1$s ____`|
-|`indentString`|String of one code indent<br>`"\s"` is change to a space character|`\s\s`|
-|`dataIndentString`|String of one data indent|`\s\s\s`|
+|`indentString`|String of one code indent<br>`"\s"` is change to a space character|`|\s`|
+|`dataIndentString`|String of one data indent|`\s\s`|
 |`limitString`|String to represent that it has exceeded the limit|`...`|
 |`nonPrintString`|String of value in the case of properties that do not print the value (@since 1.5.0)|`***`|
 |`cyclicReferenceString`|String to represent that the cyclic reference occurs|`\s*** cyclic reference ***\s`|

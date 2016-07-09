@@ -1,7 +1,7 @@
 /*
 	Resource.java
 
-	Copyright (c) 2015 Masato Kokubo
+	(c) 2015 Masato Kokubo
 */
 package org.debugtrace;
 

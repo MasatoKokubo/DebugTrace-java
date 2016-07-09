@@ -1,7 +1,7 @@
 /*
 	SystemErr.java
 
-	Copyright (c) 2015 Masato Kokubo
+	(c) 2015 Masato Kokubo
 */
 package org.debugtrace.logger;
 
@@ -11,9 +11,11 @@ import org.debugtrace.DebugTrace;
 	A logger using System.err.
 
 	@since 1.6.0
+	@deprecated as version 2.1.0, use {@link Std.Err}
 
 	@author Masato Kokubo
 */
+@Deprecated
 public class SystemErr implements Logger {
 	/**
 		{@inheritDoc}

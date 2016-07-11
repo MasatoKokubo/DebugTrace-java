@@ -37,24 +37,24 @@ Log bodys are automatically indent.
 
 #### Log of when the java sample has been executed:
 
-	2016-07-09 19:00:10.146 DebugTrace 2.1.0 / logger: org.debugtrace.logger.Std$Out
-	2016-07-09 19:00:10.171 
-	2016-07-09 19:00:10.172 ______________________________ main ______________________________
-	2016-07-09 19:00:10.173 
-	2016-07-09 19:00:10.176 sample.Sample2.main (Sample2.java:13)
-	2016-07-09 19:00:10.181 | args = (String[] length:3)[
-	2016-07-09 19:00:10.182 |   "aaa",
-	2016-07-09 19:00:10.184 |   "bbb",
-	2016-07-09 19:00:10.184 |   "ccc",
-	2016-07-09 19:00:10.185 | ] (Sample2.java:14)
-	2016-07-09 19:00:10.185 | sample.Sample2.sub (Sample2.java:23)
-	2016-07-09 19:00:10.188 | | args = (String[] length:3)[
-	2016-07-09 19:00:10.189 | |   "aaa",
-	2016-07-09 19:00:10.190 | |   "bbb",
-	2016-07-09 19:00:10.190 | |   "ccc",
-	2016-07-09 19:00:10.193 | | ] (Sample2.java:25)
-	2016-07-09 19:00:10.194 | sample.Sample2.sub (Sample2.java:27)
-	2016-07-09 19:00:10.194 sample.Sample2.main (Sample2.java:18)
+	2016-07-11 22:39:43.911 DebugTrace 2.1.1 / logger: org.debugtrace.logger.Std$Out
+	2016-07-11 22:39:43.958 
+	2016-07-11 22:39:43.958 ______________________________ main ______________________________
+	2016-07-11 22:39:43.958 
+	2016-07-11 22:39:43.958 Enter sample.Sample2.main (Sample2.java:13)
+	2016-07-11 22:39:43.973 | args = (String[] length:3)[
+	2016-07-11 22:39:43.973 |   "aaa",
+	2016-07-11 22:39:43.973 |   "bbb",
+	2016-07-11 22:39:43.973 |   "ccc",
+	2016-07-11 22:39:43.973 | ] (Sample2.java:14)
+	2016-07-11 22:39:43.973 | Enter sample.Sample2.sub (Sample2.java:23)
+	2016-07-11 22:39:43.989 | | args = (String[] length:3)[
+	2016-07-11 22:39:43.989 | |   "aaa",
+	2016-07-11 22:39:43.989 | |   "bbb",
+	2016-07-11 22:39:43.989 | |   "ccc",
+	2016-07-11 22:39:43.989 | | ] (Sample2.java:25)
+	2016-07-11 22:39:43.989 | Leave sample.Sample2.sub (Sample2.java:27)
+	2016-07-11 22:39:43.989 Leave sample.Sample2.main (Sample2.java:18)
 
 DebugTrace read `DebugTrace.properties` file in the classpath on startup.  
 You can specify following properties in the `DebugTrace.properties` file.  
@@ -65,8 +65,8 @@ You can specify following properties in the `DebugTrace.properties` file.
 |:--|:--|:--|
 |`logger`| Logger DebugTrace uses<br>Select from follows.<br>`Jdk` : When you use **JDK Logger**<br>`Log4j` : When you use **Log4J 1**<br>`Log4j2` : When you use **Log4J 2**<br>`SLF4J` : When you use **SLF4J**<br>`Std$Out`: When you output the **standard output**<br>`Std$Err` : When you output the **standard error output**<br>|`Std$Out`|
 |`logLevel`|Log level DebugTrace outputs<br>Select from follows.`default` : The lowest level for each logger**<br>`finest,` `finer`, `fine`, `config`, `info`, `warning`, `severe` : **JDK Logger**<br>`trace`, `debug`, `info`, `warn`, `error`, `fatal` : **Log4J 1 or 2**<br>`trace`, `debug`, `info`, `warn`, `error` : **SLF4J**<br>|`finest`: JDK Logger<br>`trace`: Log4J 1, 2 or SLF4J|
-|`enterString`|String used after enter method<br>**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`%1$s.%2$s (%3$s:%4$d)`|
-|`leaveString`|String used before leave method**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`%1$s.%2$s (%3$s:%4$d)`|
+|`enterString`|String used after enter method<br>**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`Enter %1$s.%2$s (%3$s:%4$d)`|
+|`leaveString`|String used before leave method**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the call point|`Leave %1$s.%2$s (%3$s:%4$d)`|
 |`threadBoundaryString`|String that is output in the threads boundary.<br>**parameter:**<br>`%1`: The **thread name**|`______________________________ %1$s ______________________________`|
 |`classBoundaryString`|String that is output in the classes boundary.<br>**parameter:**<br>`%1`: The **class name**|`____ %1$s ____`|
 |`indentString`|String of one code indent<br>`"\s"` is change to a space character|`|\s`|

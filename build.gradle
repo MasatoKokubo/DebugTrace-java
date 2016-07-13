@@ -84,7 +84,7 @@ javadoc_ja.doLast {
 }
 
 task zip(type: Zip) {
-	appendix   = 'java8'
+	appendix   = 'java'
 	classifier = 'bin'
 
 	into('/'         , {from 'build/libs'})

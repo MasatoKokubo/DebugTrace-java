@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -203,6 +204,9 @@ public class DebugTrace {
 	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Limit of String characters to output
 	private static final int    outputIndexLength       = resource.getInt   ("outputIndexLength"      ); // Length of array and Collection to output index
 
+	// since 2.2.0
+	private static final List<String> nonPrintProperties = resource.getStrings("nonPrintProperties"    ); // Non print properties (<class name>#<property name>)
+
 	// Logger
 	private static Logger logger = null;
 
@@ -265,6 +269,26 @@ public class DebugTrace {
 	// 2.1.0
 	//	logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getSimpleName());
 		logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getName());
+	////
+
+	// 2.2.0
+		// Non print properties
+		for (String nonPrintProperty : nonPrintProperties) {
+			try {
+				int sharpIndex = nonPrintProperty.indexOf('#');
+				if (sharpIndex < 0) {
+					logger.log("ERROR: " + nonPrintProperty);
+					continue;
+				}
+				String className = nonPrintProperty.substring(0, sharpIndex);
+				String propertyName = nonPrintProperty.substring(sharpIndex + 1);
+				Class<?> targetClass = Class.forName(className);
+				addNonPrintProperties(targetClass, propertyName);
+			}
+			catch (Exception e) {
+				logger.log("ERROR: " + nonPrintProperty + ": " + e.toString());
+			}
+		}
 	////
 	}
 
@@ -336,10 +360,10 @@ public class DebugTrace {
 	/**
 		Specifies properties that do not display the value.
 
+		@since 1.5.0
+
 		@param targetClass a target class.
 		@param propertyNames target property names.
-
-		@since 1.5.0
 	*/
 	public static void addNonPrintProperties(Class<?> targetClass, String... propertyNames) {
 		String prefix = targetClass.getName() + ".";
@@ -372,9 +396,9 @@ public class DebugTrace {
 	/**
 		Up the data nest level.
 
-		@param state a nest status of current thread
-
 		@since 1.4.0
+
+		@param state a nest status of current thread
 	*/
 	private static void upDataNest(State state) {
 		++state.dataNestLevel;
@@ -383,9 +407,9 @@ public class DebugTrace {
 	/**
 		Down the data nest level.
 
-		@param state a nest status of current thread
-
 		@since 1.4.0
+
+		@param state a nest status of current thread
 	*/
 	private static void downDataNest(State state) {
 		--state.dataNestLevel;
@@ -1285,7 +1309,7 @@ public class DebugTrace {
 				for (String getterPrefix : getterPrefixes) {
 					String methodName = getterPrefix.length() == 0
 						? fieldName
-						: getterPrefix + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+						: getterPrefix + fieldName.substring(0, 1).toUpperCase(Locale.ENGLISH) + fieldName.substring(1);
 					try {
 						method = clazz.getDeclaredMethod(methodName);
 						if (method.getReturnType() == field.getType())

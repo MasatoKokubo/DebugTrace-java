@@ -1,22 +1,33 @@
 // (c) 2015 Masato Kokubo
-
 apply plugin: 'java'
-apply plugin: 'eclipse'
 
 repositories {
-    mavenCentral()
+	jcenter()
 }
 
 dependencies {
-	compile 'org.apache.logging.log4j:log4j-api:2.6'
-	compile 'log4j:log4j:1.2.17'
-	compile 'org.slf4j:slf4j-api:1.7.21'
+	compile 'log4j:log4j:1.2.+'
+	compile 'org.apache.logging.log4j:log4j-api:2.6.+'
+	compile 'org.slf4j:slf4j-api:1.7.+'
+
+	testCompile 'junit:junit:4.+'
+
+	testCompile 'com.mchange:c3p0:0.9.5.+'
+	testCompile 'com.zaxxer:HikariCP:2.4.+'
+	testCompile 'org.apache.commons:commons-dbcp2:2.1.+'
+	testCompile 'org.apache.tomcat:tomcat-jdbc:8.5.+'
+
+	testCompile 'mysql:mysql-connector-java:5.1.+'
+	testCompile 'org.postgresql:postgresql:9.4.1211.jre7'
+	testCompile 'com.microsoft.sqlserver:sqljdbc4:4.+'
+	testCompile 'com.hynnet:oracle-driver-ojdbc:12.1.0.+'
+
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '2.1.1'
-project.archivesBaseName = 'debugtrace'
+version             = '2.2.0'
+archivesBaseName    = 'debugtrace'
 
 compileJava {
 	options.encoding     = 'UTF-8'
@@ -47,7 +58,7 @@ jar {
 
 javadoc {
 	title               = "$project.name $version API Specification"
-	options.encoding     = 'UTF-8'
+	options.encoding    = 'UTF-8'
 	options.locale      = 'en'
 	options.windowTitle = "$project.name"
 	options.overview    = 'src/main/java/overview.html'
@@ -92,4 +103,17 @@ task zip(type: Zip) {
 	into('javadoc'   , {from 'build/docs/javadoc'})
 	into('javadoc_ja', {from 'build/docs/javadoc_ja'})
 	into('resources-sample', {from 'src/test/resources'})
+}
+
+task sources_jar(type: Jar) {
+	classifier = 'source'
+
+	manifest {
+		attributes	'Implementation-Title'    : project.name,
+					'Implementation-Version'  : version,
+					'Implementation-Vendor'   : 'Masato Kokubo',
+					'Implementation-Vendor-Id': 'jp.masatokokubo'
+	}
+
+	into('/org', {from 'src/main/java/org'})
 }

@@ -5,6 +5,8 @@
 */
 package org.debugtrace;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -109,11 +111,11 @@ public class Resource {
 	}
 
 	/**
-		Gets and returns a string resource property value.
+		Gets and returns the string value of the resource property.
 
-		@param key the key of a string resource property
+		@param key the key of the resource property
 
-		@return the value of the string resource property
+		@return the string value of the resource property
 
 		@throws MissingResourceException if the key dose not found
 	*/
@@ -160,17 +162,41 @@ public class Resource {
 	}
 
 	/**
-		Gets and returns an int resource property value.
+		Gets and returns the int value of the resource property.
 
-		@param key the key of an int resource property
+		@param key the key of the resource property
 
-		@return the value of the int resource property
+		@return the int value of the resource property
 
 		@throws MissingResourceException if the key dose not found
-		@throws NumberFormatException if the resource property value can not convert to int
+		@throws NumberFormatException if the value can not convert to int
 	*/
 	public int getInt(String key) {
 		return Integer.parseInt(getString(key));
+	}
+
+	/**
+		Gets and returns a list of the string values of the resource property.
+
+		@since 2.2.0
+
+		@param key the key of the resource property
+
+		@return a list of the string values of the resource property
+	*/
+	public List<String> getStrings(String key) {
+		List<String> values = new ArrayList<>();
+
+		for (int index = 0; ; ++index) {
+			try {
+				values.add(getString(key + '.' + index));
+			}
+			catch (MissingResourceException e) {
+				break;
+			}
+		}
+
+		return values;
 	}
 }
 

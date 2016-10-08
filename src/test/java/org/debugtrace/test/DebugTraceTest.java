@@ -17,8 +17,12 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.Properties;
 import java.util.stream.IntStream;
 
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.debugtrace.DebugTrace;
 
 /**
@@ -34,8 +38,14 @@ public class DebugTraceTest {
 	/**/DebugTrace.print("args", args);
 
 		DebugTraceTest test = new DebugTraceTest();
-		test.test1();
-		test.test2();
+		try {
+			test.test1();
+			test.test2();
+			test.test3();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	/**/DebugTrace.leave();
 	}
@@ -115,6 +125,15 @@ public class DebugTraceTest {
 	/**/DebugTrace.leave();
 	}
 
+	private void test3() throws Exception {
+	/**/DebugTrace.enter();
+
+		DataSource dataSource = BasicDataSourceFactory.createDataSource(new Properties());
+	/**/DebugTrace.print("dataSource", dataSource);
+
+	/**/DebugTrace.leave();
+	}
+
 	public static class ValuesBase1 {
 		public boolean          booleanValue =                       true                 ;
 		public char             charValue    =                       'A'                  ;
@@ -174,11 +193,13 @@ public class DebugTraceTest {
 	}
 
 	public static class Point {
+		public  Point self;
 		private int x;
 		private int y;
 		private int z;
 
 		public Point(int x, int y, int z) {
+			self = this;
 			this.x = x;
 			this.y = y;
 			this.z = z;

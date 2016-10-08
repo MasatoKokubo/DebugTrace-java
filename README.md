@@ -37,24 +37,24 @@ Log bodys are automatically indent.
 
 #### Log of when the java sample has been executed:
 
-	2016-07-11 22:39:43.911 DebugTrace 2.1.1 / logger: org.debugtrace.logger.Std$Out
-	2016-07-11 22:39:43.958 
-	2016-07-11 22:39:43.958 ______________________________ main ______________________________
-	2016-07-11 22:39:43.958 
-	2016-07-11 22:39:43.958 Enter sample.Sample2.main (Sample2.java:13)
-	2016-07-11 22:39:43.973 | args = (String[] length:3)[
-	2016-07-11 22:39:43.973 |   "aaa",
-	2016-07-11 22:39:43.973 |   "bbb",
-	2016-07-11 22:39:43.973 |   "ccc",
-	2016-07-11 22:39:43.973 | ] (Sample2.java:14)
-	2016-07-11 22:39:43.973 | Enter sample.Sample2.sub (Sample2.java:23)
-	2016-07-11 22:39:43.989 | | args = (String[] length:3)[
-	2016-07-11 22:39:43.989 | |   "aaa",
-	2016-07-11 22:39:43.989 | |   "bbb",
-	2016-07-11 22:39:43.989 | |   "ccc",
-	2016-07-11 22:39:43.989 | | ] (Sample2.java:25)
-	2016-07-11 22:39:43.989 | Leave sample.Sample2.sub (Sample2.java:27)
-	2016-07-11 22:39:43.989 Leave sample.Sample2.main (Sample2.java:18)
+	2016-10-01 20:14:14.443 DebugTrace 2.2.0 / logger: org.debugtrace.logger.Std$Out
+	2016-10-01 20:14:14.472 
+	2016-10-01 20:14:14.474 ______________________________ main ______________________________
+	2016-10-01 20:14:14.475 
+	2016-10-01 20:14:14.477 Enter sample.Sample2.main (Sample2.java:13)
+	2016-10-01 20:14:14.482 | args = (String[] length:3)[
+	2016-10-01 20:14:14.484 |   "aaa",
+	2016-10-01 20:14:14.486 |   "bbb",
+	2016-10-01 20:14:14.487 |   "ccc",
+	2016-10-01 20:14:14.487 | ] (Sample2.java:14)
+	2016-10-01 20:14:14.488 | Enter sample.Sample2.sub (Sample2.java:23)
+	2016-10-01 20:14:14.491 | | args = (String[] length:3)[
+	2016-10-01 20:14:14.491 | |   "aaa",
+	2016-10-01 20:14:14.492 | |   "bbb",
+	2016-10-01 20:14:14.494 | |   "ccc",
+	2016-10-01 20:14:14.494 | | ] (Sample2.java:25)
+	2016-10-01 20:14:14.497 | Leave sample.Sample2.sub (Sample2.java:27)
+	2016-10-01 20:14:14.498 Leave sample.Sample2.main (Sample2.java:18)
 
 DebugTrace read `DebugTrace.properties` file in the classpath on startup.  
 You can specify following properties in the `DebugTrace.properties` file.  
@@ -88,6 +88,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 |`mapLimit`|Limit of **Map** elements to output|512|
 |`stringLimit`|Limit of **String** characters to output|8192|
 |`outputIndexLength`|Length of array and Collection to output index|9|
+|`nonPrintProperties.0`<br>`nonPrintProperties.1`<br>    ...<br>*(since 2.2.0)*|Non print properties<br>value format: *\<full class name\>#\<property name\>*|*\<nothing\>*|
 
 The logger name of DebugTrace is `org.debugtrace.DebugTrace`.   
 

@@ -1,4 +1,14 @@
 // (c) 2015 Masato Kokubo
+buildscript {
+	repositories {
+		jcenter()
+	}
+    dependencies {
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
+	}
+}
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'java'
 
 repositories {
@@ -21,19 +31,26 @@ dependencies {
 	testCompile 'org.postgresql:postgresql:9.4.1211.jre7'
 	testCompile 'com.microsoft.sqlserver:sqljdbc4:4.+'
 	testCompile 'com.hynnet:oracle-driver-ojdbc:12.1.0.+'
-
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
-version             = '2.2.0'
+group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
+version             = '2.2.0'
 
 compileJava {
 	options.encoding     = 'UTF-8'
 	options.deprecation  = true
 	options.debug        = true
 	options.compilerArgs = ['-Xlint']
+}
+
+compileTestJava {
+	options.encoding     = compileJava.options.encoding
+	options.deprecation  = compileJava.options.deprecation
+	options.debug        = compileJava.options.debug
+	options.compilerArgs = compileJava.options.compilerArgs
 }
 
 task compileJava_ja(type:JavaCompile) {
@@ -66,9 +83,16 @@ javadoc {
 	options.addStringOption ('bottom', '<div class="copyright">&copy;2015 Masato Kokubo</div>')
 }
 
+javadoc.doFirst {
+	def cssFile = file("build/docs/javadoc/stylesheet.css")
+	if (cssFile.exists())
+		cssFile.delete()
+}
+
 javadoc.doLast {
-	new File("src/main/java/addtional.css").eachLine {
-		new File("build/docs/javadoc/stylesheet.css").append("$it\n")
+	def cssFile = file("build/docs/javadoc/stylesheet.css")
+	file("src/main/java/addtional.css").eachLine {
+		cssFile.append("$it\n")
 	}
 }
 
@@ -88,13 +112,20 @@ task javadoc_ja(type:Javadoc) {
 	destinationDir = file('build/docs/javadoc_ja')
 }
 
+javadoc_ja.doFirst {
+	def cssFile = file("build/docs/javadoc_ja/stylesheet.css")
+	if (cssFile.exists())
+		cssFile.delete()
+}
+
 javadoc_ja.doLast {
-	new File("src/main/java/addtional_ja.css").eachLine {
-		new File("build/docs/javadoc_ja/stylesheet.css").append("$it\n")
+	def cssFile = file("build/docs/javadoc_ja/stylesheet.css")
+	file("src/main/java/addtional_ja.css").eachLine {
+		cssFile.append("$it\n")
 	}
 }
 
-task zip(type: Zip) {
+task zip(type: Zip, dependsOn:[jar, javadoc, javadoc_ja]) {
 	appendix   = 'java'
 	classifier = 'bin'
 
@@ -105,7 +136,7 @@ task zip(type: Zip) {
 	into('resources-sample', {from 'src/test/resources'})
 }
 
-task sources_jar(type: Jar) {
+task sourcesJar(type: Jar) {
 	classifier = 'source'
 
 	manifest {
@@ -116,4 +147,53 @@ task sources_jar(type: Jar) {
 	}
 
 	into('/org', {from 'src/main/java/org'})
+}
+
+task javadocJar(type: Jar, dependsOn:javadoc) {
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+}
+
+artifacts {
+	archives jar
+	archives sourcesJar
+	archives javadocJar
+}
+
+publishing {
+	publications {
+		mavenPublication(MavenPublication) {
+//			from components.java
+			groupId    group
+			artifactId archivesBaseName
+			version    version
+		}
+	}
+}
+
+bintray {
+	user = project.hasProperty('bintray_user') ? bintray_user : ''
+	key  = project.hasProperty('bintray_api_key') ? bintray_api_key : ''
+	configurations = ['archives']
+	publications   = ['mavenPublication']
+
+//	dryRun = true
+
+	pkg {
+		repo            = 'maven'
+		name            = 'DebugTrace-java'
+		websiteUrl      = 'https://github.com/MasatoKokubo/DebugTrace-java'
+		issueTrackerUrl = 'https://github.com/MasatoKokubo/DebugTrace-java/issues'
+		vcsUrl          = 'https://github.com/MasatoKokubo/DebugTrace-java.git'
+		licenses        = ['MIT']
+		version {
+			name           = project.version
+			released       = new Date()
+			vcsTag         = project.version
+			gpg {
+				sign       = true
+				passphrase = project.hasProperty('bintray_gpg_password') ? bintray_gpg_password : ''
+			}
+		}
+	}
 }

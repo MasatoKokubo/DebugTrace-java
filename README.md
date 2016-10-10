@@ -6,7 +6,7 @@ DebugTrace can be used in Java 8 and later.
 The following are a java sample source used DebugTrace methods and a log of when the java sample was executed.  
 Log bodys are automatically indent.
 
-#### Sample source:
+#### Example of the use of DebugTrace
 
 	package sample;
 
@@ -35,7 +35,7 @@ Log bodys are automatically indent.
 	}
 
 
-#### Log of when the java sample has been executed:
+#### Log of when the exaample has been executed
 
 	2016-10-01 20:14:14.443 DebugTrace 2.2.0 / logger: org.debugtrace.logger.Std$Out
 	2016-10-01 20:14:14.472 
@@ -59,7 +59,7 @@ Log bodys are automatically indent.
 DebugTrace read `DebugTrace.properties` file in the classpath on startup.  
 You can specify following properties in the `DebugTrace.properties` file.  
 
-#### Properties of `DebugTrace.properties` file:
+#### Properties of *DebugTrace.properties* file
 
 |Name|Value|Default|
 |:--|:--|:--|
@@ -91,6 +91,16 @@ You can specify following properties in the `DebugTrace.properties` file.
 |`nonPrintProperties.0`<br>`nonPrintProperties.1`<br>    ...<br>*(since 2.2.0)*|Non print properties<br>value format: *\<full class name\>#\<property name\>*|*\<nothing\>*|
 
 The logger name of DebugTrace is `org.debugtrace.DebugTrace`.   
+
+#### Description example in *build.gradle*
+
+	repositories {
+	    jcenter()
+	}
+
+	dependencies {
+	    compile 'org.debugtrace:debugtrace:2.2.+'
+	}
 
 #### License
 

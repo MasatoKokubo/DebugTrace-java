@@ -1,13 +1,12 @@
 /*
 	Sample1.java
-
-	(c) 2015 Masato Kokubo
+	(C) 2015 Masato Kokubo
 */
-package sample;
+package example;
 
 import org.debugtrace.DebugTrace;
 
-public class Sample1 {
+public class Example1 {
   public static void main(String[] args) {
     DebugTrace.enter();
 

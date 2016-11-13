@@ -205,7 +205,11 @@ public class DebugTrace {
 	private static final int    outputIndexLength       = resource.getInt   ("outputIndexLength"      ); // Length of array and Collection to output index
 
 	// since 2.2.0
-	private static final List<String> nonPrintProperties = resource.getStrings("nonPrintProperties"    ); // Non print properties (<class name>#<property name>)
+	private static final List<String> nonPrintProperties = resource.getStrings("nonPrintProperties"   ); // Non print properties (<class name>#<property name>)
+
+	// since 2.3.0
+	private static final String defaultPackage          = resource.getString("defaultPackage", ""     ); // Default package part
+	private static final String defaultPackageString    = resource.getString("defaultPackageString"   ); // String replacing the default package part
 
 	// Logger
 	private static Logger logger = null;
@@ -263,7 +267,10 @@ public class DebugTrace {
 	private static final List<Object> reflectedObjects = new ArrayList<>();
 
 	// Non-printing property map (@since 1.5.0)
-	private static final Map<String, Boolean> nonPrintPropertyMap = new HashMap<>();
+// 2.3.0
+//	private static final Map<String, Boolean> nonPrintPropertyMap = new HashMap<>();
+	private static final Set<String> nonPrintPropertySet = new HashSet<>();
+////
 
 	static {
 	// 2.1.0
@@ -343,7 +350,6 @@ public class DebugTrace {
 			state.dataNestLevel < 0 ? 0 :
 			state.dataNestLevel >= dataIndentStrings.length ? dataIndentStrings.length - 1
 				: state.dataNestLevel];
-
 	}
 
 	/**
@@ -369,7 +375,10 @@ public class DebugTrace {
 		String prefix = targetClass.getName() + ".";
 		synchronized(stateMap) {
 			Arrays.stream(propertyNames)
-				.forEach(propertyName -> nonPrintPropertyMap.put(prefix + propertyName, true));
+			// 2.3.0
+			//	.forEach(propertyName -> nonPrintPropertyMap.put(prefix + propertyName, true));
+				.forEach(propertyName -> nonPrintPropertySet.add(prefix + propertyName));
+			////
 		}
 	}
 
@@ -484,7 +493,10 @@ public class DebugTrace {
 	private static String getCallerInfo(String baseString) {
 		StackTraceElement element = getStackTraceElement();
 		return String.format(baseString,
-			element.getClassName(),
+		// 2.3.0
+		//	element.getClassName(),
+			replaceTypeName(element.getClassName()),
+		////
 			element.getMethodName(),
 			element.getFileName(),
 			element.getLineNumber());
@@ -504,7 +516,10 @@ public class DebugTrace {
 			else {
 				StackTraceElement element = getStackTraceElement();
 				String suffix = String.format(printSuffixFormat,
-					element.getClassName(),
+				// 2.3.0
+				//	element.getClassName(),
+					replaceTypeName(element.getClassName()),
+				////
 					element.getMethodName(),
 					element.getFileName(),
 					element.getLineNumber());
@@ -787,15 +802,9 @@ public class DebugTrace {
 
 			if (type.isArray()) {
 				// Array
-				if (type == char[].class)
-					// String Array
-					append(state, strings, buff, ((char[])value));
-				else if (type == byte[].class)
-					// Byte Array
-					append(state, strings, buff, ((byte[])value));
-				else
-					// Other Array
-					appendArray(state, strings, buff, value);
+				if      (type == char[].class) append(state, strings, buff, ((char[])value)); // String Array
+				else if (type == byte[].class) append(state, strings, buff, ((byte[])value)); // Byte Array
+				else                      appendArray(state, strings, buff,          value ); // Other Array
 
 			} else if (value instanceof Boolean) {
 				// Boolean
@@ -809,30 +818,15 @@ public class DebugTrace {
 
 			} else if (value instanceof Number) {
 				// Number
-				if (value instanceof BigDecimal)
-					// BigDecimal
-					buff.append(((BigDecimal)value).toPlainString());
-				else
-					// Other Number
-					buff.append(value);
+				if (value instanceof BigDecimal) buff.append(((BigDecimal)value).toPlainString()); // BigDecimal
+				else buff.append(value); // Other Number
 
 			} else if (value instanceof java.util.Date) {
 				// Date
-				if (value instanceof Date)
-					// sql Date
-					buff.append(String.format(sqlDateFormat, value));
-
-				else if (value instanceof Time)
-					// Time
-					buff.append(String.format(timeFormat, value));
-
-				else if (value instanceof Timestamp)
-					// Timestamp
-					buff.append(String.format(timestampFormat, value));
-
-				else
-					// Other Date
-					buff.append(String.format(utilDateFormat, value));
+				if      (value instanceof Date     ) buff.append(String.format(sqlDateFormat  , value)); // sql Date
+				else if (value instanceof Time     ) buff.append(String.format(timeFormat     , value)); // Time
+				else if (value instanceof Timestamp) buff.append(String.format(timestampFormat, value)); // Timestamp
+				else                                 buff.append(String.format(utilDateFormat , value)); // Other Date
 
 			} else if (value instanceof OptionalInt) {
 				// OptionalInt
@@ -956,6 +950,10 @@ public class DebugTrace {
 					typeName = type.getName();
 				if (typeName.startsWith("java.") && !typeName.equals("java.util.Date"))
 					typeName = type.getSimpleName();
+			// 2.3.0
+				else
+					typeName = replaceTypeName(typeName);
+			////
 
 				if (value != null) {
 					try {
@@ -980,6 +978,20 @@ public class DebugTrace {
 				typeName = "(" + typeName + ")";
 		}
 
+		return typeName;
+	}
+
+	/**
+		Replace a class name.
+
+		@param className a class name
+		@return the replaced ckass name
+
+		@since 2.3.0
+	*/
+	private static String replaceTypeName(String typeName) {
+		if (!defaultPackage.isEmpty() && typeName.startsWith(defaultPackage))
+			typeName = defaultPackageString + typeName.substring(defaultPackage.length());
 		return typeName;
 	}
 
@@ -1343,7 +1355,10 @@ public class DebugTrace {
 
 			buff.append(fieldName).append(fieldNameValueSeparator);
 
-			if (value != null && nonPrintPropertyMap.containsKey(classNamePrefix + fieldName))
+		// 2.3.0
+		//	if (value != null && nonPrintPropertyMap.containsKey(classNamePrefix + fieldName))
+			if (value != null && nonPrintPropertySet.contains(classNamePrefix + fieldName))
+		////
 				// the property is non-printing and the value is not null
 				buff.append(nonPrintString);
 			else

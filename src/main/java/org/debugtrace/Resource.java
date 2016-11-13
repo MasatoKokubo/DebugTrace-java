@@ -162,6 +162,25 @@ public class Resource {
 	}
 
 	/**
+		Gets and returns the string value of the resource property.
+
+		@param key the key of the resource property
+		@param defaultValue the default value
+
+		@return the string value of the resource property
+
+		@since 2.3.0
+	*/
+	public String getString(String key, String defaultValue) {
+		try {
+			return getString(key);
+		}
+		catch (MissingResourceException e) {
+			return filter.apply(defaultValue);
+		}
+	}
+
+	/**
 		Gets and returns the int value of the resource property.
 
 		@param key the key of the resource property
@@ -173,6 +192,26 @@ public class Resource {
 	*/
 	public int getInt(String key) {
 		return Integer.parseInt(getString(key));
+	}
+
+	/**
+		Gets and returns the int value of the resource property.
+
+		@param key the key of the resource property
+
+		@return the int value of the resource property
+
+		@throws NumberFormatException if the value can not convert to int
+
+		@since 2.3.0
+	*/
+	public int getInt(String key, int defaultValue) {
+		try {
+			return getInt(key);
+		}
+		catch (MissingResourceException e) {
+			return defaultValue;
+		}
 	}
 
 	/**

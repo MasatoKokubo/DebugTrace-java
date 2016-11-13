@@ -3,10 +3,10 @@ DebugTrace-java
 
 DebugTrace-java ia a library to output logs for debug. It can be used in Java 8.
 
-The following are an exaample of java source used DebugTrace methods and the log of when the example was executed.
-Log bodys are automatically indent.
+The following are an example of java source used DebugTrace methods and the log of when the example was executed.
+Log body is automatically indent.
 
-#### Example used DebugTrace
+#### Example used DebugTrace-java
 
 ```java:Example2.java
 package example;
@@ -35,7 +35,7 @@ public class Example2 {
 }
 ```
 
-#### Log of when the exaample has been executed
+#### Log of when the example has been executed
 
 ```log:debugtrace.log
 2016-11-13 12:44:19.416 DebugTrace 2.3.0 / logger: org.debugtrace.logger.Std$Out
@@ -65,7 +65,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 
 |Property Name|Value to be set|Default Value|
 |:--|:--|:--|
-|`logger`| Logger<br><br>`Jdk` : use **JDK Logger**<br><br>`Log4j` : use **Log4j 1**<br><br>`Log4j2` : use **Log4j 2**<br><br>`SLF4J` : use **SLF4J**<br><br>`Std$Out`: output to **stdout**<br><br>`Std$Err` : output to **stderr**|`Std$Out`|
+|`logger`| Logger DebugTrace uses<br><br>`Jdk` : use **JDK Logger**<br><br>`Log4j` : use **Log4j 1**<br><br>`Log4j2` : use **Log4j 2**<br><br>`SLF4J` : use **SLF4J**<br><br>`Std$Out`: output to **stdout**<br><br>`Std$Err` : output to **stderr**|`Std$Out`|
 |`logLevel`|Log level<br><br>`default` : the lowest level for each logger<br><br>`finest,` `finer`, `fine`, `config`, `info`, `warning`, `severe` : when use **JDK Logger**<br><br>`trace`, `debug`, `info`, `warn`, `error`, `fatal` : when use **Log4j 1 or 2**<br><br>`trace`, `debug`, `info`, `warn`, `error` : when use **SLF4J**<br>|`finest`: when use JDK Logger<br>`trace`: when use Log4j 1, 2 or SLF4J|
 |`enterString`|The string used after enter method<br><br>**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the caller|`Enter %1$s.%2$s (%3$s:%4$d)`|
 |`leaveString`|The string used before leave method<br><br>**parameters:**<br>`%1`: The **class name** of the caller<br>`%2`: The **method name** of the caller<br>`%3`: The **file name** of the caller<br>`%4`: The **line numnber** of the caller|`Leave %1$s.%2$s (%3$s:%4$d)`|

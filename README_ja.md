@@ -6,7 +6,7 @@ DebugTrace-java は、デバッグ用のログを出力するためのライブ�
 以下は、DebugTrace のメソッドを使用した Java のサンプルソースとサンプルを実行した際のログです。
 ログは自動的にインデントされます。
 
-#### DebugTrace を使用した例
+#### DebugTrace-java を使用した例
 
 ```java:Example2.java
 package example;
@@ -65,8 +65,8 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |プロパティ名|設定する値|デフォルト値|
 |:--|:--|:--|
-|`logger`| ロガー<br><br>`Jdk` : **JDK ロガー** を使用<br><br>`Log4j` : **Log4j 1** を使用<br><br>`Log4j2` : **Log4j 2** を使用<br><br>`SLF4J` : **SLF4J** を使用<br><br>`Std$Out`: **stdout** へ出力<br><br>`Std$Err` : **stderr** へ出力|`Std$Out`|
-|`logLevel`|Log level<br><br>`default` : 各ロガーでの最低レベル<br><br>`finest,` `finer`, `fine`, `config`, `info`, `warning`, `severe` : **JDK Logger** 使用時<br><br>`trace`, `debug`, `info`, `warn`, `error`, `fatal` : **Log4j 1 or 2** 使用時<br><br>`trace`, `debug`, `info`, `warn`, `error` : **SLF4J** 使用時<br>|`finest`: JDK Logger 使用時<br>`trace`: Log4j 1, 2 or SLF4J 使用時|
+|`logger`| DebugTrace が使用するロガー<br><br>`Jdk` : **JDK ロガー** を使用<br><br>`Log4j` : **Log4j 1** を使用<br><br>`Log4j2` : **Log4j 2** を使用<br><br>`SLF4J` : **SLF4J** を使用<br><br>`Std$Out`: **stdout** へ出力<br><br>`Std$Err` : **stderr** へ出力|`Std$Out`|
+|`logLevel`|Log level<br><br>`default` : 各ロガーでの最低レベル<br><br>`finest,` `finer`, `fine`, `config`, `info`, `warning`, `severe` : **JDK Logger** 使用時<br><br>`trace`, `debug`, `info`, `warn`, `error`, `fatal` : **Log4j 1 か 2** 使用時<br><br>`trace`, `debug`, `info`, `warn`, `error` : **SLF4J** 使用時<br>|`finest`: JDK Logger 使用時<br>`trace`: Log4j 1, 2 or SLF4J 使用時|
 |`enterString`|メソッドに入った後の文字列<br><br>**パラメータ:**<br>`%1`: 呼出側の**クラス名**<br>`%2`: 呼出側の**メソッド名**<br>`%3`: 呼出側の**ファイル名**<br>`%4`: 呼出側の**行番号**|`Enter %1$s.%2$s (%3$s:%4$d)`|
 |`leaveString`|メソッドから出る前の文字列<br><br>**パラメータ:**<br>`%1`: 呼出側の**クラス名**<br>`%2`: 呼出側の**メソッド名**<br>`%3`: 呼出側の**ファイル名**<br>`%4`: 呼出側の**行番号**|`Leave %1$s.%2$s (%3$s:%4$d)`|
 |`threadBoundaryString`|スレッド境界で出力される文字列<br><br>**パラメータ:**<br>`%1`: **スレッド名**|`______________________________ %1$s ______________________________`|

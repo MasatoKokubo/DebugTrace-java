@@ -198,6 +198,7 @@ public class Resource {
 		Gets and returns the int value of the resource property.
 
 		@param key the key of the resource property
+		@param defaultValue the default value
 
 		@return the int value of the resource property
 

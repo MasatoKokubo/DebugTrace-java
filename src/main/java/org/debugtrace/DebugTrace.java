@@ -1299,7 +1299,13 @@ public class DebugTrace {
 		appendReflectStringSub(state, strings, buff, object, clazz.getSuperclass(), extended);
 
 		if (extended) {
-			buff.append(String.format(classBoundaryString, clazz.getCanonicalName()));
+		// 2.3.1
+		//	buff.append(String.format(classBoundaryString, clazz.getCanonicalName()));
+			String className = clazz.getCanonicalName();
+			if (className == null)
+				className = clazz.getName();
+			buff.append(String.format(classBoundaryString, replaceTypeName(className)));
+		////
 			lineFeed(state, strings, buff);
 		}
 

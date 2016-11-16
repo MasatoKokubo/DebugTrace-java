@@ -167,7 +167,7 @@ public class Resource {
 		@param key the key of the resource property
 		@param defaultValue the default value
 
-		@return the string value of the resource property
+		@return the string value of the resource property (or defaultValue if not found in properties file)
 
 		@since 2.3.0
 	*/
@@ -200,7 +200,7 @@ public class Resource {
 		@param key the key of the resource property
 		@param defaultValue the default value
 
-		@return the int value of the resource property
+		@return the int value of the resource property (or defaultValue if not found in properties file)
 
 		@throws NumberFormatException if the value can not convert to int
 

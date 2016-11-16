@@ -87,6 +87,18 @@ public class Resource {
 	public String getString(String key) {return null;}
 
 	/**
+		文字列リソースのプロパティ値を取得して返します。
+
+		@param key 文字列リソースのキー
+		@param defaultValue デフォルト値
+
+		@return 文字列リソースのプロパティ値 (プロパティファイルに見つからない場合は defaultValue)
+
+		@since 2.3.0
+	*/
+	public String getString(String key, String defaultValue) {return null;}
+
+	/**
 		int リソースのプロパティ値を取得して返します。
 
 		@param key int リソースのキー
@@ -97,5 +109,20 @@ public class Resource {
 		@throws NumberFormatException リソースのプロパティ値が int に変換できない場合
 	*/
 	public int getInt(String key) {return 0;}
+
+	/**
+		int リソースのプロパティ値を取得して返します。
+
+		@param key int リソースのキー
+		@param defaultValue デフォルト値
+
+		@return int リソースのプロパティ値 (プロパティファイルに見つからない場合は defaultValue)
+
+		@throws MissingResourceException キーが見つからない場合
+		@throws NumberFormatException リソースのプロパティ値が int に変換できない場合
+
+		@since 2.3.0
+	*/
+	public int getInt(String key, int defaultValue) {return 0;}
 }
 

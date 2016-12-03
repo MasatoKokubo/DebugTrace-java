@@ -3,10 +3,10 @@ DebugTrace-java
 
 DebugTrace-java は、デバッグ用のログを出力するためのライブラリで、Java 8 で利用できます。
 
-以下は、DebugTrace のメソッドを使用した Java のサンプルソースとサンプルを実行した際のログです。
+以下は、DebugTrace のメソッドを使用した Java の例とそれを実行した際のログです。
 ログは自動的にインデントされます。
 
-#### DebugTrace-java を使用した例
+#### DebugTrace-java の使用例
 
 ```java:Example2.java
 package example;
@@ -35,7 +35,7 @@ public class Example2 {
 }
 ```
 
-#### 例のプログラムを実行した際のログ
+#### 例を実行した際のログ
 
 ```log:debugtrace.log
 2016-11-13 12:44:19.416 DebugTrace 2.3.0 / logger: org.debugtrace.logger.Std$Out
@@ -169,9 +169,9 @@ dependencies {
 }
 ```
 
-#### License
+#### ライセンス
 
-The MIT License (MIT)
+[MIT ライセンス (MIT)](LICENSE.txt)
 
 *&copy; 2015 Masato Kokubo*
 

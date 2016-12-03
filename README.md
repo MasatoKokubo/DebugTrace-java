@@ -1,10 +1,10 @@
 DebugTrace-java
 ===========
 
-DebugTrace-java ia a library to output logs for debug. It can be used in Java 8.
+DebugTrace-java ia a library to output logs for debugging. It can be used in Java 8.
 
-The following are an example of java source used DebugTrace methods and the log of when the example was executed.
-Log body is automatically indent.
+The following is an example of Java source used DebugTrace methods and the log of when it has been executed.
+The log body is automatically indent.
 
 #### Example used DebugTrace-java
 
@@ -35,7 +35,7 @@ public class Example2 {
 }
 ```
 
-#### Log of when the example has been executed
+#### The log of when the example has been executed
 
 ```log:debugtrace.log
 2016-11-13 12:44:19.416 DebugTrace 2.3.0 / logger: org.debugtrace.logger.Std$Out
@@ -170,7 +170,7 @@ dependencies {
 
 #### License
 
-The MIT License (MIT)
+[The MIT License (MIT)](LICENSE.txt)
 
 *&copy; 2015 Masato Kokubo*
 

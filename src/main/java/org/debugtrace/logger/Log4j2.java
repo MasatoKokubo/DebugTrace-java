@@ -1,8 +1,6 @@
-/*
-	Log4j2.java
+// Log4j2.java
+// (C) 2015 Masato Kokubo
 
-	(c) 2015 Masato Kokubo
-*/
 package org.debugtrace.logger;
 
 import java.util.HashMap;
@@ -13,12 +11,11 @@ import org.apache.logging.log4j.LogManager;
 import org.debugtrace.DebugTrace;
 
 /**
-	A logger using Log4J2.
-
-	@since 1.0.0
-
-	@author Masato Kokubo
-*/
+ * A logger using Log4J2.
+ *
+ * @since 1.0.0
+ * @author Masato Kokubo
+ */
 public class Log4j2 implements Logger {
 	// Level Map
 	private static final Map<String, Level> levelMap = new HashMap<>();
@@ -39,15 +36,15 @@ public class Log4j2 implements Logger {
 	private Level level = Level.TRACE;
 
 	/**
-		Construct a Log4j2.
-	*/
+	 * Construct a Log4j2.
+	 */
 	public Log4j2() {
 		logger = LogManager.getLogger(DebugTrace.class);
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setLevel(String levelStr) {
 		Level level = levelMap.get(levelStr);
@@ -56,16 +53,16 @@ public class Log4j2 implements Logger {
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isEnabled() {
 		return logger.isEnabled(level);
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void log(String message) {
 		logger.log(level, message);

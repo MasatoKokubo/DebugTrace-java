@@ -1,8 +1,6 @@
-/*
-	Resource.java
+// Resource.java
+// (C) 2015 Masato Kokubo
 
-	(c) 2015 Masato Kokubo
-*/
 package org.debugtrace;
 
 import java.util.ArrayList;
@@ -13,80 +11,78 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 
 /**
-	Uses this class when gets resources.
-
-	@since 1.0.0
-
-	@author Masato Kokubo
-*/
+ * Uses this class when gets resources.
+ *
+ * @since 1.0.0
+ * @author Masato Kokubo
+ */
 public class Resource {
 	private ResourceBundle enResourceBundle;
 	/**
-		Returns the english ResourceBundle.
-
-		@return the english ResourceBundle
-	*/
+	 * Returns the english ResourceBundle.
+	 *
+	 * @return the english ResourceBundle
+	 */
 	public ResourceBundle enResourceBundle() {return enResourceBundle;}
 
 	private ResourceBundle defaultResourceBundle;
 	/**
-		Returns the default locale ResourceBundle.
-
-		@return the default locale ResourceBundle
-	*/
+	 * Returns the default locale ResourceBundle.
+	 *
+	 * @return the default locale ResourceBundle
+	 */
 	public ResourceBundle defaultResourceBundle() {return defaultResourceBundle;}
 
 	private ResourceBundle userResourceBundle;
 	/**
-		Returns the user defined ResourceBundle.
-
-		@return the user defined ResourceBundle
-	*/
+	 * Returns the user defined ResourceBundle.
+	 *
+	 * @return the user defined ResourceBundle
+	 */
 	public ResourceBundle userResourceBundle() {return userResourceBundle;}
 
 	private Function<String, String> filter;
 	/**
-		Returns the filter function.
-
-		@return the filter functions
-	*/
+	 * Returns the filter function.
+	 *
+	 * @return the filter functions
+	 */
 	public Function<String, String> filter() {return filter;}
 
 	/**
-		Construct a Resource.
-
-		@param baseClass the base class of a ResourceBundle
-	*/
+	 * Construct a Resource.
+	 *
+	 * @param baseClass the base class of a ResourceBundle
+	 */
 	public Resource(Class<?> baseClass) {
 		this(baseClass.getName(), null);
 	}
 
 	/**
-		Construct a Resource.
-
-		@param baseClass the base class of a ResourceBundle
-
-		@param filter a filter function
+	 * Construct a Resource.
+	 *
+	 * @param baseClass the base class of a ResourceBundle
+	 * @param filter a filter function
 	*/
 	public Resource(Class<?> baseClass, Function<String, String> filter) {
 		this(baseClass.getName(), filter);
 	}
 
 	/**
-		Construct a Resource.
-
-		@param baseName the base name of a ResourceBundle
-	*/
+	 * Construct a Resource.
+	 *
+	 * @param baseName the base name of a ResourceBundle
+	 */
 	public Resource(String baseName) {
 		this(baseName, null);
 	}
 
 	/**
-		Construct a Resource.
-
-		@param baseName the base name of a ResourceBundle
-		@param filter a filter function
-	*/
+	 * Construct a Resource.
+	 *
+	 * @param baseName the base name of a ResourceBundle
+	 * @param filter a filter function
+	 */
 	public Resource(String baseName, Function<String, String> filter) {
 		this.filter = filter;
 
@@ -111,13 +107,12 @@ public class Resource {
 	}
 
 	/**
-		Gets and returns the string value of the resource property.
-
-		@param key the key of the resource property
-
-		@return the string value of the resource property
-
-		@throws MissingResourceException if the key dose not found
+	 * Gets and returns the string value of the resource property.
+	 *
+	 * @param key the key of the resource property
+	 * @return the string value of the resource property
+	 *
+	 * @throws MissingResourceException if the key dose not found
 	*/
 	public String getString(String key) {
 		String string = null;
@@ -162,15 +157,14 @@ public class Resource {
 	}
 
 	/**
-		Gets and returns the string value of the resource property.
-
-		@param key the key of the resource property
-		@param defaultValue the default value
-
-		@return the string value of the resource property (or defaultValue if not found in properties file)
-
-		@since 2.3.0
-	*/
+	 * Gets and returns the string value of the resource property.
+	 * 
+	 * @param key the key of the resource property
+	 * @param defaultValue the default value
+	 * @return the string value of the resource property (or defaultValue if not found in properties file)
+	 *
+	 * @since 2.3.0
+	 */
 	public String getString(String key, String defaultValue) {
 		try {
 			return getString(key);
@@ -181,31 +175,29 @@ public class Resource {
 	}
 
 	/**
-		Gets and returns the int value of the resource property.
-
-		@param key the key of the resource property
-
-		@return the int value of the resource property
-
-		@throws MissingResourceException if the key dose not found
-		@throws NumberFormatException if the value can not convert to int
+	 * Gets and returns the int value of the resource property.
+	 *
+	 * @param key the key of the resource property
+	 * @return the int value of the resource property
+	 *
+	 * @throws MissingResourceException if the key dose not found
+	 * @throws NumberFormatException if the value can not convert to int
 	*/
 	public int getInt(String key) {
 		return Integer.parseInt(getString(key));
 	}
 
 	/**
-		Gets and returns the int value of the resource property.
-
-		@param key the key of the resource property
-		@param defaultValue the default value
-
-		@return the int value of the resource property (or defaultValue if not found in properties file)
-
-		@throws NumberFormatException if the value can not convert to int
-
-		@since 2.3.0
-	*/
+	 * Gets and returns the int value of the resource property.
+	 *
+	 * @param key the key of the resource property
+	 * @param defaultValue the default value
+	 * @return the int value of the resource property (or defaultValue if not found in properties file)
+	 *
+	 * @throws NumberFormatException if the value can not convert to int
+	 *
+	 * @since 2.3.0
+	 */
 	public int getInt(String key, int defaultValue) {
 		try {
 			return getInt(key);
@@ -216,14 +208,13 @@ public class Resource {
 	}
 
 	/**
-		Gets and returns a list of the string values of the resource property.
-
-		@since 2.2.0
-
-		@param key the key of the resource property
-
-		@return a list of the string values of the resource property
-	*/
+	 * Gets and returns a list of the string values of the resource property.
+	 *
+	 * @param key the key of the resource property
+	 * @return a list of the string values of the resource property
+	 *
+	 * @since 2.2.0
+	 */
 	public List<String> getStrings(String key) {
 		List<String> values = new ArrayList<>();
 

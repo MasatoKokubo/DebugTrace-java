@@ -1,8 +1,6 @@
-/*
-	Jdk.java
+// Jdk.java
+// (C) 2015 Masato Kokubo
 
-	(c) 2015 Masato Kokubo
-*/
 package org.debugtrace.logger;
 
 import java.util.HashMap;
@@ -12,11 +10,10 @@ import java.util.logging.Level;
 import org.debugtrace.DebugTrace;
 
 /**
-	A logger using JDK Logger.
-
-	@since 1.0.0
-
-	@author Masato Kokubo
+ * A logger using JDK Logger.
+ *
+ * @since 1.0.0
+ * @author Masato Kokubo
 */
 public class Jdk implements Logger {
 	// Level Map
@@ -39,15 +36,15 @@ public class Jdk implements Logger {
 	private Level level = Level.FINEST;
 
 	/**
-		Construct a Jdk.
-	*/
+	 * Construct a Jdk.
+	 */
 	public Jdk() {
 		logger = java.util.logging.Logger.getLogger(DebugTrace.class.getName());
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setLevel(String levelStr) {
 		Level level = levelMap.get(levelStr);
@@ -56,16 +53,16 @@ public class Jdk implements Logger {
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isEnabled() {
 		return logger.isLoggable(level);
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void log(String message) {
 		logger.log(level, message);

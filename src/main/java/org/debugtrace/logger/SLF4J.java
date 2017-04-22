@@ -1,8 +1,6 @@
-/*
-	SLF4J.java
+// SLF4J.java
+// (C) 2015 Masato Kokubo
 
-	(c) 2015 Masato Kokubo
-*/
 package org.debugtrace.logger;
 
 import java.util.HashMap;
@@ -14,12 +12,11 @@ import org.debugtrace.DebugTrace;
 import org.slf4j.LoggerFactory;
 
 /**
-	A logger using Log4J2.
-
-	@since 1.1.0
-
-	@author Masato Kokubo
-*/
+ * A logger using Log4J2.
+ * 
+ * @since 1.1.0
+ * @author Masato Kokubo
+ */
 public class SLF4J implements Logger {
 	// Level Map
 	private static final Map<String, Level> levelMap = new HashMap<>();
@@ -42,16 +39,16 @@ public class SLF4J implements Logger {
 	private Consumer<String> logConsumer;
 	
 	/**
-		Construct a SLF4J.
-	*/
+	 * Construct a SLF4J.
+	 */
 	public SLF4J() {
 		logger = LoggerFactory.getLogger(DebugTrace.class);
 		logConsumer = logger::trace;
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setLevel(String levelStr) {
 		Level level = levelMap.get(levelStr);
@@ -67,8 +64,8 @@ public class SLF4J implements Logger {
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isEnabled() {
 		return
@@ -80,8 +77,8 @@ public class SLF4J implements Logger {
 	}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void log(String message) {
 		logConsumer.accept(message);

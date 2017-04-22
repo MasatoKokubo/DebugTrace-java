@@ -1,8 +1,6 @@
-/*
-	DebugTrace.java
+// DebugTrace.java
+// (C) 2015 Masato Kokubo
 
-	(c) 2015 Masato Kokubo
-*/
 package org.debugtrace;
 
 import java.lang.reflect.Array;
@@ -42,14 +40,13 @@ import org.debugtrace.logger.Logger;
 import org.debugtrace.logger.Std;
 
 /**
-	A utility class for debugging.<br>
-	Call DebugTrace.enter and DebugTrace.leave methods when enter and leave your methods,
-	then outputs execution trace of the program.
-
-	@since 1.0.0
-
-	@author Masato Kokubo
-*/
+ * A utility class for debugging.<br>
+ * Call DebugTrace.enter and DebugTrace.leave methods when enter and leave your methods,
+ * then outputs execution trace of the program.
+ * 
+ * @since 1.0.0
+ * @author Masato Kokubo
+ */
 public class DebugTrace {
 	private static class State {
 		public int nestLevel       = 0; // Nest Level
@@ -302,19 +299,18 @@ public class DebugTrace {
 	private DebugTrace() {}
 
 	/**
-		Append timestamp
-
-		@param string a string
-
-		@return a string appended a timestamp string
-	*/
+	 * Append timestamp
+	 *
+	 * @param string a string
+	 * @return a string appended a timestamp string
+	 */
 	public static String appendTimestamp(String string) {
 		return String.format(timestampFormat, new Timestamp(System.currentTimeMillis())) + " " + string;
 	}
 
 	/**
-		Returns indent state.
-	*/
+	 * Returns indent state.
+	 */
 	private static State getState() {
 		State state = null;
 		Long threadId = Thread.currentThread().getId();
@@ -330,17 +326,17 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns whether tracing is enabled.
-
-		@return true if tracing is enabled; false otherwise
-	*/
+	 * Returns whether tracing is enabled.
+	 *
+	 * @return true if tracing is enabled; false otherwise
+	 */
 	public static boolean isEnabled() {return enabled;}
 
 	/**
-		Returns a string corresponding to the current indent.
-
-		@return A string corresponding to the current indent
-	*/
+	 * Returns a string corresponding to the current indent.
+	 *
+	 * @return A string corresponding to the current indent
+	 */
 	private static String getIndentString(State state) {
 		return indentStrings[
 			state.nestLevel < 0 ? 0 :
@@ -353,10 +349,10 @@ public class DebugTrace {
 	}
 
 	/**
-		Add a reflection target class.
-
-		@param targetClass a reflection target class.
-	*/
+	 * Add a reflection target class.
+	 *
+	 * @param targetClass a reflection target class.
+	 */
 	public static void addReflectionTarget(Class<?> targetClass) {
 		synchronized(stateMap) {
 			reflectionTargetMap.put(targetClass, true);
@@ -364,13 +360,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Specifies properties that do not display the value.
-
-		@since 1.5.0
-
-		@param targetClass a target class.
-		@param propertyNames target property names.
-	*/
+	 * Specifies properties that do not display the value.
+	 *
+	 * @param targetClass a target class.
+	 * @param propertyNames target property names.
+	 *
+	 * @since 1.5.0
+	 */
 	public static void addNonPrintProperties(Class<?> targetClass, String... propertyNames) {
 		String prefix = targetClass.getName() + ".";
 		synchronized(stateMap) {
@@ -383,50 +379,50 @@ public class DebugTrace {
 	}
 
 	/**
-		Up the nest level.
-
-		@param state a nest status of current thread
-	*/
+	 * Up the nest level.
+	 *
+	 * @param state a nest status of current thread
+	 */
 	private static void upNest(State state) {
 		state.beforeNestLevel = state.nestLevel;
 		++state.nestLevel;
 	}
 
 	/**
-		Down the nest level.
-
-		@param state a nest status of current thread
-	*/
+	 * Down the nest level.
+	 *
+	 * @param state a nest status of current thread
+	 */
 	private static void downNest(State state) {
 		state.beforeNestLevel = state.nestLevel;
 		--state.nestLevel;
 	}
 
 	/**
-		Up the data nest level.
-
-		@since 1.4.0
-
-		@param state a nest status of current thread
-	*/
+	 * Up the data nest level.
+	 *
+	 * @param state a nest status of current thread
+	 *
+	 * @since 1.4.0
+	 */
 	private static void upDataNest(State state) {
 		++state.dataNestLevel;
 	}
 
 	/**
-		Down the data nest level.
-
-		@since 1.4.0
-
-		@param state a nest status of current thread
-	*/
+	 * Down the data nest level.
+	 *
+	 * @param state a nest status of current thread
+	 *
+	 * @since 1.4.0
+	 */
 	private static void downDataNest(State state) {
 		--state.dataNestLevel;
 	}
 
 	/**
-		Common start processing of output.
-	*/
+	 * Common start processing of output.
+	 */
 	private static void printStart() {
 		Thread thread = Thread.currentThread();
 		long threadId = thread.getId();
@@ -441,15 +437,15 @@ public class DebugTrace {
 	}
 
 	/**
-		Common end processing of output.
-	*/
+	 * Common end processing of output.
+	 */
 	private static void printEnd() {
 		beforeThreadId = Thread.currentThread().getId();
 	}
 
 	/**
-		Call this method at entrance of your methods.
-	*/
+	 * Call this method at entrance of your methods.
+	 */
 	public static void enter() {
 		if (enabled) {
 			synchronized(stateMap) {
@@ -470,8 +466,8 @@ public class DebugTrace {
 	}
 
 	/**
-		Call this method at exit of your methods.
-	*/
+	 * Call this method at exit of your methods.
+	 */
 	public static void leave() {
 		if (enabled) {
 			synchronized(stateMap) {
@@ -488,8 +484,8 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns a string of the caller information.
-	*/
+	 * Returns a string of the caller information.
+	 */
 	private static String getCallerInfo(String baseString) {
 		StackTraceElement element = getStackTraceElement();
 		return String.format(baseString,
@@ -503,10 +499,10 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the message to the log.
-
-		@param message a message
-	*/
+	 * Outputs the message to the log.
+	 *
+	 * @param message a message
+	 */
 	private static void printSub(String message) {
 		synchronized(stateMap) {
 			printStart(); // Common start processing of output
@@ -530,32 +526,32 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the message to the log.
-
-		@param message a message
-	*/
+	 * Outputs the message to the log.
+	 *
+	 * @param message a message
+	 */
 	public static void print(String message) {
 		if (enabled)
 			printSub(message);
 	}
 
 	/**
-		Outputs a message to the log.
-
-		@param messageSupplier a message supplier
-	*/
+	 * Outputs a message to the log.
+	 *
+	 * @param messageSupplier a message supplier
+	 */
 	public static void print(Supplier<String> messageSupplier) {
 		if (enabled)
 			printSub(messageSupplier.get());
 	}
 
 	/**
-		Outputs the name and value to the log.
-
-		@param name the name
-		@param value the value (accept null)
-		@param isPrimitive if the value is primitive type then true
-	*/
+	 * Outputs the name and value to the log.
+	 *
+	 * @param name the name
+	 * @param value the value (accept null)
+	 * @param isPrimitive if the value is primitive type then true
+	 */
 	private static void printSub(String name, Object value, boolean isPrimitive) {
 		synchronized(stateMap) {
 			printStart(); // Common start processing of output
@@ -585,10 +581,10 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns a caller stack trace element.
-
-		@returns a caller stack trace element
-	*/
+	 * Returns a caller stack trace element.
+	 *
+	 * @returns a caller stack trace element
+	 */
 	private static StackTraceElement getStackTraceElement() {
 		StackTraceElement result = null;
 
@@ -608,11 +604,11 @@ public class DebugTrace {
 	}
 
 	/**
-		Line Feed.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
+	 * Line Feed.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
 	*/
 	private static void lineFeed(State state, List<String> strings, StringBuilder buff) {
 		strings.add(getIndentString(getState()) + buff.toString());
@@ -620,111 +616,110 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the name and the boolean value to the log.
-
-		@param name the name
-		@param value the boolean value
-	*/
+	 * Outputs the name and the boolean value to the log.
+	 *
+	 * @param name the name
+	 * @param value the boolean value
+	 */
 	public static void print(String name, boolean value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and the char value to the log.
-
-		@param name the name
-		@param value the char value
-	*/
+	 * Outputs the name and the char value to the log.
+	 *
+	 * @param name the name
+	 * @param value the char value
+	 */
 	public static void print(String name, char value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and the byte value to the log.
-
-		@param name the name
-		@param value the byte value
-	*/
+	 * Outputs the name and the byte value to the log.
+	 *
+	 * @param name the name
+	 * @param value the byte value
+	 */
 	public static void print(String name, byte value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and the short value to the log.
-
-		@param name the name
-		@param value the short value
-	*/
+	 * Outputs the name and the short value to the log.
+	 *
+	 * @param name the name
+	 * @param value the short value
+	 */
 	public static void print(String name, short value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and the int value to the log.
-
-		@param name the name
-		@param value the int value
-	*/
+	 * Outputs the name and the int value to the log.
+	 *
+	 * @param name the name
+	 * @param value the int value
+	 */
 	public static void print(String name, int value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and value to the log.
-
-		@param name the name
-		@param value the long value
-	*/
+	 * Outputs the name and value to the log.
+	 *
+	 * @param name the name
+	 * @param value the long value
+	 */
 	public static void print(String name, long value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and value to the log.
-
-		@param name the name
-		@param value the float value
-	*/
+	 * Outputs the name and value to the log.
+	 *
+	 * @param name the name
+	 * @param value the float value
+	 */
 	public static void print(String name, float value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and value to the log.
-
-		@param name the name
-		@param value the double value
-	*/
+	 * Outputs the name and value to the log.
+	 *
+	 * @param name the name
+	 * @param value the double value
+	 */
 	public static void print(String name, double value) {
 		if (enabled)
 			printSub(name, value, true);
 	}
 
 	/**
-		Outputs the name and value to the log.
-
-		@param name the name
-		@param value the value (accept null)
-	*/
+	 * Outputs the name and value to the log.
+	 *
+	 * @param name the name
+	 * @param value the value (accept null)
+	 */
 	public static void print(String name, Object value) {
 		if (enabled)
 			printSub(name, value, false);
 	}
 
 	/**
-		Outputs the name and value to the log.
-
-		@param <T> type of the value
-
-		@param name the name
-		@param valueSupplier the value supplier
+	 * Outputs the name and value to the log.
+	 *
+	 * @param <T> type of the value
+	 * @param name the name
+	 * @param valueSupplier the value supplier
 	*/
 	public static <T> void print(String name, Supplier<T> valueSupplier) {
 		if (enabled)
@@ -732,59 +727,59 @@ public class DebugTrace {
 	}
 
 	/**
-		Outputs the name and boolean value to the log.
-
-		@param name the name
-		@param valueSupplier the boolean supplier
-	*/
+	 * Outputs the name and boolean value to the log.
+	 *
+	 * @param name the name
+	 * @param valueSupplier the boolean supplier
+	 */
 	public static void print(String name, BooleanSupplier valueSupplier) {
 		if (enabled)
 			printSub(name, valueSupplier.getAsBoolean(), true);
 	}
 
 	/**
-		Outputs a int value to the log.
-
-		@param name the name
-		@param valueSupplier the int supplier
-	*/
+	 * Outputs a int value to the log.
+	 *
+	 * @param name the name
+	 * @param valueSupplier the int supplier
+	 */
 	public static void print(String name, IntSupplier valueSupplier) {
 		if (enabled)
 			printSub(name, valueSupplier.getAsInt(), true);
 	}
 
 	/**
-		Outputs a long value to the log.
-
-		@param name the name
-		@param valueSupplier the long supplier
-	*/
+	 * Outputs a long value to the log.
+	 *
+	 * @param name the name
+	 * @param valueSupplier the long supplier
+	 */
 	public static void print(String name, LongSupplier valueSupplier) {
 		if (enabled)
 			printSub(name, valueSupplier.getAsLong(), true);
 	}
 
 	/**
-		Outputs a double value to the log.
-
-		@param name the name
-		@param valueSupplier the double supplier
-	*/
+	 * Outputs a double value to the log.
+	 *
+	 * @param name the name
+	 * @param valueSupplier the double supplier
+	 */
 	public static void print(String name, DoubleSupplier valueSupplier) {
 		if (enabled)
 			printSub(name, valueSupplier.getAsDouble(), true);
 	}
 
 	/**
-		Returns a string representation of the value.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param value the value object
-		@param isPrimitive if the value is primitive type then true, otherwise false
-		@param isComponent if the value is component of an array, otherwise false
-	*/
+	 * Returns a string representation of the value.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param value the value object
+	 * @param isPrimitive if the value is primitive type then true, otherwise false
+	 * @param isComponent if the value is component of an array, otherwise false
+	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, Object value, boolean isPrimitive, boolean isComponent) {
 		if (value == null) {
 			buff.append("null");
@@ -920,15 +915,14 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns the type name to be output to the log.<br>
-		If dose not output, returns null.
-
-		@param type the type of the value
-		@param value the value object
-		@param isComponent if the value is component of an array, otherwise false
-		@param nest current nest count
-
-		@return the type name to be output to the log
+	 * Returns the type name to be output to the log.<br>
+	 * If dose not output, returns null.
+	 *
+	 * @param type the type of the value
+	 * @param value the value object
+	 * @param isComponent if the value is component of an array, otherwise false
+	 * @param nest current nest count
+	 * @return the type name to be output to the log
 	*/
 	@SuppressWarnings("rawtypes")
 	private static String getTypeName(Class<?>type, Object value, boolean isComponent, int nest) {
@@ -982,13 +976,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Replace a class name.
-
-		@param className a class name
-		@return the replaced ckass name
-
-		@since 2.3.0
-	*/
+	 * Replace a class name.
+	 *
+	 * @param className a class name
+	 * @return the replaced ckass name
+	 *
+	 * @since 2.3.0
+	 */
 	private static String replaceTypeName(String typeName) {
 		if (!defaultPackage.isEmpty() && typeName.startsWith(defaultPackage))
 			typeName = defaultPackageString + typeName.substring(defaultPackage.length());
@@ -996,13 +990,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends a character representation for log to the string buffer.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param ch a character
-	*/
+	 * Appends a character representation for log to the string buffer.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param ch a character
+	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, char ch) {
 		if (ch >= ' ' && ch != '\u007F') {
 			if      (ch == '"' ) buff.append("\\\"");
@@ -1020,13 +1014,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends a CharSequence representation for log to the string buffer.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param charSequence a CharSequence object
-	*/
+	 * Appends a CharSequence representation for log to the string buffer.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param charSequence a CharSequence object
+	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, CharSequence charSequence) {
 		buff.append('"');
 		for (int index = 0; index < charSequence.length(); ++index) {
@@ -1040,13 +1034,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends a character array representation for log to the string buffer.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param chars a character array
-	*/
+	 * Appends a character array representation for log to the string buffer.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param chars a character array
+	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, char[] chars) {
 		buff.append('"');
 		for (int index = 0; index < chars.length; ++index) {
@@ -1060,13 +1054,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends a byte array representation for log to the string buffer.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param bytes a byte array
-	*/
+	 * Appends a byte array representation for log to the string buffer.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param bytes a byte array
+	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, byte[] bytes) {
 		boolean multiLine = bytes.length > 16 && byteArrayLimit > 16;
 
@@ -1110,13 +1104,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends an object array representation for log to the string buffer.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param array an object array
-	*/
+	 * Appends an object array representation for log to the string buffer.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param array an object array
+	 */
 	private static void appendArray(State state, List<String> strings, StringBuilder buff, Object array) {
 		Class<?> componentType = array.getClass().getComponentType();
 
@@ -1155,13 +1149,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends a Collection representation for log to the string buffer.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param collection a Collection object
-	*/
+	 * Appends a Collection representation for log to the string buffer.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param collection a Collection object
+	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, Collection<?> collection) {
 		Iterator<?> iterator = collection.iterator();
 
@@ -1197,13 +1191,13 @@ public class DebugTrace {
 	}
 
 	/**
-		Appends a Map representation for log to the string buffer.
-
-		@param state indent state
-		@param strings a string list
-		@param buff a string buffer
-		@param map a Map
-	*/
+	 * Appends a Map representation for log to the string buffer.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param buff a string buffer
+	 * @param map a Map
+	 */
 	private static <K,V> void append(State state, List<String> strings, StringBuilder buff, Map<K,V> map) {
 		Iterator<Map.Entry<K,V>> iterator = map.entrySet().iterator();
 
@@ -1240,12 +1234,11 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns true, if this class or super classes without Object class has toString method.
-
-		@param object an object
-
-		@return true if this class or super classes without Object class has toString method; false otherwise
-	*/
+	 * Returns true, if this class or super classes without Object class has toString method.
+	 *
+	 * @param object an object
+	 * @return true if this class or super classes without Object class has toString method; false otherwise
+	 */
 	private static boolean hasToString(Class<?> clazz) {
 		boolean result = false;
 
@@ -1264,12 +1257,12 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns a string representation of the object uses reflection.
-
-		@param state indent state
-		@param strings a string list
-		@param object an object
-	*/
+	 * Returns a string representation of the object uses reflection.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param object an object
+	 */
 	private static void appendReflectString(State state, List<String> strings, StringBuilder buff, Object object) {
 		buff.append('[');
 		lineFeed(state, strings, buff);
@@ -1283,14 +1276,14 @@ public class DebugTrace {
 	}
 
 	/**
-		Returns a string representation of the object uses reflection.
-
-		@param state indent state
-		@param strings a string list
-		@param object an object
-		@param clazz the class of the object
-		@param extended the class is extended
-	*/
+	 * Returns a string representation of the object uses reflection.
+	 *
+	 * @param state indent state
+	 * @param strings a string list
+	 * @param object an object
+	 * @param clazz the class of the object
+	 * @param extended the class is extended
+	 */
 	private static void appendReflectStringSub(State state, List<String> strings, StringBuilder buff, Object object, Class<?> clazz, boolean extended) {
 		if (clazz == Object.class)
 			return;

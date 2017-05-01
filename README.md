@@ -283,7 +283,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </configuration>
 ```
 
-#### 6. Example of `build.gradle` when building with Gradle
+### 6. Example of `build.gradle` when building with Gradle
 
 ```gradle:build.gradle
 // build.gradle
@@ -296,10 +296,14 @@ dependencies {
 }
 ```
 
-#### 7. License
+### 7. License
 
 [The MIT License (MIT)](LICENSE.txt)
 
 *&copy; 2015 Masato Kokubo*
+
+### 8. Links
+
+[API Specification](http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html)
 
 [Japanese](README_ja.md)

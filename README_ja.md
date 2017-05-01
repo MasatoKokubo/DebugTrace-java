@@ -302,4 +302,8 @@ dependencies {
 
 *&copy; 2015 Masato Kokubo*
 
+### 8. リンク
+
+[API Specification](http://masatokokubo.github.io/DebugTrace-java/javadoc_ja/index.html)
+
 [English](README.md)

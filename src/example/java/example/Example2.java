@@ -1,15 +1,14 @@
-/*
-	DebugTraceTest.java
+// Example2.java
+// (C) 2015 Masato Kokubo
 
-	(C) 2015 Masato Kokubo
-*/
-package org.debugtrace.test;
+package example;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,22 +25,18 @@ import org.apache.commons.dbcp2.BasicDataSourceFactory;
 import org.debugtrace.DebugTrace;
 
 /**
-	Test class for DebugTrace class.
-
-	@since 1.0.0
-	@author Masato Kokubo
-*/
-public class DebugTraceTest {
+ * Example2
+ */
+public class Example2 {
 	public static void main(String[] args) {
-	/**/DebugTrace.addNonPrintProperties(ValuesBase2.class, "sqlDate", "int2Opt", "string2Opt", "nullValue", "nonNullValue");
 	/**/DebugTrace.enter();
 	/**/DebugTrace.print("args", args);
 
-		DebugTraceTest test = new DebugTraceTest();
+	Example2 example = new Example2();
 		try {
-			test.test1();
-			test.test2();
-			test.test3();
+			example.example1();
+			example.example2();
+			example.example3();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -50,7 +45,7 @@ public class DebugTraceTest {
 	/**/DebugTrace.leave();
 	}
 
-	private void test1() {
+	private void example1() {
 	/**/DebugTrace.enter();
 
 		Thread[] thread = new Thread[5];
@@ -80,7 +75,7 @@ public class DebugTraceTest {
 	/**/DebugTrace.leave();
 	}
 
-	private void test2() {
+	private void example2() {
 	/**/DebugTrace.enter();
 
 		Values values = new Values();
@@ -104,7 +99,6 @@ public class DebugTraceTest {
 			.toArray(Point[]::new);
 	/**/DebugTrace.print("points", points);
 
-	/**/DebugTrace.addReflectionTarget(Point.class);
 		Point[] points2 = IntStream.range(0, 10)
 			.mapToObj((index) -> new Point(index, index + 1, index + 2))
 			.toArray(Point[]::new);
@@ -121,11 +115,13 @@ public class DebugTraceTest {
 		Point p = new Point(10, 11, 12) {};
 	/**/DebugTrace.print("p", p);
 
+		List<Object> objects = Arrays.asList(true, 'A', (byte)1, (short)2, 3, 4L, new BigDecimal(5), 6.6F, 7.7D);
+	/**/DebugTrace.print("objects", objects);
 
 	/**/DebugTrace.leave();
 	}
 
-	private void test3() throws Exception {
+	private void example3() throws Exception {
 	/**/DebugTrace.enter();
 
 		DataSource dataSource = BasicDataSourceFactory.createDataSource(new Properties());
@@ -214,6 +210,7 @@ public class DebugTraceTest {
 		public Point mul(Point p) {return new Point(x * p.x, y * p.y, y * p.z);}
 		public Point div(Point p) {return new Point(x / p.x, y / p.y, y / p.z);}
 		public Point mod(Point p) {return new Point(x % p.x, y % p.y, y % p.z);}
+		public String toString() {return "(" + x + ", " + y + ", " + z + ")";}
 	}
 }
 

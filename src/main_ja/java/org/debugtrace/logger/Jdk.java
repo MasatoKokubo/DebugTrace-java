@@ -1,39 +1,36 @@
-/*
-	JdkLogger.java
-	Copyright (c) 2015 Masato Kokubo
-*/
+// JdkLogger.java
+// (C) 2015 Masato Kokubo
 
 package org.debugtrace.logger;
 
 
 /**
-	Jdk を使用するロガーです。
-
-	@since 1.0.0
-
-	@author 小久保 雅人
-*/
+ * Jdk を使用するロガーです。
+ *
+ * @since 1.0.0
+ * @author Masato Kokubo
+ */
 public class Jdk implements Logger {
 	/**
-		JdkLogger を構築します。
-	*/
+	 * JdkLogger を構築します。
+	 */
 	public Jdk() {}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setLevel(String levelStr) {}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isEnabled() {return false;}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void log(String message) {}
 }

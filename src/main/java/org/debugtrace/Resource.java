@@ -3,10 +3,19 @@
 
 package org.debugtrace;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Objects;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
@@ -17,14 +26,6 @@ import java.util.function.Function;
  * @author Masato Kokubo
  */
 public class Resource {
-	private ResourceBundle enResourceBundle;
-	/**
-	 * Returns the english ResourceBundle.
-	 *
-	 * @return the english ResourceBundle
-	 */
-	public ResourceBundle enResourceBundle() {return enResourceBundle;}
-
 	private ResourceBundle defaultResourceBundle;
 	/**
 	 * Returns the default locale ResourceBundle.
@@ -41,13 +42,48 @@ public class Resource {
 	 */
 	public ResourceBundle userResourceBundle() {return userResourceBundle;}
 
-	private Function<String, String> filter;
-	/**
-	 * Returns the filter function.
-	 *
-	 * @return the filter functions
-	 */
-	public Function<String, String> filter() {return filter;}
+	// A converter for string values
+	private Function<String, String> stringConverter = string -> {
+			if (string != null) {
+				StringBuilder buff = new StringBuilder(string.length());
+				boolean escape = false;
+				for (int index = 0; index < string.length(); ++index) {
+					char ch = string.charAt(index);
+					if (escape) {
+						if      (ch == 't' ) buff.append('\t'); // 09 HT
+						else if (ch == 'n' ) buff.append('\n'); // 0A LF
+						else if (ch == 'r' ) buff.append('\r'); // 0D CR
+						else if (ch == 's' ) buff.append(' ' ); // 20 SPACE
+						else if (ch == '\\') buff.append('\\');
+						else                 buff.append(ch);
+						escape = false;
+					} else {
+						if (ch == '\\')
+							escape = true;
+						else
+							buff.append(ch);
+					}
+				}
+				string = buff.toString();
+			}
+			return string;
+		};
+
+	// A ResourceBundle.Control
+	private static final ResourceBundle.Control control = new ResourceBundle.Control() {
+		@Override
+		public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+				throws IllegalAccessException, InstantiationException, IOException {
+			String bundleName = toBundleName(baseName, locale);
+			String resourceName = toResourceName(bundleName, "properties");
+
+			try (InputStream inStream = loader.getResourceAsStream(resourceName);
+				InputStreamReader streamReader = new InputStreamReader(inStream, "UTF-8");
+				BufferedReader reader = new BufferedReader(streamReader)) {
+				return new PropertyResourceBundle(reader);
+			}
+		}
+	};
 
 	/**
 	 * Construct a Resource.
@@ -55,17 +91,7 @@ public class Resource {
 	 * @param baseClass the base class of a ResourceBundle
 	 */
 	public Resource(Class<?> baseClass) {
-		this(baseClass.getName(), null);
-	}
-
-	/**
-	 * Construct a Resource.
-	 *
-	 * @param baseClass the base class of a ResourceBundle
-	 * @param filter a filter function
-	*/
-	public Resource(Class<?> baseClass, Function<String, String> filter) {
-		this(baseClass.getName(), filter);
+		this(baseClass.getName());
 	}
 
 	/**
@@ -74,54 +100,36 @@ public class Resource {
 	 * @param baseName the base name of a ResourceBundle
 	 */
 	public Resource(String baseName) {
-		this(baseName, null);
-	}
-
-	/**
-	 * Construct a Resource.
-	 *
-	 * @param baseName the base name of a ResourceBundle
-	 * @param filter a filter function
-	 */
-	public Resource(String baseName, Function<String, String> filter) {
-		this.filter = filter;
-
 		try {
-			enResourceBundle = ResourceBundle.getBundle(baseName, Locale.ENGLISH);
-		}
-		catch (Exception e) {
-		}
-
-		try {
-			defaultResourceBundle = ResourceBundle.getBundle(baseName, Locale.getDefault());
+			defaultResourceBundle = ResourceBundle.getBundle(baseName, Locale.getDefault(), control);
 		}
 		catch (Exception e) {
 		}
 
 		try {
 			String userBaseName = baseName.substring(baseName.lastIndexOf('.') + 1);
-			userResourceBundle = ResourceBundle.getBundle(userBaseName);
+			userResourceBundle = ResourceBundle.getBundle(userBaseName, control);
 		}
 		catch (Exception e) {
 		}
 	}
 
 	/**
-	 * Gets and returns the string value of the resource property.
+	 * Returns the string value of resource property.
 	 *
-	 * @param key the key of the resource property
-	 * @return the string value of the resource property
+	 * @param propertyKey the key of resource property
+	 * @return the string value of resource property
 	 *
-	 * @throws MissingResourceException if the key dose not found
+	 * @throws MissingResourceException if the property dose not found
 	*/
-	public String getString(String key) {
+	private String get(String propertyKey) {
 		String string = null;
 
 		MissingResourceException e = null;
 
 		if (userResourceBundle != null) {
 			try {
-				string = userResourceBundle.getString(key);
+				string = userResourceBundle.getString(propertyKey);
 			}
 			catch (MissingResourceException e2) {
 				e = e2;
@@ -130,7 +138,7 @@ public class Resource {
 
 		if (string == null && defaultResourceBundle != null) {
 			try {
-				string = defaultResourceBundle.getString(key);
+				string = defaultResourceBundle.getString(propertyKey);
 				e = null;
 			}
 			catch (MissingResourceException e2) {
@@ -138,69 +146,42 @@ public class Resource {
 			}
 		}
 
-		if (string == null && enResourceBundle != null) {
-			try {
-				string = enResourceBundle.getString(key);
-				e = null;
-			}
-			catch (MissingResourceException e2) {
-				e = e2;
-			}
-		}
 		if (e != null)
 			throw e;
-
-		if (filter != null)
-			string = filter.apply(string);
 
 		return string;
 	}
 
 	/**
-	 * Gets and returns the string value of the resource property.
+	 * Returns the value of resource property.
 	 * 
-	 * @param key the key of the resource property
-	 * @param defaultValue the default value
-	 * @return the string value of the resource property (or defaultValue if not found in properties file)
+	 * @param <V> the type of value
+	 * @param propertyKey the key of resource property
+	 * @param valueConverter function to convert string to return value
+	 * @return the value of resource property
 	 *
-	 * @since 2.3.0
+	 * @throws MissingResourceException if the property dose not found
+	 *
+	 * @since 2.4.0
 	 */
-	public String getString(String key, String defaultValue) {
-		try {
-			return getString(key);
-		}
-		catch (MissingResourceException e) {
-			return filter.apply(defaultValue);
-		}
+	public <V> V getValue(String propertyKey, Function<String, V> valueConverter) {
+		return valueConverter.apply(get(propertyKey));
 	}
 
 	/**
-	 * Gets and returns the int value of the resource property.
-	 *
-	 * @param key the key of the resource property
-	 * @return the int value of the resource property
-	 *
-	 * @throws MissingResourceException if the key dose not found
-	 * @throws NumberFormatException if the value can not convert to int
-	*/
-	public int getInt(String key) {
-		return Integer.parseInt(getString(key));
-	}
-
-	/**
-	 * Gets and returns the int value of the resource property.
-	 *
-	 * @param key the key of the resource property
+	 * Returns the value of resource property.
+	 * 
+	 * @param <V> the type of value
+	 * @param propertyKey the key of resource property
+	 * @param valueConverter the function to convert string to return type
 	 * @param defaultValue the default value
-	 * @return the int value of the resource property (or defaultValue if not found in properties file)
+	 * @return the value of resource property (or defaultValue if not found in properties file)
 	 *
-	 * @throws NumberFormatException if the value can not convert to int
-	 *
-	 * @since 2.3.0
+	 * @since 2.4.0
 	 */
-	public int getInt(String key, int defaultValue) {
+	public <V> V getValue(String propertyKey, Function<String, V> valueConverter, V defaultValue) {
 		try {
-			return getInt(key);
+			return valueConverter.apply(get(propertyKey));
 		}
 		catch (MissingResourceException e) {
 			return defaultValue;
@@ -208,26 +189,159 @@ public class Resource {
 	}
 
 	/**
-	 * Gets and returns a list of the string values of the resource property.
+	 * Returns the string of resource property.
+	 * 
+	 * @param propertyKey the key of resource property
+	 * @return the string value of resource property (or defaultValue if not found in properties file)
 	 *
-	 * @param key the key of the resource property
-	 * @return a list of the string values of the resource property
-	 *
-	 * @since 2.2.0
+	 * @throws MissingResourceException if the property dose not found
 	 */
-	public List<String> getStrings(String key) {
-		List<String> values = new ArrayList<>();
+	public String getString(String propertyKey) {
+		return getValue(propertyKey, stringConverter);
+	}
 
-		for (int index = 0; ; ++index) {
-			try {
-				values.add(getString(key + '.' + index));
-			}
-			catch (MissingResourceException e) {
-				break;
-			}
-		}
+	/**
+	 * Returns the string of resource property.
+	 * 
+	 * @param propertyKey the key of resource property
+	 * @param defaultValue the default value
+	 * @return the string value of resource property (or defaultValue if not found in properties file)
+	 *
+	 * @since 2.3.0
+	 */
+	public String getString(String propertyKey, String defaultValue) {
+		return getValue(propertyKey, stringConverter, defaultValue);
+	}
 
-		return values;
+	/**
+	 * Returns the int value of resource property.
+	 *
+	 * @param propertyKey the key of resource property
+	 * @return the int value of resource property
+	 *
+	 * @throws MissingResourceException if the property dose not found
+	 * @throws NumberFormatException if the value can not convert to int
+	*/
+	public int getInt(String propertyKey) {
+		return getValue(propertyKey, Integer::parseInt);
+	}
+
+	/**
+	 * Returns the int value of resource property.
+	 *
+	 * @param propertyKey the key of resource property
+	 * @param defaultValue the default value
+	 * @return the int value of resource property (or defaultValue if not found in properties file)
+	 *
+	 * @throws NumberFormatException if the value can not convert to int
+	 *
+	 * @since 2.3.0
+	 */
+	public int getInt(String propertyKey, int defaultValue) {
+		return getValue(propertyKey, Integer::parseInt, defaultValue);
+	}
+
+	/**
+	 * Returns a list created from the resource property value if it is found,
+	 * an empty list otherwise.
+	 *
+	 * @param <E> the type of elements of the list
+	 * @param propertyKey the key of resource property
+	 * @param valueConverter the function to convert string to element type
+	 * @return a created list (or an empty list)
+	 *
+	 * @since 2.4.0
+	 */
+	public <E> List<E> getList(String propertyKey, Function<String, E> valueConverter) {
+		Objects.requireNonNull(propertyKey, "propertyKey");
+		Objects.requireNonNull(valueConverter, "valueConverter");
+
+		String propertyValue = getString(propertyKey, "");
+
+		List<E> list = new ArrayList<>();
+
+		Arrays.stream(propertyValue.split(","))
+			.forEach(string -> {
+				string = string.trim();
+				if (!string.isEmpty())
+					list.add(valueConverter.apply(string));
+			});
+
+		return list;
+	}
+
+	/**
+	 * Returns a string list created from the resource property value if it is found,
+	 * an empty list otherwise.
+	 *
+	 * @param propertyKey the key of resource property
+	 * @return a created string list (or an empty list)
+	 *
+	 * @since 2.4.0
+	 */
+	public List<String> getStringList(String propertyKey) {
+		return getList(propertyKey, stringConverter);
+	}
+	/**
+	 * Returns a map created from the resource property value if it is found,
+	 * an empty map otherwise.
+	 *
+	 * @param <K> the type of keys of map
+	 * @param <V> the type of values of the map
+	 * @param propertyKey the key of resource property
+	 * @param keyConverter the function that converts string to the key type of the map
+	 * @param valueConverter the function that converts string to the value type of the map
+	 * @return a created map (or an empty map)
+	 *
+	 * @since 2.4.0
+	 */
+	public <K, V> Map<K, V> getMap(String propertyKey, Function<String, K> keyConverter, Function<String, V> valueConverter) {
+		Objects.requireNonNull(propertyKey, "propertyKey");
+		Objects.requireNonNull(keyConverter, "keyConverter");
+		Objects.requireNonNull(valueConverter, "valueConverter");
+
+		String propertyValue = getString(propertyKey, "");
+
+		Map<K, V> map = new HashMap<>();
+
+		Arrays.stream(propertyValue.split(","))
+			.forEach(string -> {
+				string = string.trim();
+				if (!string.isEmpty()) {
+					String[] keyValueStr = string.split(":");
+					String keyStr   = keyValueStr.length == 2 ? keyValueStr[0].trim() : "";
+					String valueStr = keyValueStr.length == 2 ? keyValueStr[1].trim() : "";
+					if (!keyStr.isEmpty() && !valueStr.isEmpty())
+						map.put(keyConverter.apply(keyStr), valueConverter.apply(valueStr));
+				}
+			});
+
+		return map;
+	}
+
+	/**
+	 * Returns a map  (key: Integer, value: String) created from the resource property value if it is found,
+	 * an empty map otherwise.
+	 *
+	 * @param propertyKey the key of resource property
+	 * @return a created map (or an empty map)
+	 *
+	 * @since 2.4.0
+	 */
+	public Map<Integer, String> getIntegerKeyMap(String propertyKey) {
+		return getMap(propertyKey, Integer::parseInt, stringConverter);
+	}
+
+	/**
+	 * Returns a map (key: String, value: String) created from the resource property value if it is found,
+	 * an empty map otherwise.
+	 *
+	 * @param propertyKey the key of resource property
+	 * @return a created map (or an empty map)
+	 *
+	 * @since 2.4.0
+	 */
+	public Map<String, String> getStringKeyMap(String propertyKey) {
+		return getMap(propertyKey, s -> s, stringConverter);
 	}
 }
-

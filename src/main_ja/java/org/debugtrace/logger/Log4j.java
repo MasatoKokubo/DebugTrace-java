@@ -1,6 +1,6 @@
 /*
 	Log4jLogger.java
-	Copyright (c) 2015 Masato Kokubo
+	(C) 2015 Masato Kokubo
 */
 
 package org.debugtrace.logger;
@@ -12,33 +12,32 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 
 /**
-	Log4j を使用するロガーです。
-
-	@since 1.0.0
-
-	@author 小久保 雅人
-*/
+ * Log4j を使用するロガーです。
+ *
+ * @since 1.0.0
+ * @author Masato Kokubo
+ */
 public class Log4j implements Logger {
 	/**
-		Log4jLogger を構築します。
-	*/
+	 * Log4jLogger を構築します。
+	 */
 	public Log4j() {}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setLevel(String levelStr) {}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isEnabled() {return false;}
 
 	/**
-		{@inheritDoc}
-	*/
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void log(String message) {}
 }

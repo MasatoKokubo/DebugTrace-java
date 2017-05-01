@@ -1,25 +1,44 @@
 
-/* Followings are additional for DebugTrace. */
+/* The following is added for Lightsleep. */
 body, div.block, dd {
-	font-family: 'Verdana', sans-serif;
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 14px;
 }
 
 .contentContainer .description dl dd, .contentContainer .details dl dd, .serializedFormContainer dl dd {
-	font-family: 'Consolas', monospace;
-	font-size: 12px;
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 14px;
 }
 
-pre, code, tt, dt code, table tr td dt code {
-	font-family: 'Consolas', monospace;
+pre, code, .code, tt, dt code, table tr td dt code {
+	font-family: Consolas, monospace;
+}
+
+i {
+	font-style: italic;
+	color: #CC5555;
+}
+
+b, b i {
+	font-family: Consolas, monospace;
+	font-weight: normal;
+	background-color: #E7E7E7;
+	border-radius: 2px;
+	padding: 1px 2px 1px 2px;
 }
 
 .title {
-	font-family: 'Verdana', sans-serif;
+	font-family: 'Segoe UI', sans-serif;
 	font-weight: bold;
 }
 
-.code {
-	font-family: 'Consolas', monospace;
+.indent {
+	margin-left: 20px;
+}
+
+.blankline {
+	margin-top: -6px;
+	margin-bottom: -6px;
 }
 
 .parameter {
@@ -34,45 +53,107 @@ pre, code, tt, dt code, table tr td dt code {
 	font-weight: bold;
 }
 
-ul.additinal {
-	margin: 4px 0px 0px 8px;
-	padding: 0px 0px 0px 0px;
+.copyright {
+	font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+	font-style: italic;
+	color: #666666;
+	text-align: center;
+	margin-top: 110px;
+}
+
+.sampleTitle {
+	margin: 12px 0px -4px 12px;
+}
+
+table.additional caption {
+	margin: 0px 0px 4px 4px;
+	text-align: left;
+}
+
+.sampleTitle span, table.additional caption span {
+	background-color: #F8981D;
+	padding: 2px 6px 2px 6px;
+	font-family: 'Segoe UI', sans-serif;
+    font-size: 12px;
+	font-weight: bold;
+}
+
+.sampleCode {
+	margin: 8px 8px 12px 8px;
+	padding: 4px 0px 0px 12px;
+	font-family: Consolas, monospace;
+	color: #003388;
+	background-color: #F4F4F4;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #AAAAAA;
+}
+
+.sampleCode pre {
+    font-size: 13px;
+}
+
+.sampleCode pre b {
+	color: #2266FF;
+	background-color: #FFFFAA;
+	font-weight: normal;
+	padding: 1px 2px 1px 2px;
+}
+
+.sampleCode pre i {
+	color: #00AA00;
+}
+
+ul.additional {
 	list-style-type: disc;
 }
 
-ol.additinal {
-	margin: 0px 0px 0px 0px;
-	padding: 0px 0px 0px 0px;
+ol.additional {
 	list-style-type: decimal;
 }
 
-ul.additinal li, ol.additinal li {
+ul.additional li, ol.additional li {
 	margin: 2px 0px 6px 0px;
 }
 
-table.additinal {
+table.additional {
 	margin: 8px;
 	border-collapse: collapse;
-	font-family: sans-serif;
-	font-size: 9pt;
+	font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
 }
 
-table.additinal tr th {
+table.additional tr th {
 	background-color: #E0E0E0;
 	border-width: 1px;
 	border-style: solid;
 	border-color: #808080;
-	border-collapse: collapse;
 	padding: 4px;
 }
 
-table.additinal tr td {
+table.additional tr td {
 	background-color: #FFFFFF;
 	border-width: 1px;
 	border-style: solid;
 	border-color: #808080;
-	border-collapse: collapse;
 	padding: 4px;
+}
+
+.arrow {
+	margin: 4px 0px -6px 60px;
+	color: #DD4400;
+}
+
+.langLink {
+	margin: 12px 32px 2px 32px;
+	text-align: right;
+}
+
+.langLink a {
+	background-color: #FFFF44;
+	padding: 2px 8px 5px 8px;
+	border-radius: 6px;
 }
 
 .ja {display: none;}

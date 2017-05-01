@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,30 +113,49 @@ public class DebugTrace {
 		noOutputComponentTypeSet.add(Timestamp.class);
 	}
 
+// 2.4.0
+	// Set of element types of Collection that dose not output the type name
+	private static final Set<Class<?>> noOutputElementTypeSet = new HashSet<>();
+	static {
+		noOutputElementTypeSet.add(int      .class);
+		noOutputElementTypeSet.add(long     .class);
+		noOutputElementTypeSet.add(double   .class);
+		noOutputElementTypeSet.add(Boolean  .class);
+		noOutputElementTypeSet.add(Character.class);
+		noOutputElementTypeSet.add(Integer  .class);
+		noOutputElementTypeSet.add(Date     .class);
+		noOutputElementTypeSet.add(Time     .class);
+		noOutputElementTypeSet.add(Timestamp.class);
+	}
+////
+
 	// Set of component types of array that output on the single line
 	private static final Set<Class<?>> singleLineComponentTypeSet = new HashSet<>();
 	static {
-		singleLineComponentTypeSet.add(boolean   .class);
-		singleLineComponentTypeSet.add(char      .class);
-		singleLineComponentTypeSet.add(byte      .class);
-		singleLineComponentTypeSet.add(short     .class);
-		singleLineComponentTypeSet.add(int       .class);
-		singleLineComponentTypeSet.add(long      .class);
-		singleLineComponentTypeSet.add(float     .class);
-		singleLineComponentTypeSet.add(double    .class);
-		singleLineComponentTypeSet.add(Boolean   .class);
-		singleLineComponentTypeSet.add(Character .class);
-		singleLineComponentTypeSet.add(Byte      .class);
-		singleLineComponentTypeSet.add(Short     .class);
-		singleLineComponentTypeSet.add(Integer   .class);
-		singleLineComponentTypeSet.add(Long      .class);
-		singleLineComponentTypeSet.add(Float     .class);
-		singleLineComponentTypeSet.add(Double    .class);
-		singleLineComponentTypeSet.add(BigInteger.class);
-		singleLineComponentTypeSet.add(BigDecimal.class);
-		singleLineComponentTypeSet.add(Date      .class);
-		singleLineComponentTypeSet.add(Time      .class);
-		singleLineComponentTypeSet.add(Timestamp .class);
+		singleLineComponentTypeSet.add(boolean       .class);
+		singleLineComponentTypeSet.add(char          .class);
+		singleLineComponentTypeSet.add(byte          .class);
+		singleLineComponentTypeSet.add(short         .class);
+		singleLineComponentTypeSet.add(int           .class);
+		singleLineComponentTypeSet.add(long          .class);
+		singleLineComponentTypeSet.add(float         .class);
+		singleLineComponentTypeSet.add(double        .class);
+		singleLineComponentTypeSet.add(Boolean       .class);
+		singleLineComponentTypeSet.add(Character     .class);
+		singleLineComponentTypeSet.add(Byte          .class);
+		singleLineComponentTypeSet.add(Short         .class);
+		singleLineComponentTypeSet.add(Integer       .class);
+		singleLineComponentTypeSet.add(Long          .class);
+		singleLineComponentTypeSet.add(Float         .class);
+		singleLineComponentTypeSet.add(Double        .class);
+		singleLineComponentTypeSet.add(BigInteger    .class);
+		singleLineComponentTypeSet.add(BigDecimal    .class);
+	// 2.4.0
+		singleLineComponentTypeSet.add(java.util.Date.class);
+	////
+		singleLineComponentTypeSet.add(Date          .class);
+		singleLineComponentTypeSet.add(Time          .class);
+		singleLineComponentTypeSet.add(Timestamp     .class);
 	}
 
 	// Prefixes of getter methods
@@ -147,33 +165,36 @@ public class DebugTrace {
 	private static final String groovyRuntimePackage = ".groovy.runtime.";
 
 	// Resources
-	private static final Resource resource = new Resource(DebugTrace.class,
-		string -> {
-			if (string != null) {
-				StringBuilder buff = new StringBuilder(string.length());
-				boolean escape = false;
-				for (int index = 0; index < string.length(); ++index) {
-					char ch = string.charAt(index);
-					if (escape) {
-						if      (ch == 't' ) buff.append('\t'); // 09 HT
-						else if (ch == 'n' ) buff.append('\n'); // 0A LF
-						else if (ch == 'r' ) buff.append('\r'); // 0D CR
-						else if (ch == 's' ) buff.append(' ' ); // 20 SPACE
-						else if (ch == '\\') buff.append('\\');
-						else                 buff.append(ch);
-						escape = false;
-					} else {
-						if (ch == '\\')
-							escape = true;
-						else
-							buff.append(ch);
-					}
-				}
-				string = buff.toString();
-			}
-			return string;
-		}
-	);
+// 2.4.0
+//	private static final Resource resource = new Resource(DebugTrace.class,
+//		string -> {
+//			if (string != null) {
+//				StringBuilder buff = new StringBuilder(string.length());
+//				boolean escape = false;
+//				for (int index = 0; index < string.length(); ++index) {
+//					char ch = string.charAt(index);
+//					if (escape) {
+//						if      (ch == 't' ) buff.append('\t'); // 09 HT
+//						else if (ch == 'n' ) buff.append('\n'); // 0A LF
+//						else if (ch == 'r' ) buff.append('\r'); // 0D CR
+//						else if (ch == 's' ) buff.append(' ' ); // 20 SPACE
+//						else if (ch == '\\') buff.append('\\');
+//						else                 buff.append(ch);
+//						escape = false;
+//					} else {
+//						if (ch == '\\')
+//							escape = true;
+//						else
+//							buff.append(ch);
+//					}
+//				}
+//				string = buff.toString();
+//			}
+//			return string;
+//		}
+//	);
+	private static final Resource resource = new Resource(DebugTrace.class);
+////
 
 	private static final String version                 = resource.getString("version"                ); // The version string
 	private static final String logLevel                = resource.getString("logLevel"               ); // Log Level
@@ -201,12 +222,19 @@ public class DebugTrace {
 	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Limit of String characters to output
 	private static final int    outputIndexLength       = resource.getInt   ("outputIndexLength"      ); // Length of array and Collection to output index
 
-	// since 2.2.0
-	private static final List<String> nonPrintProperties = resource.getStrings("nonPrintProperties"   ); // Non print properties (<class name>#<property name>)
+// 2.4.0
+//	// since 2.2.0
+//	private static final List<String> nonPrintProperties = resource.getStrings("nonPrintProperties"   ); // Non print properties (<class name>#<property name>)
+	private static List<String> nonPrintProperties      = resource.getStringList("nonPrintProperties" ); // Non print properties (<class name>#<property name>)
+////
 
 	// since 2.3.0
 	private static final String defaultPackage          = resource.getString("defaultPackage", ""     ); // Default package part
 	private static final String defaultPackageString    = resource.getString("defaultPackageString"   ); // String replacing the default package part
+
+	// since 2.4.0
+	private static final List<String> reflectionClasses = resource.getStringList("reflectionClasses"  ); // List of class names that output content in reflection even if toString method is implemented
+	private static final Map<String, String> mapNameMap = resource.getStringKeyMap("mapNameMap"       ); // Name to mapNmae map 
 
 	// Logger
 	private static Logger logger = null;
@@ -257,8 +285,10 @@ public class DebugTrace {
 	// Before thread id
 	private static long beforeThreadId;
 
-	// Reflection target map
-	private static final Map<Class<?>, Boolean> reflectionTargetMap = new HashMap<>();
+// 2.4.0
+//	// Reflection target map
+//	private static final Map<Class<?>, Boolean> reflectionTargetMap = new HashMap<>();
+////
 
 	// Reflected object list
 	private static final List<Object> reflectedObjects = new ArrayList<>();
@@ -266,7 +296,8 @@ public class DebugTrace {
 	// Non-printing property map (@since 1.5.0)
 // 2.3.0
 //	private static final Map<String, Boolean> nonPrintPropertyMap = new HashMap<>();
-	private static final Set<String> nonPrintPropertySet = new HashSet<>();
+// 2.4.0
+//	private static final Set<String> nonPrintPropertySet = new HashSet<>();
 ////
 
 	static {
@@ -276,30 +307,37 @@ public class DebugTrace {
 	////
 
 	// 2.2.0
-		// Non print properties
-		for (String nonPrintProperty : nonPrintProperties) {
-			try {
-				int sharpIndex = nonPrintProperty.indexOf('#');
-				if (sharpIndex < 0) {
-					logger.log("ERROR: " + nonPrintProperty);
-					continue;
-				}
-				String className = nonPrintProperty.substring(0, sharpIndex);
-				String propertyName = nonPrintProperty.substring(sharpIndex + 1);
-				Class<?> targetClass = Class.forName(className);
-				addNonPrintProperties(targetClass, propertyName);
-			}
-			catch (Exception e) {
-				logger.log("ERROR: " + nonPrintProperty + ": " + e.toString());
-			}
-		}
+	// 2.4.0
+	//	// Non print properties
+	//	for (String nonPrintProperty : nonPrintProperties) {
+	//		try {
+	//			int sharpIndex = nonPrintProperty.indexOf('#');
+	//			if (sharpIndex < 0) {
+	//				logger.log("ERROR: " + nonPrintProperty);
+	//				continue;
+	//			}
+	//			String className = nonPrintProperty.substring(0, sharpIndex);
+	//			String propertyName = nonPrintProperty.substring(sharpIndex + 1);
+	//			Class<?> targetClass = Class.forName(className);
+	//			addNonPrintProperties(targetClass, propertyName);
+	//		}
+	//		catch (Exception e) {
+	//			logger.log("ERROR: " + nonPrintProperty + ": " + e.toString());
+	//		}
+	//	}
 	////
 	}
+
+// 2.4.0
+	private static final Map<String, Map<Integer, String>> convertMapMap = new HashMap<>();
+	private static String lastLog = "";
+////
 
 	private DebugTrace() {}
 
 	/**
-	 * Append timestamp
+	 * Append a timestamp to the head of the string.<br>
+	 * <i>This method is used internally.</i>
 	 *
 	 * @param string a string
 	 * @return a string appended a timestamp string
@@ -348,35 +386,39 @@ public class DebugTrace {
 				: state.dataNestLevel];
 	}
 
-	/**
-	 * Add a reflection target class.
-	 *
-	 * @param targetClass a reflection target class.
-	 */
-	public static void addReflectionTarget(Class<?> targetClass) {
-		synchronized(stateMap) {
-			reflectionTargetMap.put(targetClass, true);
-		}
-	}
+// 2.4.0
+//	/**
+//	 * Add a reflection target class.
+//	 *
+//	 * @param targetClass a reflection target class.
+//	 */
+//	public static void addReflectionTarget(Class<?> targetClass) {
+//		synchronized(stateMap) {
+//			reflectionTargetMap.put(targetClass, true);
+//		}
+//	}
+////
 
-	/**
-	 * Specifies properties that do not display the value.
-	 *
-	 * @param targetClass a target class.
-	 * @param propertyNames target property names.
-	 *
-	 * @since 1.5.0
-	 */
-	public static void addNonPrintProperties(Class<?> targetClass, String... propertyNames) {
-		String prefix = targetClass.getName() + ".";
-		synchronized(stateMap) {
-			Arrays.stream(propertyNames)
-			// 2.3.0
-			//	.forEach(propertyName -> nonPrintPropertyMap.put(prefix + propertyName, true));
-				.forEach(propertyName -> nonPrintPropertySet.add(prefix + propertyName));
-			////
-		}
-	}
+// 2.4.0
+//	/**
+//	 * Specifies properties that do not display the value.
+//	 *
+//	 * @param targetClass a target class.
+//	 * @param propertyNames target property names.
+//	 *
+//	 * @since 1.5.0
+//	 */
+//	public static void addNonPrintProperties(Class<?> targetClass, String... propertyNames) {
+//		String prefix = targetClass.getName() + ".";
+//		synchronized(stateMap) {
+//			Arrays.stream(propertyNames)
+//			// 2.3.0
+//			//	.forEach(propertyName -> nonPrintPropertyMap.put(prefix + propertyName, true));
+//				.forEach(propertyName -> nonPrintPropertySet.add(prefix + propertyName));
+//			////
+//		}
+//	}
+////
 
 	/**
 	 * Up the nest level.
@@ -458,7 +500,11 @@ public class DebugTrace {
 					logger.log(getIndentString(state)); // Line break
 				////
 
-				logger.log(getIndentString(state) + getCallerInfo(enterString));
+			// 2.4.0
+			//	logger.log(getIndentString(state) + getCallerInfo(enterString));
+				lastLog = getIndentString(state) + getCallerInfo(enterString);
+				logger.log(lastLog);
+			////
 
 				upNest(state);
 			}
@@ -476,7 +522,11 @@ public class DebugTrace {
 				State state = getState();
 				downNest(state);
 
-				logger.log(getIndentString(state) + getCallerInfo(leaveString));
+			// 2.4.0
+			//	logger.log(getIndentString(state) + getCallerInfo(leaveString));
+				lastLog = getIndentString(state) + getCallerInfo(leaveString);
+				logger.log(lastLog);
+			////
 
 				printEnd(); // Common end processing of output
 			}
@@ -503,33 +553,6 @@ public class DebugTrace {
 	 *
 	 * @param message a message
 	 */
-	private static void printSub(String message) {
-		synchronized(stateMap) {
-			printStart(); // Common start processing of output
-
-			if (message.isEmpty())
-				logger.log("");
-			else {
-				StackTraceElement element = getStackTraceElement();
-				String suffix = String.format(printSuffixFormat,
-				// 2.3.0
-				//	element.getClassName(),
-					replaceTypeName(element.getClassName()),
-				////
-					element.getMethodName(),
-					element.getFileName(),
-					element.getLineNumber());
-				logger.log(getIndentString(getState()) + message + suffix);
-			}
-			printEnd(); // Common end processing of output
-		}
-	}
-
-	/**
-	 * Outputs the message to the log.
-	 *
-	 * @param message a message
-	 */
 	public static void print(String message) {
 		if (enabled)
 			printSub(message);
@@ -546,13 +569,54 @@ public class DebugTrace {
 	}
 
 	/**
+	 * Outputs the message to the log.
+	 *
+	 * @param message a message
+	 */
+	private static void printSub(String message) {
+		synchronized(stateMap) {
+			printStart(); // Common start processing of output
+
+		// 2.4.0
+		//	if (message.isEmpty())
+		//		logger.log("");
+		//	else {
+			String lastLog = "";
+			if (!message.isEmpty()) {
+		////
+				StackTraceElement element = getStackTraceElement();
+				String suffix = String.format(printSuffixFormat,
+				// 2.3.0
+				//	element.getClassName(),
+					replaceTypeName(element.getClassName()),
+				////
+					element.getMethodName(),
+					element.getFileName(),
+					element.getLineNumber());
+			// 2.4.0
+			//	logger.log(getIndentString(getState()) + message + suffix);
+				lastLog = getIndentString(getState()) + message + suffix;
+			////
+			}
+		// 2.4.0
+			logger.log(lastLog);
+		////
+			printEnd(); // Common end processing of output
+		}
+	}
+
+	/**
 	 * Outputs the name and value to the log.
 	 *
-	 * @param name the name
-	 * @param value the value (accept null)
-	 * @param isPrimitive if the value is primitive type then true
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param value the value to output (accept null)
+	 * @param isPrimitive true if the value is primitive type, false otherwise
 	 */
-	private static void printSub(String name, Object value, boolean isPrimitive) {
+// 2.4.0
+//	private static void printSub(String name, Object value, boolean isPrimitive) {
+	private static void printSub(String mapName, String name, Object value, boolean isPrimitive) {
+////
 		synchronized(stateMap) {
 			printStart(); // Common start processing of output
 
@@ -563,7 +627,12 @@ public class DebugTrace {
 			StringBuilder buff = new StringBuilder();
 
 			buff.append(name).append(varNameValueSeparator);
-			append(state, strings, buff, value, isPrimitive, false);
+		// 2.4.0
+		//	append(state, strings, buff, value, isPrimitive, false);
+			if (mapName == null)
+				mapName = mapNameMap.get(name);
+			append(state, strings, buff, mapName, value, isPrimitive, false, false);
+		////
 
 			StackTraceElement element = getStackTraceElement();
 			String suffix = String.format(printSuffixFormat,
@@ -575,6 +644,9 @@ public class DebugTrace {
 			lineFeed(state, strings, buff);
 
 			strings.stream().forEach(logger::log);
+		// 2.4.0
+			lastLog = String.join("\n", strings);
+		////
 
 			printEnd(); // Common end processing of output
 		}
@@ -618,169 +690,328 @@ public class DebugTrace {
 	/**
 	 * Outputs the name and the boolean value to the log.
 	 *
-	 * @param name the name
-	 * @param value the boolean value
+	 * @param name the name of the value
+	 * @param value the boolean value to output
 	 */
 	public static void print(String name, boolean value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
 	}
 
 	/**
 	 * Outputs the name and the char value to the log.
 	 *
-	 * @param name the name
-	 * @param value the char value
+	 * @param name the name of the value
+	 * @param value the char value to output
 	 */
 	public static void print(String name, char value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
 	}
 
 	/**
 	 * Outputs the name and the byte value to the log.
 	 *
-	 * @param name the name
-	 * @param value the byte value
+	 * @param name the name of the value
+	 * @param value the byte value to output
 	 */
 	public static void print(String name, byte value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
+	}
+
+	/**
+	 * Outputs the name and the byte value to the log.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param value the byte value to output
+	 *
+	 * @since 2.4.0
+	 */
+	public static void print(String mapName, String name, byte value) {
+		if (enabled)
+			printSub(mapName, name, value, true);
 	}
 
 	/**
 	 * Outputs the name and the short value to the log.
 	 *
-	 * @param name the name
-	 * @param value the short value
+	 * @param name the name of the value
+	 * @param value the short value to output
 	 */
 	public static void print(String name, short value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
+	}
+
+	/**
+	 * Outputs the name and the short value to the log.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param value the short value to output
+	 *
+	 * @since 2.4.0
+	 */
+	public static void print(String mapName, String name, short value) {
+		if (enabled)
+			printSub(mapName, name, value, true);
 	}
 
 	/**
 	 * Outputs the name and the int value to the log.
 	 *
-	 * @param name the name
-	 * @param value the int value
+	 * @param name the name of the value
+	 * @param value the int value to output
 	 */
 	public static void print(String name, int value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
+	}
+
+	/**
+	 * Outputs the name and the int value to the log.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param value the int value to output
+	 *
+	 * @since 2.4.0
+	 */
+	public static void print(String mapName, String name, int value) {
+		if (enabled)
+			printSub(mapName, name, value, true);
 	}
 
 	/**
 	 * Outputs the name and value to the log.
 	 *
-	 * @param name the name
-	 * @param value the long value
+	 * @param name the name of the value
+	 * @param value the long value to output
 	 */
 	public static void print(String name, long value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
+	}
+
+	/**
+	 * Outputs the name and the long value to the log.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param value the long value to output
+	 *
+	 * @since 2.4.0
+	 */
+	public static void print(String mapName, String name, long value) {
+		if (enabled)
+			printSub(mapName, name, value, true);
 	}
 
 	/**
 	 * Outputs the name and value to the log.
 	 *
-	 * @param name the name
-	 * @param value the float value
+	 * @param name the name of the value
+	 * @param value the float value to output
 	 */
 	public static void print(String name, float value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
 	}
 
 	/**
 	 * Outputs the name and value to the log.
 	 *
-	 * @param name the name
-	 * @param value the double value
+	 * @param name the name of the value
+	 * @param value the double value to output
 	 */
 	public static void print(String name, double value) {
 		if (enabled)
-			printSub(name, value, true);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, true);
+		////
 	}
 
 	/**
 	 * Outputs the name and value to the log.
 	 *
-	 * @param name the name
-	 * @param value the value (accept null)
+	 * @param name the name of the value
+	 * @param value the value to output (accept null)
 	 */
 	public static void print(String name, Object value) {
 		if (enabled)
-			printSub(name, value, false);
+		// 2.4.0
+		//	printSub(name, value, true);
+			printSub(null, name, value, false);
+		////
+	}
+
+	/**
+	 * Outputs the name and value to the log.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param value the value to output (accept null)
+	 *
+	 * @since 2.4.0
+	 */
+	public static void print(String mapName, String name, Object value) {
+		if (enabled)
+			printSub(mapName, name, value, false);
+	}
+
+	/**
+	 * Outputs the name and boolean value to the log.
+	 *
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of boolean value to output
+	 */
+	public static void print(String name, BooleanSupplier valueSupplier) {
+		if (enabled)
+		// 2.4.0
+		//	printSub(name, valueSupplier.getAsBoolean(), true);
+			printSub(null, name, valueSupplier.getAsBoolean(), true);
+		////
+	}
+
+	/**
+	 * Outputs a int value to the log.
+	 *
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of int value to output
+	 */
+	public static void print(String name, IntSupplier valueSupplier) {
+		if (enabled)
+		// 2.4.0
+		//	printSub(name, valueSupplier.getAsInt(), true);
+			printSub(null, name, valueSupplier.getAsInt(), true);
+		////
+	}
+
+	/**
+	 * Outputs a int value to the log.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of int value to output
+	 *
+	 * @since 2.4.0
+	 */
+	public static void print(String mapName, String name, IntSupplier valueSupplier) {
+		if (enabled)
+			printSub(mapName, name, valueSupplier.getAsInt(), true);
+	}
+
+	/**
+	 * Outputs a long value to the log.
+	 *
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of long value to output
+	 */
+	public static void print(String name, LongSupplier valueSupplier) {
+		if (enabled)
+		// 2.4.0
+		//	printSub(name, valueSupplier.getAsLong(), true);
+			printSub(null, name, valueSupplier.getAsLong(), true);
+		////
+	}
+
+	/**
+	 * Outputs a long value to the log.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of long value to output
+	 *
+	 * @since 2.4.0
+	 */
+	public static void print(String mapName, String name, LongSupplier valueSupplier) {
+		if (enabled)
+			printSub(mapName, name, valueSupplier.getAsLong(), true);
+	}
+
+	/**
+	 * Outputs a double value to the log.
+	 *
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of double value to output
+	 */
+	public static void print(String name, DoubleSupplier valueSupplier) {
+		if (enabled)
+		// 2.4.0
+		//	printSub(name, valueSupplier.getAsDouble(), true);
+			printSub(null, name, valueSupplier.getAsDouble(), true);
+		////
 	}
 
 	/**
 	 * Outputs the name and value to the log.
 	 *
 	 * @param <T> type of the value
-	 * @param name the name
-	 * @param valueSupplier the value supplier
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of value to output
 	*/
 	public static <T> void print(String name, Supplier<T> valueSupplier) {
 		if (enabled)
-			printSub(name, valueSupplier.get(), false);
+		// 2.4.0
+		//	printSub(name, valueSupplier.get(), false);
+			printSub(null, name, valueSupplier.get(), false);
+		////
 	}
 
 	/**
-	 * Outputs the name and boolean value to the log.
+	 * Outputs the name and value to the log.
 	 *
-	 * @param name the name
-	 * @param valueSupplier the boolean supplier
-	 */
-	public static void print(String name, BooleanSupplier valueSupplier) {
+	 * @param <T> type of the value
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param name the name of the value
+	 * @param valueSupplier the supplier of value to output
+	*/
+	public static <T> void print(String mapName, String name, Supplier<T> valueSupplier) {
 		if (enabled)
-			printSub(name, valueSupplier.getAsBoolean(), true);
+			printSub(mapName, name, valueSupplier.get(), false);
 	}
 
 	/**
-	 * Outputs a int value to the log.
-	 *
-	 * @param name the name
-	 * @param valueSupplier the int supplier
-	 */
-	public static void print(String name, IntSupplier valueSupplier) {
-		if (enabled)
-			printSub(name, valueSupplier.getAsInt(), true);
-	}
-
-	/**
-	 * Outputs a long value to the log.
-	 *
-	 * @param name the name
-	 * @param valueSupplier the long supplier
-	 */
-	public static void print(String name, LongSupplier valueSupplier) {
-		if (enabled)
-			printSub(name, valueSupplier.getAsLong(), true);
-	}
-
-	/**
-	 * Outputs a double value to the log.
-	 *
-	 * @param name the name
-	 * @param valueSupplier the double supplier
-	 */
-	public static void print(String name, DoubleSupplier valueSupplier) {
-		if (enabled)
-			printSub(name, valueSupplier.getAsDouble(), true);
-	}
-
-	/**
-	 * Returns a string representation of the value.
+	 * Appends the value for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
 	 * @param buff a string buffer
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
 	 * @param value the value object
-	 * @param isPrimitive if the value is primitive type then true, otherwise false
-	 * @param isComponent if the value is component of an array, otherwise false
+	 * @param isPrimitive true if the value is primitive type, false otherwise
+	 * @param isComponent true if the value is component of an array, false otherwise
+	 * @param isElement true if the value is element of a container class, false otherwise
 	 */
-	private static void append(State state, List<String> strings, StringBuilder buff, Object value, boolean isPrimitive, boolean isComponent) {
+// 2.4.0
+//	private static void append(State state, List<String> strings, StringBuilder buff, Object value, boolean isPrimitive, boolean isComponent) {
+	private static void append(State state, List<String> strings, StringBuilder buff,
+		String mapName, Object value, boolean isPrimitive, boolean isComponent, boolean isElement) {
+////
 		if (value == null) {
 			buff.append("null");
 		} else {
@@ -791,22 +1022,28 @@ public class DebugTrace {
 					type = value.getClass();
 			}
 
-			String typeName = getTypeName(type, value, isComponent, 0);
+		// 2.4.0
+		//	String typeName = getTypeName(type, value, isComponent, 0);
+			String typeName = getTypeName(type, value, isComponent, isElement, 0);
+		////
 			if (typeName != null)
 				buff.append(typeName);
 
 			if (type.isArray()) {
 				// Array
-				if      (type == char[].class) append(state, strings, buff, ((char[])value)); // String Array
-				else if (type == byte[].class) append(state, strings, buff, ((byte[])value)); // Byte Array
-				else                      appendArray(state, strings, buff,          value ); // Other Array
+				if      (type == char[].class) append(state, strings, buff, ((char[])value)); // char Array
+				else if (type == byte[].class) append(state, strings, buff, ((byte[])value)); // byte Array
+			// 2.4.0
+			//	else                      appendArray(state, strings, buff,          value ); // Other Array
+				else                      appendArray(state, strings, buff, mapName, value ); // Other Array
+			////
 
 			} else if (value instanceof Boolean) {
 				// Boolean
 				buff.append(value);
 
 			} else if (value instanceof Character) {
-				// String
+				// Character
 				buff.append('\'');
 				append(state, strings, buff, ((Character)value).charValue());
 				buff.append('\'');
@@ -815,6 +1052,10 @@ public class DebugTrace {
 				// Number
 				if (value instanceof BigDecimal) buff.append(((BigDecimal)value).toPlainString()); // BigDecimal
 				else buff.append(value); // Other Number
+
+			} else if (value instanceof CharSequence) {
+				// CharSequence
+				append(state, strings, buff, (CharSequence)value);
 
 			} else if (value instanceof java.util.Date) {
 				// Date
@@ -826,42 +1067,56 @@ public class DebugTrace {
 			} else if (value instanceof OptionalInt) {
 				// OptionalInt
 				if (((OptionalInt)value).isPresent())
-					append(state, strings, buff, ((OptionalInt)value).getAsInt(), true, true);
+				// 2.4.0
+				//	append(state, strings, buff, ((OptionalInt)value).getAsInt(), true, true);
+					append(state, strings, buff, mapName, ((OptionalInt)value).getAsInt(), true, false, true);
+				////
 				else
 					buff.append("empty");
 
 			} else if (value instanceof OptionalLong) {
 				// OptionalLong
 				if (((OptionalLong)value).isPresent())
-					append(state, strings, buff, ((OptionalLong)value).getAsLong(), true, true);
+				// 2.4.0
+				//	append(state, strings, buff, ((OptionalLong)value).getAsLong(), true, true);
+					append(state, strings, buff, mapName, ((OptionalLong)value).getAsLong(), true, false, true);
+				////
 				else
 					buff.append("empty");
 
 			} else if (value instanceof OptionalDouble) {
 				// OptionalDouble
 				if (((OptionalDouble)value).isPresent())
-					append(state, strings, buff, ((OptionalDouble)value).getAsDouble(), true, true);
+				// 2.4.0
+				//	append(state, strings, buff, ((OptionalDouble)value).getAsDouble(), true, true);
+					append(state, strings, buff, mapName, ((OptionalDouble)value).getAsDouble(), true, false, true);
+				////
 				else
 					buff.append("empty");
 
 			} else if (value instanceof Optional) {
 				// Optional
 				if (((Optional<?>)value).isPresent())
-					append(state, strings, buff, ((Optional<?>)value).get(), false, true);
+				// 2.4.0
+				//	append(state, strings, buff, ((Optional<?>)value).get(), false, true);
+					append(state, strings, buff, mapName, ((Optional<?>)value).get(), false, false, true);
+				////
 				else
 					buff.append("empty");
 
-			} else if (value instanceof CharSequence) {
-				// CharSequence
-				append(state, strings, buff, (CharSequence)value);
-
 			} else if (value instanceof Collection) {
 				// Collection
-				append(state, strings, buff, (Collection<?>)value);
+			// 2.4.0
+			//	append(state, strings, buff, (Collection<?>)value);
+				append(state, strings, buff, mapName, (Collection<?>)value);
+			////
 
 			} else if (value instanceof Map) {
 				// Map
-				append(state, strings, buff, (Map<?,?>)value);
+			// 2.4.0
+			//	append(state, strings, buff, (Map<?,?>)value);
+				append(state, strings, buff, mapName, (Map<?,?>)value);
+			////
 
 			} else if (value instanceof Clob) {
 				// Clob
@@ -889,15 +1144,22 @@ public class DebugTrace {
 
 			} else {
 				// Other
-				Boolean isReflection = reflectionTargetMap.get(type);
-				if (isReflection == null) {
-					isReflection = !hasToString(type);
-					reflectionTargetMap.put(type, isReflection);
+			// 2.4.0
+			//	Boolean isReflection = reflectionTargetMap.get(type);
+			//	if (isReflection == null) {
+			//		isReflection = !hasToString(type);
+			//		reflectionTargetMap.put(type, isReflection);
+			//	}
+				boolean isReflection = reflectionClasses.contains(type.getName());
+				if (!isReflection && !hasToString(type)) {
+					isReflection = true;
+					reflectionClasses.add(type.getName());
 				}
+			////
 
 				if (isReflection) {
 					// Use Reflection
-					if (reflectedObjects.stream().anyMatch((object) -> value == object))
+					if (reflectedObjects.stream().anyMatch(object -> value == object))
 						// Cyclic reference
 						buff.append(cyclicReferenceString).append(value);
 					else {
@@ -911,6 +1173,11 @@ public class DebugTrace {
 					buff.append(value);
 				}
 			}
+		// 2.4.0
+			String convertedValue =  getConvertedValue(mapName, value);
+			if (convertedValue != null)
+				buff.append('(').append(convertedValue).append(')');
+		////
 		}
 	}
 
@@ -920,29 +1187,45 @@ public class DebugTrace {
 	 *
 	 * @param type the type of the value
 	 * @param value the value object
-	 * @param isComponent if the value is component of an array, otherwise false
+	 * @param isComponent true if the value is component of an array, false otherwise
+	 * @param isElement true if the value is element of a container class, false otherwise
 	 * @param nest current nest count
 	 * @return the type name to be output to the log
 	*/
 	@SuppressWarnings("rawtypes")
-	private static String getTypeName(Class<?>type, Object value, boolean isComponent, int nest) {
+// 2.4.0
+//	private static String getTypeName(Class<?>type, Object value, boolean isComponent, int nest) {
+	private static String getTypeName(Class<?>type, Object value, boolean isComponent, boolean isElement, int nest) {
+////
 		String typeName = null;
 		long length = -1L;
 		int  size   = -1;
 
 		if (type.isArray()) {
 			// Array
-			typeName = getTypeName(type.getComponentType(), null, false, nest + 1) + "[]";
+			typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1) + "[]";
 			if (value != null)
 				length = Array.getLength(value);
 		} else {
 			// Not Array
-			if (nest > 0 || (isComponent ? !noOutputComponentTypeSet.contains(type) : !noOutputTypeSet.contains(type))) {
+			if (   nest > 0
+				|| (isComponent
+						? !noOutputComponentTypeSet.contains(type)
+					: isElement
+						? !noOutputElementTypeSet.contains(type)
+						: !noOutputTypeSet.contains(type))
+				) {
 				// Output the type name
 				typeName = type.getCanonicalName();
 				if (typeName == null)
 					typeName = type.getName();
-				if (typeName.startsWith("java.") && !typeName.equals("java.util.Date"))
+			// 2.4.0
+			//	if (typeName.startsWith("java.") && !typeName.equals("java.util.Date"))
+				if (   typeName.startsWith("java.lang.")
+					|| typeName.startsWith("java.math.")
+					|| typeName.startsWith("java.sql.")
+					|| typeName.startsWith("java.util.") && !typeName.equals("java.util.Date"))
+			////
 					typeName = type.getSimpleName();
 			// 2.3.0
 				else
@@ -990,7 +1273,43 @@ public class DebugTrace {
 	}
 
 	/**
-	 * Appends a character representation for log to the string buffer.
+	 * Returns the map for converting.
+	 *
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+	 * @param value the value object
+	 * @return a converted value (mey be null)
+	 *
+	 * @since 2.4.0
+	 */
+	private static String getConvertedValue(String mapName, Object value) {
+		if (mapName == null || value == null)
+			return null;
+
+		Integer key = null;
+		if (value instanceof Byte)
+			key = (int)(byte)value;
+		else if (value instanceof Short)
+			key = (int)(short)value;
+		else if (value instanceof Integer)
+			key = (Integer)value;
+		else if (value instanceof Long) {
+			if ((long)value >= Integer.MIN_VALUE && (long)value <= Integer.MAX_VALUE)
+				key = (int)(long)value;
+		}
+		if (key == null)
+			return null;
+
+		Map<Integer, String> convertMap = convertMapMap.get(mapName);
+		if (convertMap == null) {
+			convertMap = resource.getIntegerKeyMap(mapName);
+			convertMapMap.put(mapName, convertMap);
+		}
+
+		return convertMap.get(key);
+	}
+
+	/**
+	 * Appends a character representation for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
@@ -999,8 +1318,11 @@ public class DebugTrace {
 	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, char ch) {
 		if (ch >= ' ' && ch != '\u007F') {
-			if      (ch == '"' ) buff.append("\\\"");
-			else if (ch == '\'') buff.append("\\'" );
+		// 2.4.0
+		//	if      (ch == '"' ) buff.append("\\\"");
+		//	else if (ch == '\'') buff.append("\\'" );
+			if      (ch == '\'') buff.append("\\'" );
+		////
 			else if (ch == '\\') buff.append("\\\\");
 			else                 buff.append(ch);
 		} else {
@@ -1014,7 +1336,7 @@ public class DebugTrace {
 	}
 
 	/**
-	 * Appends a CharSequence representation for log to the string buffer.
+	 * Appends a CharSequence representation for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
@@ -1028,13 +1350,28 @@ public class DebugTrace {
 				buff.append(limitString);
 				break;
 			}
-			append(state, strings, buff, charSequence.charAt(index));
+		// 2.4.0
+		//	append(state, strings, buff, charSequence.charAt(index));
+			char ch = charSequence.charAt(index);
+			if (ch >= ' ' && ch != '\u007F') {
+				if      (ch == '"' ) buff.append("\\\"");
+				else if (ch == '\\') buff.append("\\\\");
+				else                 buff.append(ch);
+			} else {
+				if      (ch == '\b') buff.append("\\b" ); // 07 BEL
+				else if (ch == '\t') buff.append("\\t" ); // 09 HT
+				else if (ch == '\n') buff.append("\\n" ); // 0A LF
+				else if (ch == '\f') buff.append("\\f" ); // 0C FF
+				else if (ch == '\r') buff.append("\\r" ); // 0D CR
+				else buff.append("\\u").append(String.format("%04X", (short)ch));
+			}
+		////
 		}
 		buff.append('"');
 	}
 
 	/**
-	 * Appends a character array representation for log to the string buffer.
+	 * Appends a character array representation for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
@@ -1054,7 +1391,7 @@ public class DebugTrace {
 	}
 
 	/**
-	 * Appends a byte array representation for log to the string buffer.
+	 * Appends a byte array representation for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
@@ -1104,14 +1441,18 @@ public class DebugTrace {
 	}
 
 	/**
-	 * Appends an object array representation for log to the string buffer.
+	 * Appends an object array representation for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
 	 * @param buff a string buffer
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
 	 * @param array an object array
 	 */
-	private static void appendArray(State state, List<String> strings, StringBuilder buff, Object array) {
+// 2.4.0
+//	private static void appendArray(State state, List<String> strings, StringBuilder buff, Object array) {
+	private static void appendArray(State state, List<String> strings, StringBuilder buff, String mapName, Object array) {
+////
 		Class<?> componentType = array.getClass().getComponentType();
 
 		int length = Array.getLength(array);
@@ -1131,7 +1472,10 @@ public class DebugTrace {
 				if (length >= outputIndexLength)
 					buff.append(String.format(indexFormat, index));
 				Object value = Array.get(array, index);
-				append(state, strings, buff, value, componentType.isPrimitive(), true);
+			// 2.4.0
+			//	append(state, strings, buff, value, componentType.isPrimitive(), true);
+				append(state, strings, buff, mapName, value, componentType.isPrimitive(), true, false);
+			////
 			} else
 				buff.append(limitString);
 
@@ -1149,31 +1493,53 @@ public class DebugTrace {
 	}
 
 	/**
-	 * Appends a Collection representation for log to the string buffer.
+	 * Appends a Collection representation for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
 	 * @param buff a string buffer
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
 	 * @param collection a Collection object
 	 */
-	private static void append(State state, List<String> strings, StringBuilder buff, Collection<?> collection) {
-		Iterator<?> iterator = collection.iterator();
+// 2.4.0
+//	private static void append(State state, List<String> strings, StringBuilder buff, Collection<?> collection) {
+//	Iterator<?> iterator = collection.iterator();
+	private static <E> void append(State state, List<String> strings, StringBuilder buff, String mapName, Collection<E> collection) {
+		Iterator<E> iterator = collection.iterator();
+////
 
 		boolean multiLine = collection.size() >= 2;
 
 		buff.append('[');
-		if (multiLine) {
-			lineFeed(state, strings, buff);
-			upDataNest(state);
-		}
+	// 2.4.0
+	//	if (multiLine) {
+	//		lineFeed(state, strings, buff);
+	//		upDataNest(state);
+	//	}
+	////
 
 		for (int index = 0; iterator.hasNext(); ++index) {
+		// 2.4.0
+			E element = iterator.next();
+			if (index == 0) {
+				if (element != null && singleLineComponentTypeSet.contains(element.getClass()))
+					multiLine = false;
+			}
+			if (multiLine) {
+				lineFeed(state, strings, buff);
+				upDataNest(state);
+			}
+		////
+
 			if (!multiLine && index > 0) buff.append(", ");
 
 			if (index < arrayLimit) {
 				if (collection.size() >= outputIndexLength)
 					buff.append(String.format(indexFormat, index));
-				append(state, strings, buff, iterator.next(), false, false);
+			// 2.4.0
+			//	append(state, strings, buff, iterator.next(), false, false);
+				append(state, strings, buff, mapName, element, false, false, true);
+			////
 			} else
 				buff.append(limitString);
 
@@ -1191,32 +1557,58 @@ public class DebugTrace {
 	}
 
 	/**
-	 * Appends a Map representation for log to the string buffer.
+	 * Appends a Map representation for logging to the string buffer.
 	 *
 	 * @param state indent state
 	 * @param strings a string list
 	 * @param buff a string buffer
+	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
 	 * @param map a Map
 	 */
-	private static <K,V> void append(State state, List<String> strings, StringBuilder buff, Map<K,V> map) {
+// 2.4.0
+//	private static <K,V> void append(State state, List<String> strings, StringBuilder buff, Map<K,V> map) {
+		private static <K,V> void append(State state, List<String> strings, StringBuilder buff, String mapName, Map<K,V> map) {
+////
 		Iterator<Map.Entry<K,V>> iterator = map.entrySet().iterator();
 
 		boolean multiLine = map.size() >= 2;
 
 		buff.append('[');
-		if (multiLine) {
-			lineFeed(state, strings, buff);
-			upDataNest(state);
-		}
+	// 2.4.0
+	//	if (multiLine) {
+	//		lineFeed(state, strings, buff);
+	//		upDataNest(state);
+	//	}
+	////
 
 		for (int index = 0; iterator.hasNext(); ++index) {
+		// 2.4.0
+			Map.Entry<K,V> entry = iterator.next();
+			K key   = entry.getKey();
+			V value = entry.getValue();
+			if (index == 0) {
+				if (   key   != null && singleLineComponentTypeSet.contains(key  .getClass())
+					&& value != null && singleLineComponentTypeSet.contains(value.getClass()))
+					multiLine = false;
+			}
+			if (multiLine) {
+				lineFeed(state, strings, buff);
+				upDataNest(state);
+			}
+		////
 			if (!multiLine && index > 0) buff.append(", ");
 
 			if (index < mapLimit) {
-				Map.Entry<K,V> entry = iterator.next();
-				append(state, strings, buff, entry.getKey(), false, false);
+			// 2.4.0
+			//	Map.Entry<K,V> entry = iterator.next();
+			//	append(state, strings, buff, entry.getKey(), false, false);
+				append(state, strings, buff, mapName, key, false, false, true);
+			////
 				buff.append(keyValueSeparator);
-				append(state, strings, buff, entry.getValue(), false, false);
+			// 2.4.0
+			//	append(state, strings, buff, entry.getValue(), false, false);
+				append(state, strings, buff, mapName, value, false, false, true);
+			////
 			} else
 				buff.append(limitString);
 
@@ -1302,7 +1694,10 @@ public class DebugTrace {
 			lineFeed(state, strings, buff);
 		}
 
-		String classNamePrefix = clazz.getName() + ".";
+	// 2.4.0
+	//	String classNamePrefix = clazz.getName() + ".";
+		String classNamePrefix = clazz.getName() + "#";
+	////
 
 		// field
 		Field[] fields = clazz.getDeclaredFields();
@@ -1356,16 +1751,33 @@ public class DebugTrace {
 
 		// 2.3.0
 		//	if (value != null && nonPrintPropertyMap.containsKey(classNamePrefix + fieldName))
-			if (value != null && nonPrintPropertySet.contains(classNamePrefix + fieldName))
+		// 2.4.0
+		//	if (value != null && nonPrintPropertySet.contains(classNamePrefix + fieldName))
+			if (value != null && nonPrintProperties.contains(classNamePrefix + fieldName))
 		////
 				// the property is non-printing and the value is not null
 				buff.append(nonPrintString);
-			else
-				append(state, strings, buff, value, field.getType().isPrimitive(), false);
+			else {
+			// 2.4.0
+			//	append(state, strings, buff, value, field.getType().isPrimitive(), false);
+				String mapName = mapNameMap.get(fieldName);
+				append(state, strings, buff, mapName, value, field.getType().isPrimitive(), false, false);
+			////
+			}
 
 			buff.append(",");
 			lineFeed(state, strings, buff);
 		}
 	}
 
+	/**
+	 * Returns the last log string output.
+	 *
+	 * @return the last log string output.
+	 *
+	 * @since 2.4.0
+	 */
+	public static String getLastLog() {
+		return lastLog;
+	}
 }

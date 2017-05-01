@@ -12,10 +12,6 @@
 hs_err_pid*
 /bin/
 /build/
-/test.groovy
 .gradle/
 .settings/
-src/test/groovy/
-src/test/java/sample/
 src/test/resources_err/
-*.gradle_

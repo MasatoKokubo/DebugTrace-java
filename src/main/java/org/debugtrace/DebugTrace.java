@@ -1457,7 +1457,12 @@ public class DebugTrace {
 
 		int length = Array.getLength(array);
 
-		boolean multiLine = length >= 2 && !singleLineComponentTypeSet.contains(componentType);
+		boolean multiLine = length >= 2
+			&& !singleLineComponentTypeSet.contains(componentType)
+		// 2.4.0
+			&& !(Enum.class.isAssignableFrom(componentType))
+		////
+			;
 
 		buff.append('[');
 		if (multiLine) {
@@ -1521,8 +1526,9 @@ public class DebugTrace {
 		for (int index = 0; iterator.hasNext(); ++index) {
 		// 2.4.0
 			E element = iterator.next();
-			if (index == 0) {
-				if (element != null && singleLineComponentTypeSet.contains(element.getClass()))
+			if (index == 0 && element != null) {
+				if (   singleLineComponentTypeSet.contains(element.getClass())
+					|| Enum.class.isAssignableFrom(element.getClass()))
 					multiLine = false;
 			}
 			if (multiLine) {

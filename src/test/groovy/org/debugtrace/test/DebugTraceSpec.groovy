@@ -48,13 +48,13 @@ class DebugTraceSpec extends Specification {
 			DebugTrace.enter()
 
 		then:
-			DebugTrace.lastLog.startsWith('┌ ')
+			DebugTrace.lastLog.startsWith('enter')
 
 		when:
 			DebugTrace.leave()
 
 		then:
-			DebugTrace.lastLog.startsWith('└ ')
+			DebugTrace.lastLog.startsWith('leave')
 	}
 
 	// nonPrintPropertiesSpec

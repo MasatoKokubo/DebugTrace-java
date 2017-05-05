@@ -9,7 +9,7 @@ import org.debugtrace.DebugTrace;
 import spock.lang.*
 
 /**
- * DebugTrace Mapping Test.
+ * Mapping Test.
  *
  * @since 2.4.0
  * @author Masato Kokubo

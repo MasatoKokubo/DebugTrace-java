@@ -1530,10 +1530,10 @@ public class DebugTrace {
 				if (   singleLineComponentTypeSet.contains(element.getClass())
 					|| Enum.class.isAssignableFrom(element.getClass()))
 					multiLine = false;
-			}
-			if (multiLine) {
-				lineFeed(state, strings, buff);
-				upDataNest(state);
+				if (multiLine) {
+					lineFeed(state, strings, buff);
+					upDataNest(state);
+				}
 			}
 		////
 
@@ -1596,10 +1596,10 @@ public class DebugTrace {
 				if (   key   != null && singleLineComponentTypeSet.contains(key  .getClass())
 					&& value != null && singleLineComponentTypeSet.contains(value.getClass()))
 					multiLine = false;
-			}
-			if (multiLine) {
-				lineFeed(state, strings, buff);
-				upDataNest(state);
+				if (multiLine) {
+					lineFeed(state, strings, buff);
+					upDataNest(state);
+				}
 			}
 		////
 			if (!multiLine && index > 0) buff.append(", ");

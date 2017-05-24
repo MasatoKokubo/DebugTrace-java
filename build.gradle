@@ -21,7 +21,7 @@ dependencies {
 	compile 'log4j:log4j:1.+'
 	compile 'org.apache.logging.log4j:log4j-api:2.+'
 	runtime 'org.apache.logging.log4j:log4j-core:2.+'
-	compile 'org.slf4j:slf4j-api:1.+'
+	compile 'org.slf4j:slf4j-api:1.7.+'
 	runtime 'ch.qos.logback:logback-classic:1.+'
 
 	testCompile 'junit:junit:4.+'
@@ -37,7 +37,7 @@ archivesBaseName    = 'debugtrace'
 version             = '2.4.1'
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.4'
+    gradleVersion = '3.5'
 }
 
 compileJava {

@@ -39,7 +39,7 @@ public class Example1 {
 		return array;
 	}
 
-	// Point
+	// Point class
 	public static class Point {
 		private int x;
 		private int y;

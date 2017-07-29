@@ -124,11 +124,17 @@ class MappingSpec extends Specification {
 		when: DebugTrace.print('UserType1', 'UserType1.USER_TYPE2', UserType1.USER_TYPE2); then: DebugTrace.lastLog.indexOf('(UserType1.USER_TYPE2)') >= 0
 		when: DebugTrace.print('UserType1', 'UserType1.USER_TYPE3', UserType1.USER_TYPE3); then: DebugTrace.lastLog.indexOf('(UserType1.USER_TYPE3)') >= 0
 
-		when:
-			DebugTrace.print('user type2', new UserType2());
+		when: DebugTrace.print('user type2', new UserType2())
 		then:
 			DebugTrace.lastLog.indexOf('(UserType1.USER_TYPE1)') >= 0
 			DebugTrace.lastLog.indexOf('(UserType2.USER_TYPE2)') >= 0
+
+		when: DebugTrace.print(          'userType2' , new UserType2().userType2); then: DebugTrace.lastLog.indexOf('(UserType2.USER_TYPE2)') >= 0
+		when: DebugTrace.print(         ' userType2 ', new UserType2().userType2); then: DebugTrace.lastLog.indexOf('(UserType2.USER_TYPE2)') >= 0
+		when: DebugTrace.print(     ' aaa.userType2 ', new UserType2().userType2); then: DebugTrace.lastLog.indexOf('(UserType2.USER_TYPE2)') >= 0
+		when: DebugTrace.print( ' aaa.bbb.userType2 ', new UserType2().userType2); then: DebugTrace.lastLog.indexOf('(UserType2.USER_TYPE2)') >= 0
+		when: DebugTrace.print(' aaa.bbb. userType2 ', new UserType2().userType2); then: DebugTrace.lastLog.indexOf('(UserType2.USER_TYPE2)') >= 0
+		when: DebugTrace.print(       ' 1 userType2 ', new UserType2().userType2); then: DebugTrace.lastLog.indexOf('(UserType2.USER_TYPE2)') >= 0
 	}
 
 	static class UserType1 {

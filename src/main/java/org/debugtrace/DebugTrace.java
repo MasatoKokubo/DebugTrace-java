@@ -629,8 +629,14 @@ public class DebugTrace {
 			buff.append(name).append(varNameValueSeparator);
 		// 2.4.0
 		//	append(state, strings, buff, value, isPrimitive, false);
-			if (mapName == null)
-				mapName = mapNameMap.get(name);
+			if (mapName == null) {
+			// 2.4.2
+			//	mapName = mapNameMap.get(name);
+				String normalizedName = name.substring(name.lastIndexOf('.') + 1).trim();
+				normalizedName = normalizedName.substring(normalizedName.lastIndexOf(' ') + 1);
+				mapName = mapNameMap.get(normalizedName);
+			////
+			}
 			append(state, strings, buff, mapName, value, isPrimitive, false, false);
 		////
 

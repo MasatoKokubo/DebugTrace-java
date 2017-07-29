@@ -84,30 +84,30 @@ public class Example1 {
 ```
 
 ```log:debugtrace.log
-2017-04-30 16:16:35.930 DebugTrace 2.4.0 / logger: org.debugtrace.logger.Std$Out
-2017-04-30 16:16:35.947 
-2017-04-30 16:16:35.949 ______________________________ main ______________________________  ← スレッド切り替えログ
-2017-04-30 16:16:35.951 
-2017-04-30 16:16:35.962 Enter example.Example1.main (Example1.java:15)
-2017-04-30 16:16:35.982 | Enter example.Example1.newArray (Example1.java:25)
-2017-04-30 16:16:35.989 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
-2017-04-30 16:16:35.990 | | length = 2 (Example1.java:27)
-2017-04-30 16:16:35.992 | | 1 array = (example.Example1.Point[] length:2)[
-2017-04-30 16:16:35.993 | |   null,
-2017-04-30 16:16:35.995 | |   null,
-2017-04-30 16:16:35.997 | | ] (Example1.java:30)
-2017-04-30 16:16:36.000 | | 2 array = (example.Example1.Point[] length:2)[
-2017-04-30 16:16:36.000 | |   (example.Example1.Point)[
-2017-04-30 16:16:36.001 | |     x: 0,
-2017-04-30 16:16:36.002 | |     y: 0,
-2017-04-30 16:16:36.003 | |   ],
-2017-04-30 16:16:36.004 | |   (example.Example1.Point)[
-2017-04-30 16:16:36.004 | |     x: 0,
-2017-04-30 16:16:36.006 | |     y: 0,
-2017-04-30 16:16:36.006 | |   ],
-2017-04-30 16:16:36.006 | | ] (Example1.java:37)
-2017-04-30 16:16:36.008 | Leave example.Example1.newArray (Example1.java:38)
-2017-04-30 16:16:36.010 Leave example.Example1.main (Example1.java:20)
+2017-07-29 14:02:37.798 DebugTrace 2.4.2 / logger: org.debugtrace.logger.Std$Out
+2017-07-29 14:02:37.798 
+2017-07-29 14:02:37.798 ______________________________ main ______________________________
+2017-07-29 14:02:37.798 
+2017-07-29 14:02:37.813 enter example.Example1.main (Example1.java:15)
+2017-07-29 14:02:37.813 | enter example.Example1.newArray (Example1.java:25)
+2017-07-29 14:02:37.813 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
+2017-07-29 14:02:37.813 | | length = 2 (Example1.java:27)
+2017-07-29 14:02:37.813 | | 1 array = (example.Example1.Point[] length:2)[
+2017-07-29 14:02:37.813 | |   null,
+2017-07-29 14:02:37.813 | |   null,
+2017-07-29 14:02:37.813 | | ] (Example1.java:30)
+2017-07-29 14:02:37.813 | | 2 array = (example.Example1.Point[] length:2)[
+2017-07-29 14:02:37.813 | |   (example.Example1.Point)[
+2017-07-29 14:02:37.813 | |     x: 0,
+2017-07-29 14:02:37.813 | |     y: 0,
+2017-07-29 14:02:37.813 | |   ],
+2017-07-29 14:02:37.813 | |   (example.Example1.Point)[
+2017-07-29 14:02:37.813 | |     x: 0,
+2017-07-29 14:02:37.828 | |     y: 0,
+2017-07-29 14:02:37.828 | |   ],
+2017-07-29 14:02:37.828 | | ] (Example1.java:37)
+2017-07-29 14:02:37.828 | leave example.Example1.newArray (Example1.java:38)
+2017-07-29 14:02:37.828 leave example.Example1.main (Example1.java:20)
 ```
 
 ### 3. メソッド一覧
@@ -197,21 +197,40 @@ AppleBrand = \
 
 ```java
 // Java ソースの例
-int appleBland = Apple.AZUSA;
-DebugTrace.print("AppleBland", "appleBland", appleBland);
+int appleBrand = Apple.AKANE;
+DebugTrace.print("AppleBrand", "appleBrand", appleBrand);
+```
+
+```log
+// Log の例
+2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:29)
 ```
 
 変数名に対応するマップ名を mapNameMap プロパティで指定すると、マップ名を指定しない場合でも定数名が出力されます。
 
 ```properties:DebugTrace.properties
 # mapNameMap の例
-mapNameMap = appleBland: AppleBrand
+mapNameMap = appleBrand: AppleBrand
 ```
 
 ```java
 // Java ソースの例
-int appleBland = Apple.YUKARI;
-DebugTrace.print("appleBland", appleBland);
+int appleBrand = Apple.AKANE;
+DebugTrace.print("appleBrand", appleBrand);
+appleBrand = Apple.AKIYO;
+DebugTrace.print(" 2 appleBrand ", appleBrand);
+appleBrand = Apple.AZUSA;
+DebugTrace.print(" 3 example.appleBrand ", appleBrand);
+appleBrand = Apple.YUKARI;
+DebugTrace.print(" 4 example. appleBrand ", appleBrand);
+```
+
+```log
+// Log の例
+2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:38)
+2017-07-29 13:45:32.489 |  2 appleBrand  = 2(Apple.AKIYO) (README_example.java:40)
+2017-07-29 13:45:32.489 |  3 example.appleBrand  = 3(Apple.AZUSA) (README_example.java:42)
+2017-07-29 13:45:32.489 |  4 example. appleBrand  = 4(Apple.YUKARI) (README_example.java:44)
 ```
 
 ### 5. ロギング・ライブラリの使用例
@@ -283,7 +302,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </configuration>
 ```
 
-### 6. Gradle でビルドを行う場合の build.gradle の記述例
+### 6. build.gradle の記述例
 
 ```gradle:build.gradle
 // build.gradle

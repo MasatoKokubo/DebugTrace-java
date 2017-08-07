@@ -147,7 +147,6 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |keyValueSeparator|マップのキーと値のセパレータ|`:\\s`|
 |fieldNameValueSeparator|フィールド名と値のセパレータ|`:\\s`|
 |printSuffixFormat|print メソッドで付加される文字列<br><br>パラメータ:<br>`%1`: 呼出側のクラス名<br>`%2`: 呼出側のメソッド名<br>`%3`: 呼出側のファイル名<br>`%4`: 呼出側の行番号|`\\s(%3$s:%4$d)`|
-|indexFormat|配列とコレクションでのインデックスの出力フォーマット<br><br>パラメータ:<br>`%1`: The index|`%1$d:\\s`|
 |utilDateFormat|java.util.Date の出力フォーマット<br><br>パラメータ:<br>`%1`: java.util.Date オブジェクト<br>|`%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS`|
 |sqlDateFormat|java.sql.Date の出力フォーマット<br><br>パラメータ:<br>`%1`: java.sql.Date オブジェクト|`%1$tY-%1$tm-%1$td`|
 |timeFormat|java.sql.Time の出力フォーマット<br><br>パラメータ:<br>`%1`: java.sql.Time オブジェクト<br>|`%1$tH:%1$tM:%1$tS`|
@@ -156,7 +155,6 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |byteArrayLimit|バイト配列 (byte[]) 要素の出力数の制限|8192|
 |mapLimit|Map 要素の出力制限数|512|
 |stringLimit|String の出力文字数の制限|8192|
-|outputIndexLength|配列と Collection のインデックスを出力する長さ|9|
 |nonPrintProperties<br>*(v2.2.0~)*|出力しないプロパティのリスト<br><br>値のフォーマット:<br>`<フルクラス名>#<プロパティ名>,`<br>`<フルクラス名>#<プロパティ名>,`<br>`...`|*\<空リスト\>*|
 |defaultPackage<br>*(v2.3.0~)*|使用する Java ソースのデフォルトパッケージ|*\<なし\>*|
 |defaultPackageString<br>*(v2.3.0~)*|デフォルトパッケージ部を置き換える文字列|`...`|

@@ -211,7 +211,9 @@ public class DebugTrace {
 	private static final String keyValueSeparator       = resource.getString("keyValueSeparator"      ); // Separator between the key and value for Map object
 	private static final String fieldNameValueSeparator = resource.getString("fieldNameValueSeparator"); // Separator between the field name and value
 	private static final String printSuffixFormat       = resource.getString("printSuffixFormat"      ); // Format string of print suffix
-	private static final String indexFormat             = resource.getString("indexFormat"            ); // Format string of index of array and Collection
+// 2.4.3
+//	private static final String indexFormat             = resource.getString("indexFormat"            ); // Format string of index of array and Collection
+////
 	private static final String utilDateFormat          = resource.getString("utilDateFormat"         ); // Format string of java.util.Date
 	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string of java.sql.Date
 	private static final String timeFormat              = resource.getString("timeFormat"             ); // Format string of java.sql.Time
@@ -220,7 +222,9 @@ public class DebugTrace {
 	private static final int    byteArrayLimit          = resource.getInt   ("byteArrayLimit"         ); // Limit of byte array elements to output
 	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Limit of Map elements to output
 	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Limit of String characters to output
-	private static final int    outputIndexLength       = resource.getInt   ("outputIndexLength"      ); // Length of array and Collection to output index
+// 2.4.3
+//	private static final int    outputIndexLength       = resource.getInt   ("outputIndexLength"      ); // Length of array and Collection to output index
+////
 
 // 2.4.0
 //	// since 2.2.0
@@ -1480,8 +1484,10 @@ public class DebugTrace {
 			if (!multiLine && index > 0) buff.append(", ");
 
 			if (index < arrayLimit) {
-				if (length >= outputIndexLength)
-					buff.append(String.format(indexFormat, index));
+			// 2.4.3
+			//	if (length >= outputIndexLength)
+			//		buff.append(String.format(indexFormat, index));
+			////
 				Object value = Array.get(array, index);
 			// 2.4.0
 			//	append(state, strings, buff, value, componentType.isPrimitive(), true);
@@ -1546,8 +1552,10 @@ public class DebugTrace {
 			if (!multiLine && index > 0) buff.append(", ");
 
 			if (index < arrayLimit) {
-				if (collection.size() >= outputIndexLength)
-					buff.append(String.format(indexFormat, index));
+			// 2.4.3
+			//	if (collection.size() >= outputIndexLength)
+			//		buff.append(String.format(indexFormat, index));
+			////
 			// 2.4.0
 			//	append(state, strings, buff, iterator.next(), false, false);
 				append(state, strings, buff, mapName, element, false, false, true);

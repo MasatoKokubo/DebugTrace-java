@@ -147,7 +147,6 @@ You can specify following properties in the `DebugTrace.properties` file.
 |keyValueSeparator|Separator between the key and value for Map object|`:\\s`|
 |fieldNameValueSeparator|Separator between the field name and value|`:\\s`|
 |printSuffixFormat|Output format of print method suffix<br><br>parameters:<br>`%1`: The class name of the caller<br>`%2`: The method name of the caller<br>`%3`: The file name of the caller<br>`%4`: The line numnber of the caller|`\\s(%3$s:%4$d)`|
-|indexFormat|Output format of index of array and Collection<br><br>parameter:<br>`%1`: The index|`%1$d:\\s`|
 |utilDateFormat|Output format of java.util.Date<br><br>parameter:<br>`%1`: a java.util.Date<br>|`%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS`|
 |sqlDateFormat|Output format of java.sql.Date<br><br>parameter:<br>`%1`: a java.sql.Date|`%1$tY-%1$tm-%1$td`|
 |timeFormat|Output format of java.sql.Time<br><br>parameter:<br>`%1`: a java.sql.Time<br>|`%1$tH:%1$tM:%1$tS`|
@@ -156,7 +155,6 @@ You can specify following properties in the `DebugTrace.properties` file.
 |byteArrayLimit|Limit of byte array (byte[]) elements to output|8192|
 |mapLimit|Limit of Map elements to output|512|
 |stringLimit|Limit of String characters to output|8192|
-|outputIndexLength|Length of array and Collection to output index|9|
 |nonPrintProperties<br>*(v2.2.0~)*|Properties not to be output<br>value<br><br>format:<br>`<full class name>#<property name>,`<br>`<full class name>#<property name>,`<br>`...`|*\<empty list\>*|
 |defaultPackage<br>*(v2.3.0~)*|Default package of your java source|*\<none\>*|
 |defaultPackageString<br>*(v2.3.0~)*|String replacing the default package part|`...`|

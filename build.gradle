@@ -1,11 +1,6 @@
 // (C) 2015 Masato Kokubo
-buildscript {
-	repositories {
-		jcenter()
-	}
-	dependencies {
-		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
-	}
+plugins {
+	id "com.jfrog.bintray" version "1.7.3"
 }
 
 apply plugin: 'maven-publish'
@@ -27,14 +22,14 @@ dependencies {
 	testCompile 'junit:junit:4.+'
 	testCompile 'org.apache.commons:commons-dbcp2:2.+'
 	testCompile 'org.codehaus.groovy:groovy-all:2.4.+'
-	testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+	testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '2.4.2'
+version             = '2.4.3'
 
 task wrapper(type: Wrapper) {
 	gradleVersion = '4.0.2'

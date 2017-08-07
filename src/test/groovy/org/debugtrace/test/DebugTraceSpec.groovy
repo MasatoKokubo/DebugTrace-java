@@ -399,13 +399,19 @@ class DebugTraceSpec extends Specification {
 		when:
 			DebugTrace.print('v', [1, 2, 3, 4] as int[])
 		then:
-			DebugTrace.lastLog.indexOf('v = (int[] length:4)[0: 1, 1: 2, 2: 3, 3: 4]') >= 0
+		// 2.4.3
+		//	DebugTrace.lastLog.indexOf('v = (int[] length:4)[0: 1, 1: 2, 2: 3, 3: 4]') >= 0
+			DebugTrace.lastLog.indexOf('v = (int[] length:4)[1, 2, 3, 4]') >= 0
+		////
 
 		when:
 			DebugTrace.print('v', [1, 2, 3, 4] as Integer[])
 		then:
-			DebugTrace.lastLog.indexOf('v = (Integer[] length:4)[0: 1, 1: 2, 2: 3, 3: 4]') >= 0
-
+		// 2.4.3
+		//	DebugTrace.lastLog.indexOf('v = (Integer[] length:4)[0: 1, 1: 2, 2: 3, 3: 4]') >= 0
+			DebugTrace.lastLog.indexOf('v = (Integer[] length:4)[1, 2, 3, 4]') >= 0
+		////
+			
 		when:
 			DebugTrace.print('v', [Fruits.APPLE, Fruits.ORANGE] as Fruits[])
 		then:
@@ -486,7 +492,10 @@ class DebugTraceSpec extends Specification {
 		when:
 			DebugTrace.print('v', [1, 2, 3, 4])
 		then:
-			DebugTrace.lastLog.indexOf('v = (ArrayList size:4)[0: 1, 1: 2, 2: 3, 3: 4]') >= 0
+		// 2.4.3
+		//	DebugTrace.lastLog.indexOf('v = (ArrayList size:4)[0: 1, 1: 2, 2: 3, 3: 4]') >= 0
+			DebugTrace.lastLog.indexOf('v = (ArrayList size:4)[1, 2, 3, 4]') >= 0
+		////
 
 		when:
 			DebugTrace.print('v', [Fruits.APPLE, Fruits.ORANGE])

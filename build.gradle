@@ -29,10 +29,10 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '2.4.3'
+version             = '2.4.4'
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '4.0.2'
+	gradleVersion = '4.1'
 }
 
 compileJava {

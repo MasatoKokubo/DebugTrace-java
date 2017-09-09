@@ -162,7 +162,12 @@ public class DebugTrace {
 	private static final String[] getterPrefixes = {"", "get", "is"};
 
 	// The string part of package of Groovy runtime class
-	private static final String groovyRuntimePackage = ".groovy.runtime.";
+// 2.4.4
+//	private static final String groovyRuntimePackage = ".groovy.runtime.";
+	private static final String reflectPackage = ".reflect.";
+	private static final String groovyPackage = "groovy.";
+	private static final String spockPackage = ".spockframework.";
+////
 
 	// Resources
 // 2.4.0
@@ -676,7 +681,14 @@ public class DebugTrace {
 		for (int index = 3; index < elements.length; ++index) {
 			StackTraceElement element = elements[index];
 			String className = element.getClassName();
-			if (className.indexOf(myClassName) == -1 && className.indexOf(groovyRuntimePackage) == -1) {
+			if (   className.indexOf(myClassName) == -1
+			// 2.4.4
+			//	&& className.indexOf(groovyRuntimePackage) == -1
+				&& className.indexOf(reflectPackage) == -1
+				&& className.indexOf(groovyPackage) == -1
+				&& className.indexOf(spockPackage) == -1
+			////
+				) {
 				result = element;
 				break;
 			}
@@ -1773,9 +1785,11 @@ public class DebugTrace {
 		//	if (value != null && nonPrintPropertyMap.containsKey(classNamePrefix + fieldName))
 		// 2.4.0
 		//	if (value != null && nonPrintPropertySet.contains(classNamePrefix + fieldName))
-			if (value != null && nonPrintProperties.contains(classNamePrefix + fieldName))
+		// 2.4.4
+		//	if (value != null && nonPrintProperties.contains(classNamePrefix + fieldName))
+			if (value != null && nonPrintProperties.contains(classNamePrefix + fieldName) || fieldName.equals("metaClass"))
 		////
-				// the property is non-printing and the value is not null
+				// the property is non-printing and the value is not null or Groovy's metaClass
 				buff.append(nonPrintString);
 			else {
 			// 2.4.0

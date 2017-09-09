@@ -84,30 +84,30 @@ public class Example1 {
 ```
 
 ```log:debugtrace.log
-2017-07-29 14:02:37.798 DebugTrace 2.4.2 / logger: org.debugtrace.logger.Std$Out
-2017-07-29 14:02:37.798 
-2017-07-29 14:02:37.798 ______________________________ main ______________________________
-2017-07-29 14:02:37.798 
-2017-07-29 14:02:37.813 enter example.Example1.main (Example1.java:15)
-2017-07-29 14:02:37.813 | enter example.Example1.newArray (Example1.java:25)
-2017-07-29 14:02:37.813 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
-2017-07-29 14:02:37.813 | | length = 2 (Example1.java:27)
-2017-07-29 14:02:37.813 | | 1 array = (example.Example1.Point[] length:2)[
-2017-07-29 14:02:37.813 | |   null,
-2017-07-29 14:02:37.813 | |   null,
-2017-07-29 14:02:37.813 | | ] (Example1.java:30)
-2017-07-29 14:02:37.813 | | 2 array = (example.Example1.Point[] length:2)[
-2017-07-29 14:02:37.813 | |   (example.Example1.Point)[
-2017-07-29 14:02:37.813 | |     x: 0,
-2017-07-29 14:02:37.813 | |     y: 0,
-2017-07-29 14:02:37.813 | |   ],
-2017-07-29 14:02:37.813 | |   (example.Example1.Point)[
-2017-07-29 14:02:37.813 | |     x: 0,
-2017-07-29 14:02:37.828 | |     y: 0,
-2017-07-29 14:02:37.828 | |   ],
-2017-07-29 14:02:37.828 | | ] (Example1.java:37)
-2017-07-29 14:02:37.828 | leave example.Example1.newArray (Example1.java:38)
-2017-07-29 14:02:37.828 leave example.Example1.main (Example1.java:20)
+2017-09-09 14:53:44.868 DebugTrace 2.4.4 / logger: org.debugtrace.logger.Std$Out
+2017-09-09 14:53:44.884 
+2017-09-09 14:53:44.884 ______________________________ main ______________________________
+2017-09-09 14:53:44.884 
+2017-09-09 14:53:44.884 enter example.Example1.main (Example1.java:15)
+2017-09-09 14:53:44.899 | enter example.Example1.newArray (Example1.java:25)
+2017-09-09 14:53:44.899 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
+2017-09-09 14:53:44.899 | | length = 2 (Example1.java:27)
+2017-09-09 14:53:44.899 | | 1 array = (example.Example1.Point[] length:2)[
+2017-09-09 14:53:44.899 | |   null,
+2017-09-09 14:53:44.899 | |   null,
+2017-09-09 14:53:44.899 | | ] (Example1.java:30)
+2017-09-09 14:53:44.899 | | 2 array = (example.Example1.Point[] length:2)[
+2017-09-09 14:53:44.899 | |   (example.Example1.Point)[
+2017-09-09 14:53:44.899 | |     x: 0,
+2017-09-09 14:53:44.899 | |     y: 0,
+2017-09-09 14:53:44.899 | |   ],
+2017-09-09 14:53:44.915 | |   (example.Example1.Point)[
+2017-09-09 14:53:44.915 | |     x: 0,
+2017-09-09 14:53:44.915 | |     y: 0,
+2017-09-09 14:53:44.915 | |   ],
+2017-09-09 14:53:44.915 | | ] (Example1.java:37)
+2017-09-09 14:53:44.915 | leave example.Example1.newArray (Example1.java:38)
+2017-09-09 14:53:44.915 leave example.Example1.main (Example1.java:20)
 ```
 
 ### 3. メソッド一覧

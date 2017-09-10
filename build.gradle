@@ -28,7 +28,7 @@ dependencies {
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 group               = 'org.debugtrace'
-archivesBaseName    = 'debugtrace'
+archivesBaseName    = 'debugtrace-java'
 version             = '2.4.4'
 
 task wrapper(type: Wrapper) {

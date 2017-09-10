@@ -1,6 +1,8 @@
 DebugTrace-java
 ===========
 
+[[English]](README.md)
+
 DebugTrace-java は、Java プログラムのデバッグ時にトレースログを出力するライブラリで、Java 8 以降 で利用できます。  
 メソッドの開始と終了箇所に `DebugTrace.enter()` および `DebugTrace.leave()` を埋め込む事で、開発中の Java  プログラムの実行状況を把握する事ができます。
 
@@ -322,5 +324,3 @@ dependencies {
 ### 8. リンク
 
 [API 仕様](http://masatokokubo.github.io/DebugTrace-java/javadoc_ja/index.html)
-
-[English](README.md)

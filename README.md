@@ -1,6 +1,8 @@
 DebugTrace-java
 ===========
 
+[[Japanese]](README_ja.md)
+
 DebugTrace-java is a library that outputs trace logs when debugging Java programs and is available in Java 8 or later.  
 By embedding `DebugTrace.enter ()` and `DebugTrace.leave ()` at the start and end of methods, you can understand the execution situation of the Java program under development.
 
@@ -322,5 +324,3 @@ dependencies {
 ### 8. Links
 
 [API Specification](http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html)
-
-[Japanese](README_ja.md)

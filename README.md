@@ -33,83 +33,85 @@ Do the following on the method you are debugging.
 The following is an example of Java source used DebugTrace methods and the log of when it has been executed.
 
 ```java:Example1.java
-// An example of Java Source
 package example;
 
 import java.lang.reflect.Array;
 import org.debugtrace.DebugTrace;
 
+/**
+ * Example1
+ */
 public class Example1 {
-  // main
-  public static void main(String[] args) {
-    DebugTrace.enter(); // added
+    // main
+    public static void main(String[] args) {
+        DebugTrace.enter(); // for DEBUGGING
 
-    @SuppressWarnings("unused")
-    Point[] points = newArray(Point.class, 2);
+        @SuppressWarnings("unused")
+        Point[] points = newArray(Point.class, 2);
 
-    DebugTrace.leave(); // added
-  }
-
-  // Creates a new array
-  public static <E> E[] newArray(Class<E> elementType, int length) {
-    DebugTrace.enter(); // added
-    DebugTrace.print("elementType", elementType); // added
-    DebugTrace.print("length", length); // added
-    @SuppressWarnings("unchecked")
-    E[] array = (E[])Array.newInstance(elementType, length);
-    DebugTrace.print("1 array", array); // added
-    try {
-      for (int index = 0; index < length; ++index)
-        array[index] = elementType.getConstructor().newInstance();
+        DebugTrace.leave(); // for DEBUGGING
     }
-    catch (RuntimeException e) {throw e;}
-    catch (Exception e) {throw new RuntimeException(e);}
-    DebugTrace.print("2 array", array); // added
-    DebugTrace.leave(); // added
-    return array;
-  }
 
-  // Point class
-  public static class Point {
-    private int x;
-    private int y;
-    public Point() {
+    // newArray
+    public static <E> E[] newArray(Class<E> elementType, int length) {
+        DebugTrace.enter(); // for DEBUGGING
+        DebugTrace.print("elementType", elementType); // for DEBUGGING
+        DebugTrace.print("length", length); // for DEBUGGING
+        @SuppressWarnings("unchecked")
+        E[] array = (E[])Array.newInstance(elementType, length);
+        DebugTrace.print("1 array", array); // for DEBUGGING
+        try {
+            for (int index = 0; index < length; ++index)
+                array[index] = elementType.getConstructor().newInstance();
+        }
+        catch (RuntimeException e) {throw e;}
+        catch (Exception e) {throw new RuntimeException(e);}
+        DebugTrace.print("2 array", array); // for DEBUGGING
+        DebugTrace.leave(); // for DEBUGGING
+        return array;
     }
-    public Point(int x, int y) {
-      this.x = x;
-      this.y = y;
+
+    // Point class
+    public static class Point {
+        private int x;
+        private int y;
+        public Point() {
+        }
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+        public int getX() {return x;}
+        public int getY() {return y;}
     }
-    public int getX() {return x;}
-    public int getY() {return y;}
-  }
 }
 ```
 
 ```log:debugtrace.log
-2017-09-09 14:53:44.868 DebugTrace 2.4.4 / logger: org.debugtrace.logger.Std$Out
-2017-09-09 14:53:44.884 
-2017-09-09 14:53:44.884 ______________________________ main ______________________________
-2017-09-09 14:53:44.884 
-2017-09-09 14:53:44.884 enter example.Example1.main (Example1.java:15)
-2017-09-09 14:53:44.899 | enter example.Example1.newArray (Example1.java:25)
-2017-09-09 14:53:44.899 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
-2017-09-09 14:53:44.899 | | length = 2 (Example1.java:27)
-2017-09-09 14:53:44.899 | | 1 array = (example.Example1.Point[] length:2)[
-2017-09-09 14:53:44.899 | |   null,
-2017-09-09 14:53:44.899 | |   null,
-2017-09-09 14:53:44.899 | | ] (Example1.java:30)
-2017-09-09 14:53:44.899 | | 2 array = (example.Example1.Point[] length:2)[
-2017-09-09 14:53:44.899 | |   (example.Example1.Point)[
-2017-09-09 14:53:44.899 | |     x: 0,
-2017-09-09 14:53:44.899 | |     y: 0,
-2017-09-09 14:53:44.899 | |   ],
-2017-09-09 14:53:44.915 | |   (example.Example1.Point)[
-2017-09-09 14:53:44.915 | |     x: 0,
-2017-09-09 14:53:44.915 | |     y: 0,
-2017-09-09 14:53:44.915 | |   ],
-2017-09-09 14:53:44.915 | | ] (Example1.java:37)
-2017-09-09 14:53:44.915 | leave example.Example1.newArray (Example1.java:38)
-2017-09-09 14:53:44.915 leave example.Example1.main (Example1.java:20)
+2017-10-01 08:43:41.077 DebugTrace 2.4.5 / logger: org.debugtrace.logger.Std$Out
+2017-10-01 08:43:41.087 
+2017-10-01 08:43:41.087 ______________________________ main ______________________________
+2017-10-01 08:43:41.087 
+2017-10-01 08:43:41.090 enter example.Example1.main (Example1.java:15)
+2017-10-01 08:43:41.094 | enter example.Example1.newArray (Example1.java:25)
+2017-10-01 08:43:41.099 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
+2017-10-01 08:43:41.099 | | length = 2 (Example1.java:27)
+2017-10-01 08:43:41.100 | | 1 array = (example.Example1.Point[] length:2)[
+2017-10-01 08:43:41.100 | |   null,
+2017-10-01 08:43:41.101 | |   null,
+2017-10-01 08:43:41.102 | | ] (Example1.java:30)
+2017-10-01 08:43:41.106 | | 2 array = (example.Example1.Point[] length:2)[
+2017-10-01 08:43:41.106 | |   (example.Example1.Point)[
+2017-10-01 08:43:41.106 | |     x: 0,
+2017-10-01 08:43:41.107 | |     y: 0,
+2017-10-01 08:43:41.108 | |   ],
+2017-10-01 08:43:41.108 | |   (example.Example1.Point)[
+2017-10-01 08:43:41.108 | |     x: 0,
+2017-10-01 08:43:41.108 | |     y: 0,
+2017-10-01 08:43:41.108 | |   ],
+2017-10-01 08:43:41.109 | | ] (Example1.java:37)
+2017-10-01 08:43:41.110 | leave example.Example1.newArray (Example1.java:38)
+2017-10-01 08:43:41.111 leave example.Example1.main (Example1.java:20)
 ```
 
 ### 3. Method List

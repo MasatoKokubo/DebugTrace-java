@@ -13,26 +13,54 @@ repositories {
 }
 
 dependencies {
-	compile 'log4j:log4j:1.+'
-	compile 'org.apache.logging.log4j:log4j-api:2.+'
-	runtime 'org.apache.logging.log4j:log4j-core:2.+'
-	compile 'org.slf4j:slf4j-api:1.7.+'
-	runtime 'ch.qos.logback:logback-classic:1.+'
+	compileOnly        'log4j:log4j:1.+'
+	testRuntimeOnly    'log4j:log4j:1.+'
+	compileOnly        'org.apache.logging.log4j:log4j-api:2.+'
+	testRuntimeOnly    'org.apache.logging.log4j:log4j-core:2.+'
+	compileOnly        'org.slf4j:slf4j-api:1.7.+'
+	testRuntimeOnly    'ch.qos.logback:logback-classic:1.+'
 
-	testCompile 'junit:junit:4.+'
-	testCompile 'org.apache.commons:commons-dbcp2:2.+'
-	testCompile 'org.codehaus.groovy:groovy-all:2.4.+'
-	testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+	testImplementation 'junit:junit:4.+'
+	testRuntimeOnly    'org.apache.commons:commons-dbcp2:2.+'
+	testCompileOnly    'org.codehaus.groovy:groovy-all:2.4.+'
+	testCompileOnly    'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace-java'
-version             = '2.4.4'
+version             = '2.4.5'
+
+sourceSets {
+	example {
+		java {
+			srcDir 'src/example/java'
+		}
+	}
+	main {
+		java {
+			srcDir 'src/main/java'
+		}
+		resources {
+			srcDir 'src/main/resources'
+		}
+	}
+	test {
+		groovy {
+			srcDir 'src/test/groovy'
+		}
+		java {
+			srcDir 'src/test/java'
+		}
+		resources {
+			srcDir 'src/test/resources'
+		}
+	}
+}
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '4.1'
+	gradleVersion = '4.2'
 }
 
 compileJava {
@@ -131,7 +159,7 @@ task zip(type: Zip) {
 	into('/'         , {from 'LICENSE.txt', 'README.md', 'README_ja.md'})
 	into('javadoc'   , {from 'build/docs/javadoc'})
 	into('javadoc_ja', {from 'build/docs/javadoc_ja'})
-	into('resources-sample', {from 'src/test/resources'})
+	into('resources-example', {from 'src/test/resources'})
 }
 
 task sourcesJar(type: Jar) {

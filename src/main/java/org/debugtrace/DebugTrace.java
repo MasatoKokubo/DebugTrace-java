@@ -164,9 +164,17 @@ public class DebugTrace {
 	// The string part of package of Groovy runtime class
 // 2.4.4
 //	private static final String groovyRuntimePackage = ".groovy.runtime.";
-	private static final String reflectPackage = ".reflect.";
-	private static final String groovyPackage = "groovy.";
-	private static final String spockPackage = ".spockframework.";
+// 2.4.5
+//	private static final String reflectPackage = ".reflect.";
+//	private static final String groovyPackage  = "groovy.";
+//	private static final String spockPackage   = ".spockframework.";
+	private static final String[] skipPackages = {
+		"sun.reflect.",
+		"java.lang.reflect.",
+		"org.codehaus.groovy.",
+		"groovy.lang.",
+		"org.spockframework."
+	};
 ////
 
 	// Resources
@@ -673,26 +681,47 @@ public class DebugTrace {
 	 * @returns a caller stack trace element
 	 */
 	private static StackTraceElement getStackTraceElement() {
+	// 2.4.5
+	//	StackTraceElement result = null;
+	//
+	//	String myClassName = DebugTrace.class.getName();
+	//
+	//	StackTraceElement[] elements = new Throwable().getStackTrace();
+	//	for (int index = 3; index < elements.length; ++index) {
+	//		StackTraceElement element = elements[index];
+	//		String className = element.getClassName();
+	//		if (   className.indexOf(myClassName) == -1
+	//		// 2.4.4
+	//		//	&& className.indexOf(groovyRuntimePackage) == -1
+	//			&& className.indexOf(reflectPackage) == -1
+	//			&& className.indexOf(groovyPackage) == -1
+	//			&& className.indexOf(spockPackage) == -1
+	//		////
+	//			) {
+	//			result = element;
+	//			break;
+	//		}
+	//	}
 		StackTraceElement result = null;
 
 		String myClassName = DebugTrace.class.getName();
 
 		StackTraceElement[] elements = new Throwable().getStackTrace();
+	//	for (int index = 1; index < elements.length; ++index) // for DEBUGGING
+	//		System.out.println("elements[" + index + "]: " + elements[index].getClassName()); // for DEBUGGING
+		outerLoop:
 		for (int index = 3; index < elements.length; ++index) {
 			StackTraceElement element = elements[index];
 			String className = element.getClassName();
-			if (   className.indexOf(myClassName) == -1
-			// 2.4.4
-			//	&& className.indexOf(groovyRuntimePackage) == -1
-				&& className.indexOf(reflectPackage) == -1
-				&& className.indexOf(groovyPackage) == -1
-				&& className.indexOf(spockPackage) == -1
-			////
-				) {
-				result = element;
-				break;
-			}
+			if (className.indexOf(myClassName) >= 0) continue;
+			for (String skipPackage : skipPackages)
+				if (className.indexOf(skipPackage) >= 0) continue outerLoop;
+			result = element;
+			break;
 		}
+		if (result == null)
+			result = new StackTraceElement("--", "--", "--", 0);
+	////
 
 		return result;
 	}

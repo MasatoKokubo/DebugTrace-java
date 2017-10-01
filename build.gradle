@@ -29,7 +29,7 @@ dependencies {
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 group               = 'org.debugtrace'
-archivesBaseName    = 'debugtrace-java'
+archivesBaseName    = 'debugtrace'
 version             = '2.4.5'
 
 sourceSets {

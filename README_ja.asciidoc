@@ -1,0 +1,556 @@
+= DebugTrace-java
+
+link:README.asciidoc[[English]]
+
+DebugTrace-javaは、Javaプログラムのデバッグ時にトレースログを出力するライブラリで、Java 8以降で利用できます。 +
+メソッドの開始と終了箇所に`[blue]#DebugTrace.enter()#`および`[blue]#DebugTrace.leave()#`を埋め込む事で、開発中のJavaプログラムの実行状況をログに出力する事ができます。
+
+=== 1. 特徴
+
+* コール元のクラス名、メソッド名、ソースファイルおよび行番号を自動的に出力。
+* メソッドやオブジェクトのネストで、ログを自動的にインデント。
+* スレッドの切り替え時に自動的にログを出力。
+* `[blue]#toString#`メソッドを実装していないクラスのオブジェクトでもリフレクションを使用して内容を出力。
+* `[blue]#DebugTrace.properties#`で、出力内容のカスタマイズが可能。
+* 実行時に依存するライブラリがない。(下記ロギング・ライブラリを使用する場合は必要)
+* 各種ロギング・ライブラリを使用可能。
+    ** JDKロガー
+    ** Log4j
+    ** Log4j2
+    ** SLF4J
+    ** コンソール(stdoutおよびstderr)
+
+=== 2. 使用方法
+
+デバッグ対象および関連するメソッドに対して以下を行います。
+
+. メソッドの先頭に`[blue]#DebugTrace.enter()#`を挿入する。
+. メソッドの終了(または`[blue]#return#`文の直前)に`[blue]#DebugTrace.leave()#`を挿入する。
+. 必要に応じて、引数、ローカル変数、戻り値をログに出力する`[blue]#Debug.print(\...)#`を挿入する。
+
+以下は、DebugTraceのメソッドを使用したJavaの例とそれを実行した際のログです。
+
+[source,java]
+.Example1.java
+----
+package example;
+
+import java.lang.reflect.Array;
+import org.debugtrace.DebugTrace;
+
+/**
+ * Example1
+ */
+public class Example1 {
+    // main
+    public static void main(String[] args) {
+        DebugTrace.enter(); // for DEBUGGING
+
+        @SuppressWarnings("unused")
+        Point[] points = newArray(Point.class, 2);
+
+        DebugTrace.leave(); // for DEBUGGING
+    }
+
+    // newArray
+    public static <E> E[] newArray(Class<E> elementType, int length) {
+        DebugTrace.enter(); // for DEBUGGING
+        DebugTrace.print("elementType", elementType); // for DEBUGGING
+        DebugTrace.print("length", length); // for DEBUGGING
+        @SuppressWarnings("unchecked")
+        E[] array = (E[])Array.newInstance(elementType, length);
+        DebugTrace.print("1 array", array); // for DEBUGGING
+        try {
+            for (int index = 0; index < length; ++index)
+                array[index] = elementType.getConstructor().newInstance();
+        }
+        catch (RuntimeException e) {throw e;}
+        catch (Exception e) {throw new RuntimeException(e);}
+        DebugTrace.print("2 array", array); // for DEBUGGING
+        DebugTrace.leave(); // for DEBUGGING
+        return array;
+    }
+
+    // Point class
+    public static class Point {
+        private int x;
+        private int y;
+        public Point() {
+        }
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+        public int getX() {return x;}
+        public int getY() {return y;}
+    }
+}
+----
+
+.debugtrace.log
+----
+2017-10-01 08:43:41.077 DebugTrace 2.4.5 / logger: org.debugtrace.logger.Std$Out
+2017-10-01 08:43:41.087 
+2017-10-01 08:43:41.087 ______________________________ main ______________________________
+2017-10-01 08:43:41.087 
+2017-10-01 08:43:41.090 enter example.Example1.main (Example1.java:15)
+2017-10-01 08:43:41.094 | enter example.Example1.newArray (Example1.java:25)
+2017-10-01 08:43:41.099 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
+2017-10-01 08:43:41.099 | | length = 2 (Example1.java:27)
+2017-10-01 08:43:41.100 | | 1 array = (example.Example1.Point[] length:2)[
+2017-10-01 08:43:41.100 | |   null,
+2017-10-01 08:43:41.101 | |   null,
+2017-10-01 08:43:41.102 | | ] (Example1.java:30)
+2017-10-01 08:43:41.106 | | 2 array = (example.Example1.Point[] length:2)[
+2017-10-01 08:43:41.106 | |   (example.Example1.Point)[
+2017-10-01 08:43:41.106 | |     x: 0,
+2017-10-01 08:43:41.107 | |     y: 0,
+2017-10-01 08:43:41.108 | |   ],
+2017-10-01 08:43:41.108 | |   (example.Example1.Point)[
+2017-10-01 08:43:41.108 | |     x: 0,
+2017-10-01 08:43:41.108 | |     y: 0,
+2017-10-01 08:43:41.108 | |   ],
+2017-10-01 08:43:41.109 | | ] (Example1.java:37)
+2017-10-01 08:43:41.110 | leave example.Example1.newArray (Example1.java:38)
+2017-10-01 08:43:41.111 leave example.Example1.main (Example1.java:20)
+----
+
+=== 3. メソッド一覧
+
+このライブラリには以下のメソッドがあります。すべてorg.debugtrace.DebugTraceクラスの静的メソッドで、戻り値なしです。
+
+[options="header"]
+.メソッド一覧
+|===
+|メソッド名|引 数|処理概要
+|`[blue]#enter#`
+|なし
+|メソッドの開始をログに出力する
+
+|`[blue]#leave#`
+|なし
+|メソッドの終了をログに出力する
+
+|`[blue]#print#`
+|`[blue]#message#`: メッセージ
+|メッセージをログに出力する
+
+|`[blue]#print#`
+|`[blue]#messageSupplier#`: メッセージのサプライヤー
+|サプライヤーからメッセージを取得してログに出力する
+
+|`[blue]#print#`
+|`[blue]#name#`: 値の名前 +
+`[blue]#value#`: 値
+|`<値の名前> = <値>` +
+の形式でログに出力する +
+value のタイプは`[blue]#boolean#`, `[blue]#char#`, `[blue]#byte#`, `[blue]#short#`, `[blue]#int#`, `[blue]#long#`, `[blue]#float#`, `[blue]#double#`または`[blue]#Object#`
+
+|`[blue]#print#`
+|`[blue]#name#`: 値の名前 +
+`[blue]#valueSupplier#`: 値のサプライヤー
+|サプライヤーから値を取得して +
+`<値の名前> = <値>` +
+の形式でログに出力する +
+valueSupplier のタイプは`[blue]#BooleanSupplier#`, `[blue]#IntSupplier#`, `[blue]#LongSupplier#`または`[blue]#Supplier<T>#`
+
+|`[blue]#print#`
+[olive]#_(v2.4.0~)_#
+|`[blue]#mapName#`: 数値に対応する定数名を得るためのマップの名前 +
+`[blue]#name#`: 値の名前 +
+`[blue]#value#`: 出力値
+|`<値の名前> = <値>(<定数名>)` +
+の形式でログに出力する +
+valueのタイプは`[blue]#byte#`, `[blue]#short#`, `[blue]#int#`, `[blue]#long#`または`[blue]#Object#`
+
+|`[blue]#print#`
+[olive]#_(v2.4.0~)_#
+|`[blue]#mapName#`: 数値に対応する定数名を得るためのマップの名前 +
+`[blue]#name#`: 値の名前 +
+`[blue]#valueSupplier#`: 値のサプライヤー
+|サプライヤーから値を取得して +
+`<値の名前> = <値>(<定数名>)` +
+の形式でログに出力する +
+valueSupplierのタイプは`[blue]#IntSupplier#`, `[blue]#LongSupplier#`または`[blue]#Supplier<T>#`
+
+|===
+
+=== 4. *DebugTrace.properties* ファイルのプロパティ一覧
+
+DebugTrace は、クラスパスにある `DebugTrace.properties` ファイルを起動時に読み込みます。
+`DebugTrace.properties` ファイルには以下のプロパティを指定できます。
+
+[options="header"]
+.プロパティ一覧
+|===
+|プロパティ名|設定する値|デフォルト値
+|`[blue]#logger#`
+| DebugTrace が使用するロガー +
+ +
+`[blue]#Jdk#`: JDKロガー を使用 +
+`[blue]#Log4j#`: Log4j を使用 +
+`[blue]#Log4j2#`: Log4j2 を使用 +
+`[blue]#SLF4J#`: SLF4J を使用 +
+`[blue]#Std$Out#`: stdout へ出力 +
+`[blue]#Std$Err#`: stderr へ出力
+|`[blue]#Std$Out#`
+
+|`[blue]#logLevel#`
+|ログ出力時のログレベル +
+ +
+共通: `[blue]#default#` (各ロガーでの最低レベル) +
+`JDK`: `[blue]#finest#`, `[blue]#finer#`, `[blue]#fine#`, `[blue]#config#`, `[blue]#info#`, `[blue]#warning#`, `[blue]#severe#` +
+`Log4j`, `Lo4j2`: `[blue]#trace#`, `[blue]#debug#`, `[blue]#info#`, `[blue]#warn#`, `[blue]#error#`, `[blue]#fatal#` +
+`SLF4J`: `[blue]#trace#`, `[blue]#debug#`, `[blue]#info#`, `[blue]#warn#`, `[blue]#error#` +
+
+|`JDK`: `[blue]#finest#` +
+ +
+`Log4j`, `Lo4j2`, `SLF4J`: `[blue]#trace#`
+
+|`[blue]#enterString#`
+|`[blue]#enter#`メソッドでの出力文字列 +
+ +
+[Teal]#パラメータ#: +
+`%1`: 呼出側のクラス名 +
+`%2`: 呼出側のメソッド名 +
+`%3`: 呼出側のファイル名 +
+`%4`: 呼出側の行番号
+|`Enter %1$s.%2$s (%3$s:%4$d)`
+
+|`[blue]#leaveString#`
+|`[blue]#leave#`メソッドでの出力文字列 +
+ +
+[Teal]#パラメータ#: +
+`%1`: 呼出側のクラス名 +
+`%2`: 呼出側のメソッド名 +
+`%3`: 呼出側のファイル名 +
+`%4`: 呼出側の行番号
+|`Leave %1$s.%2$s (%3$s:%4$d)`
+
+|`[blue]#threadBoundaryString#`
+|スレッド境界で出力される文字列 +
+ +
+[Teal]#パラメータ#: +
+`%1`: スレッド名
+|`______________________________ %1$s ______________________________`
+
+|`[blue]#classBoundaryString#`
+|クラス境界での出力文字列 +
+ +
+[Teal]#パラメータ#: +
+`%1`: クラス名
+|`____ %1$s ____`
+
+|`[blue]#indentString#`
+|コードのインデント文字列 +
+`\s` は空白文字1つに置き換える
+|`\s`
+
+|`[blue]#dataIndentString#`
+|データのインデント文字列
+|`\s\s`
+
+|`[blue]#limitString#`
+|制限を超えた場合の出力文字列
+|`\...`
+
+|`[blue]#nonPrintString#` +
+[olive]#_(v1.5.0~)_#
+|出力しないプロパティ値の文字列
+|`\***`
+
+|`[blue]#cyclicReferenceString#`
+|循環参照時の出力文字列
+|`\s* cyclic reference *\s`
+
+|`[blue]#varNameValueSeparator#`
+|変数名と値のセパレータ
+|`\s=\s`
+
+|`[blue]#keyValueSeparator#`
+|マップのキーと値のセパレータ
+|`:\s`
+
+|`[blue]#fieldNameValueSeparator#`
+|フィールド名と値のセパレータ
+|`:\s`
+
+|`[blue]#printSuffixFormat#`
+|`[blue]#print#`メソッドで付加される文字列 +
+ +
+[Teal]#パラメータ#: +
+`%1`: 呼出側のクラス名 +
+`%2`: 呼出側のメソッド名 +
+`%3`: 呼出側のファイル名 +
+`%4`: 呼出側の行番号
+|`\s(%3$s:%4$d)`
+
+|`[blue]#utilDateFormat#`
+|`java.util.Date` の出力フォーマット +
+ +
+[Teal]#パラメータ#: +
+`%1`: `java.util.Date`オブジェクト +
+
+|`%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS`
+
+|`[blue]#sqlDateFormat#`
+|`java.sql.Date` の出力フォーマット +
+ +
+[Teal]#パラメータ#: +
+`%1`: `java.sql.Date`オブジェクト
+|`%1$tY-%1$tm-%1$td`
+
+|`[blue]#timeFormat#`
+|`java.sql.Time` の出力フォーマット +
+ +
+[Teal]#パラメータ#: +
+`%1`: `java.sql.Time`オブジェクト +
+
+|`%1$tH:%1$tM:%1$tS`
+
+|`[blue]#timestampFormat#`
+|Output format of `java.sql.Timestamp` +
+ +
+[Teal]#パラメータ#: +
+`%1`: `java.sql.Timestamp`オブジェクト +
+
+|`%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL`
+
+|`[blue]#arrayLimit#`
+|配列と`Collection`要素の出力数の制限
+|512
+
+|`[blue]#byteArrayLimit#`
+|バイト配列(`byte[]`)要素の出力数の制限
+|8192
+
+|`[blue]#mapLimit#`
+|`Map`要素の出力制限数
+|512
+
+|`[blue]#stringLimit#`
+|`String`の出力文字数の制限
+|8192
+
+|`[blue]#nonPrintProperties#` +
+[olive]#_(v2.2.0~)_#
+|出力しないプロパティのリスト +
+ +
+[Teal]#値のフォーマット#: +
+`<フルクラス名>#<プロパティ名>,` +
+`<フルクラス名>#<プロパティ名>,` +
+`\...`
+|_<空リスト>_
+
+|`[blue]#defaultPackage#` +
+[olive]#_(v2.3.0~)_#
+|使用する Javaソースのデフォルトパッケージ
+|_<なし>_
+
+|`[blue]#defaultPackageString#` +
+[olive]#_(v2.3.0~)_#
+|デフォルトパッケージ部を置き換える文字列
+|`\...`
+
+|`[blue]#reflectionClasses#` +
+[olive]#_(v2.4.0~)_#
+|`[blue]#toString#`メソッドを実装していてもリフレクションで内容を出力するクラス名のリスト
+|_<空リスト>_
+
+|`[blue]#mapNameMap#` +
+[olive]#_(v2.4.0~)_#
+|変数名に対応するマップ名を取得するためのマップ +
+ +
+[Teal]#値のフォーマット#: +
+`<変数名>:<マップ名>,` +
+`<変数名>:<マップ名>,` +
+`\...`
+|_<空マップ>_
+
+|`<マップ名>` +
+[olive]#_(v2.4.0~)_#
+|数値(key)と数値に対応する定数名(value)のマップ +
+ +
+[Teal]#値のフォーマット#: +
+`<数値>:<定数名>,` +
+`<数値>:<定数名>,` +
+`\...`
+|以下のマップ名が定義済み +
+`[blue]#Calendar#`: `Calendar.ERA`など +
+`[blue]#CalendarWeek#`: `Calendar.SUNDAY`など +
+`[blue]#CalendarMonth#`: `Calendar.JANUARY`など +
+`[blue]#CalendarAmPm#`: `Calendar.AM`など +
+`[blue]#SqlTypes#`: `java.sql.Types.BIT`など
+
+|===
+
+==== 4.1. *nonPrintProperties*, *nonPrintString*
+
+DebugTrace は、`[blue]#toString#`メソッドが実装されていない場合は、リフレクションを使用してオブジェクト内容を出力します。
+他のオブジェクトの参照があれば、そのオブジェクトの内容も出力します。
+ただし循環参照がある場合は、自動的に検出して出力を中断します。  
+`[blue]#nonPrintProperties#`プロパティを指定して出力を抑制する事もできます。
+このプロパティの値は、カンマ区切りで複数指定できます。  
+`[blue]#nonPrintProperties#`で指定されたプロパティの値は、`[blue]#nonPrintString#`で指定された文字列(デフォルト: `\***`)で出力されます。
+
+.nonPrintProperties の例 (DebugTrace.properties)
+----
+nonPrintProperties = \
+    org.lightsleep.helper.EntityInfo#columnInfos,\
+    org.lightsleep.helper.EntityInfo#keyColumnInfos,\
+    org.lightsleep.helper.ColumnInfo#entityInfo
+----
+
+==== 4.2. 定数マップ, *mapNameMap*
+
+定数マップは、キーが数値で値が定数名のマップです。このプロパティのキー(マップ名)を`[blue]#print#`メソッドの引数にしてコールすると数値に定数名が付加されて出力されます。
+
+.定数マップの例 (DebugTrace.properties)
+----
+AppleBrand = \
+    0: Apple.NO_BRAND,\
+    1: Apple.AKANE,\
+    2: Apple.AKIYO,\
+    3: Apple.AZUSA,\
+    4: Apple.YUKARI
+----
+
+[source,java]
+.Javaソースの例
+----
+int appleBrand = Apple.AKANE;
+DebugTrace.print("AppleBrand", "appleBrand", appleBrand);
+----
+
+.Logの例
+----
+2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:29)
+----
+
+変数名に対応するマップ名を`[blue]#mapNameMap#`プロパティで指定すると、マップ名を指定しない場合でも定数名が出力されます。
+
+.mapNameMap の例 (DebugTrace.properties)
+----
+mapNameMap = appleBrand: AppleBrand
+----
+
+[source,java]
+.Javaソースの例
+----
+int appleBrand = Apple.AKANE;
+DebugTrace.print("appleBrand", appleBrand);
+appleBrand = Apple.AKIYO;
+DebugTrace.print(" 2 appleBrand ", appleBrand);
+appleBrand = Apple.AZUSA;
+DebugTrace.print(" 3 example.appleBrand ", appleBrand);
+appleBrand = Apple.YUKARI;
+DebugTrace.print(" 4 example. appleBrand ", appleBrand);
+----
+
+.Log の例
+----
+2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:38)
+2017-07-29 13:45:32.489 |  2 appleBrand  = 2(Apple.AKIYO) (README_example.java:40)
+2017-07-29 13:45:32.489 |  3 example.appleBrand  = 3(Apple.AZUSA) (README_example.java:42)
+2017-07-29 13:45:32.489 |  4 example. appleBrand  = 4(Apple.YUKARI) (README_example.java:44)
+----
+
+=== 5. ロギング・ライブラリの使用例
+
+ロギング・ライブラリを使用する際の DebugTrace のロガー名は、`[blue]#org.debugtrace.DebugTrace#`です。
+
+==== 5-1. *logging.properties* (JDK標準) の例
+
+.logging.properties
+----
+# logging.properties
+handlers = java.util.logging.ConsoleHandler
+java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
+java.util.logging.SimpleFormatter.format = [Jdk] %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %5$s%n
+java.util.logging.ConsoleHandler.level = FINEST
+org.debugtrace.DebugTrace.level = FINEST
+----
+*Java起動時オプションとして`-Djava.util.logging.config.file=<パス>/logging.properties`が必要*
+
+==== 5-2. *log4j.xml* (Log4j) の例
+
+[source,xml]
+.log4j.xml
+----
+<!-- log4j.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+  <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+    <param name="Target" value="System.out"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[Log4j] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %m%n"/>
+    </layout>
+  </appender>
+  <logger name="org.debugtrace.DebugTrace">
+    <level value ="trace"/>
+    <appender-ref ref="Console"/>
+  </logger>
+</log4j:configuration>
+----
+
+==== 5-3. *log4j2.xml* (Log4j2) の例
+
+[source,xml]
+.log4j2.xml
+----
+<!-- log4j2.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+  <appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="[Log4j2] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %msg%n"/>
+    </Console>
+  </appenders>
+  <loggers>
+    <logger name="org.debugtrace.DebugTrace" level="trace"/>
+    <root level="error"><appender-ref ref="Console"/></root>
+  </loggers>
+</configuration>
+----
+
+==== 5-4. *logback.xml* (SLF4J/Logback) の例
+
+[source,xml]
+.logback.xml
+----
+<!-- logback.xml -->
+<configuration>
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>[SLF4J logback] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %msg%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="org.debugtrace.DebugTrace" level="trace"/>
+  <root level="error"><appender-ref ref="Console"/></root>
+</configuration>
+----
+
+=== 6. *build.gradle*の記述例
+
+[source,groovy]
+.build.gradle
+----
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.debugtrace:debugtrace:2.+'
+}
+----
+
+=== 7. ライセンス
+
+link:LICENSE.txt[MIT ライセンス(MIT)]
+
+_(C) 2015 Masato Kokubo_
+
+=== 8. リンク
+
+http://masatokokubo.github.io/DebugTrace-java/javadoc_ja/index.html[API仕様]

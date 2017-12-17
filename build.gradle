@@ -1,11 +1,11 @@
 // (C) 2015 Masato Kokubo
 plugins {
-	id "com.jfrog.bintray" version "1.7.3"
+	id 'com.jfrog.bintray' version '1.8.0'
 }
 
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'groovy'
 
 repositories {
@@ -15,29 +15,27 @@ repositories {
 dependencies {
 	compileOnly        'log4j:log4j:1.+'
 	testRuntimeOnly    'log4j:log4j:1.+'
+
 	compileOnly        'org.apache.logging.log4j:log4j-api:2.+'
 	testRuntimeOnly    'org.apache.logging.log4j:log4j-core:2.+'
+
 	compileOnly        'org.slf4j:slf4j-api:1.7.+'
 	testRuntimeOnly    'ch.qos.logback:logback-classic:1.+'
 
-	testImplementation 'junit:junit:4.+'
 	testRuntimeOnly    'org.apache.commons:commons-dbcp2:2.+'
-	testCompileOnly    'org.codehaus.groovy:groovy-all:2.4.+'
-	testCompileOnly    'org.spockframework:spock-core:1.1-groovy-2.4'
+
+	testRuntimeOnly    'junit:junit:4.+'
+	testImplementation 'org.codehaus.groovy:groovy-all:2.4.+'
+	testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '2.4.5'
+version             = '2.4.6'
 
 sourceSets {
-	example {
-		java {
-			srcDir 'src/example/java'
-		}
-	}
 	main {
 		java {
 			srcDir 'src/main/java'
@@ -57,10 +55,18 @@ sourceSets {
 			srcDir 'src/test/resources'
 		}
 	}
+	example {
+		java {
+			srcDir 'src/example/java'
+		}
+		compileClasspath += main.output
+		runtimeClasspath += main.output
+		runtimeClasspath += sourceSets.test.runtimeClasspath
+	}
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '4.2'
+	gradleVersion = '4.4'
 }
 
 compileJava {

@@ -43,10 +43,7 @@ public class Resource {
 	public ResourceBundle userResourceBundle() {return userResourceBundle;}
 
 	// A converter for string values
-// 2.4.1
-//	private Function<String, String> stringConverter = string -> {
 	private static final Function<String, String> stringConverter = string -> {
-////
 			if (string != null) {
 				StringBuilder buff = new StringBuilder(string.length());
 				boolean escape = false;
@@ -127,12 +124,9 @@ public class Resource {
 	 * @throws MissingResourceException if the property dose not found
 	*/
 	private String get(String propertyKey) {
-	// 2.4.1
 		Objects.requireNonNull(propertyKey, "propertyKey");
-	////
 
 		String string = null;
-
 		MissingResourceException e = null;
 
 		if (userResourceBundle != null) {
@@ -271,13 +265,9 @@ public class Resource {
 	 * @since 2.4.0
 	 */
 	public <E> List<E> getList(String propertyKey, Function<String, E> valueConverter) {
-	// 2.4.1
-	//	Objects.requireNonNull(propertyKey, "propertyKey");
-	////
 		Objects.requireNonNull(valueConverter, "valueConverter");
 
 		String propertyValue = getString(propertyKey, "");
-
 		List<E> list = new ArrayList<>();
 
 		Arrays.stream(propertyValue.split(","))
@@ -318,9 +308,6 @@ public class Resource {
 	 * @since 2.4.0
 	 */
 	public <K, V> Map<K, V> getMap(String propertyKey, Function<String, K> keyConverter, Function<String, V> valueConverter) {
-	// 2.4.1
-	//	Objects.requireNonNull(propertyKey, "propertyKey");
-	////
 		Objects.requireNonNull(keyConverter, "keyConverter");
 		Objects.requireNonNull(valueConverter, "valueConverter");
 

@@ -229,14 +229,14 @@ when `Log4j`, `Log4j2` or `SLF4J`: [blue]#trace#`
  +
 [Teal]#parameter#: +
 `%1`: The thread name
-|`______________________________ %1$s ______________________________`
+|`\____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____`
 
 |`[blue]#classBoundaryString#`
 |The string output in the classes boundary. +
  +
 [Teal]#parameter#: +
 `%1`: The class name
-|`____ %1$s ____`
+|`\\____ %1$s \____`
 
 |`[blue]#indentString#`
 |String of one code indent +

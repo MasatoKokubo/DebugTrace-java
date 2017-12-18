@@ -162,7 +162,7 @@ task zip(type: Zip) {
 	classifier = 'bin'
 
 	into('/'         , {from "build/libs/${archivesBaseName}-${version}.jar"})
-	into('/'         , {from 'LICENSE.txt', 'README.md', 'README_ja.md'})
+	into('/'         , {from 'LICENSE.txt', 'README.asciidoc', 'README_ja.asciidoc'})
 	into('javadoc'   , {from 'build/docs/javadoc'})
 	into('javadoc_ja', {from 'build/docs/javadoc_ja'})
 	into('resources-example', {from 'src/test/resources'})

@@ -218,7 +218,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |`Enter %1$s.%2$s (%3$s:%4$d)`
 
 |`[blue]#leaveString#`
-|`[blue]#leave#`メソッドでの出力文字列 +
+|`[blue]#leave#` メソッドでの出力文字列 +
  +
 [Teal]#パラメータ#: +
 `%1`: 呼出側のクラス名 +

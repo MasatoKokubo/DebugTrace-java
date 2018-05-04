@@ -3,15 +3,15 @@
 link:README.asciidoc[[English]]
 
 DebugTrace-javaは、Javaプログラムのデバッグ時にトレースログを出力するライブラリで、Java 8以降で利用できます。 +
-メソッドの開始と終了箇所に`[blue]#DebugTrace.enter()#`および`[blue]#DebugTrace.leave()#`を埋め込む事で、開発中のJavaプログラムの実行状況をログに出力する事ができます。
+メソッドの開始と終了箇所に `[blue]#DebugTrace.enter()#` および `[blue]#DebugTrace.leave()#` を埋め込む事で、開発中のJavaプログラムの実行状況をログに出力する事ができます。
 
 === 1. 特徴
 
 * コール元のクラス名、メソッド名、ソースファイルおよび行番号を自動的に出力。
 * メソッドやオブジェクトのネストで、ログを自動的にインデント。
 * スレッドの切り替え時に自動的にログを出力。
-* `[blue]#toString#`メソッドを実装していないクラスのオブジェクトでもリフレクションを使用して内容を出力。
-* `[blue]#DebugTrace.properties#`で、出力内容のカスタマイズが可能。
+* `[blue]#toString#` メソッドを実装していないクラスのオブジェクトでもリフレクションを使用して内容を出力。
+* `[blue]#DebugTrace.properties#` で、出力内容のカスタマイズが可能。
 * 実行時に依存するライブラリがない。(下記ロギング・ライブラリを使用する場合は必要)
 * 各種ロギング・ライブラリを使用可能。
     ** JDKロガー
@@ -24,9 +24,9 @@ DebugTrace-javaは、Javaプログラムのデバッグ時にトレースログ�
 
 デバッグ対象および関連するメソッドに対して以下を行います。
 
-. メソッドの先頭に`[blue]#DebugTrace.enter()#`を挿入する。
-. メソッドの終了(または`[blue]#return#`文の直前)に`[blue]#DebugTrace.leave()#`を挿入する。
-. 必要に応じて、引数、ローカル変数、戻り値をログに出力する`[blue]#Debug.print(\...)#`を挿入する。
+. メソッドの先頭に `[blue]#DebugTrace.enter()#` を挿入する。
+. メソッドの終了(または `[blue]#return#` 文の直前)に `[blue]#DebugTrace.leave()#` を挿入する。
+. 必要に応じて、引数、ローカル変数、戻り値をログに出力する `[blue]#Debug.print(\...)#` を挿入する。
 
 以下は、DebugTraceのメソッドを使用したJavaの例とそれを実行した際のログです。
 
@@ -144,7 +144,7 @@ public class Example1 {
 `[blue]#value#`: 値
 |`<値の名前> = <値>` +
 の形式でログに出力する +
-value のタイプは`[blue]#boolean#`, `[blue]#char#`, `[blue]#byte#`, `[blue]#short#`, `[blue]#int#`, `[blue]#long#`, `[blue]#float#`, `[blue]#double#`または`[blue]#Object#`
+value のタイプは `[blue]#boolean#`, `[blue]#char#`, `[blue]#byte#`, `[blue]#short#`, `[blue]#int#`, `[blue]#long#`, `[blue]#float#`, `[blue]#double#` または `[blue]#Object#`
 
 |`[blue]#print#`
 |`[blue]#name#`: 値の名前 +
@@ -152,7 +152,7 @@ value のタイプは`[blue]#boolean#`, `[blue]#char#`, `[blue]#byte#`, `[blue]#
 |サプライヤーから値を取得して +
 `<値の名前> = <値>` +
 の形式でログに出力する +
-valueSupplier のタイプは`[blue]#BooleanSupplier#`, `[blue]#IntSupplier#`, `[blue]#LongSupplier#`または`[blue]#Supplier<T>#`
+valueSupplier のタイプは `[blue]#BooleanSupplier#`, `[blue]#IntSupplier#`, `[blue]#LongSupplier#` または `[blue]#Supplier<T>#`
 
 |`[blue]#print#`
 [olive]#_(v2.4.0~)_#
@@ -161,7 +161,7 @@ valueSupplier のタイプは`[blue]#BooleanSupplier#`, `[blue]#IntSupplier#`, `
 `[blue]#value#`: 出力値
 |`<値の名前> = <値>(<定数名>)` +
 の形式でログに出力する +
-valueのタイプは`[blue]#byte#`, `[blue]#short#`, `[blue]#int#`, `[blue]#long#`または`[blue]#Object#`
+valueのタイプは `[blue]#byte#`, `[blue]#short#`, `[blue]#int#`, `[blue]#long#` または `[blue]#Object#`
 
 |`[blue]#print#`
 [olive]#_(v2.4.0~)_#
@@ -171,7 +171,7 @@ valueのタイプは`[blue]#byte#`, `[blue]#short#`, `[blue]#int#`, `[blue]#long
 |サプライヤーから値を取得して +
 `<値の名前> = <値>(<定数名>)` +
 の形式でログに出力する +
-valueSupplierのタイプは`[blue]#IntSupplier#`, `[blue]#LongSupplier#`または`[blue]#Supplier<T>#`
+valueSupplierのタイプは `[blue]#IntSupplier#`, `[blue]#LongSupplier#` または `[blue]#Supplier<T>#`
 
 |===
 
@@ -208,7 +208,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `Log4j`, `Lo4j2`, `SLF4J`: `[blue]#trace#`
 
 |`[blue]#enterString#`
-|`[blue]#enter#`メソッドでの出力文字列 +
+|`[blue]#enter#` メソッドでの出力文字列 +
  +
 [Teal]#パラメータ#: +
 `%1`: 呼出側のクラス名 +
@@ -276,7 +276,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |`:\s`
 
 |`[blue]#printSuffixFormat#`
-|`[blue]#print#`メソッドで付加される文字列 +
+|`[blue]#print#` メソッドで付加される文字列 +
  +
 [Teal]#パラメータ#: +
 `%1`: 呼出側のクラス名 +
@@ -289,7 +289,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |`java.util.Date` の出力フォーマット +
  +
 [Teal]#パラメータ#: +
-`%1`: `java.util.Date`オブジェクト +
+`%1`: `java.util.Date` オブジェクト +
 
 |`%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS`
 
@@ -297,14 +297,14 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |`java.sql.Date` の出力フォーマット +
  +
 [Teal]#パラメータ#: +
-`%1`: `java.sql.Date`オブジェクト
+`%1`: `java.sql.Date` オブジェクト
 |`%1$tY-%1$tm-%1$td`
 
 |`[blue]#timeFormat#`
 |`java.sql.Time` の出力フォーマット +
  +
 [Teal]#パラメータ#: +
-`%1`: `java.sql.Time`オブジェクト +
+`%1`: `java.sql.Time` オブジェクト +
 
 |`%1$tH:%1$tM:%1$tS`
 
@@ -317,7 +317,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |`%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL`
 
 |`[blue]#arrayLimit#`
-|配列と`Collection`要素の出力数の制限
+|配列と `Collection` 要素の出力数の制限
 |512
 
 |`[blue]#byteArrayLimit#`
@@ -325,11 +325,11 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |8192
 
 |`[blue]#mapLimit#`
-|`Map`要素の出力制限数
+|`Map` 要素の出力制限数
 |512
 
 |`[blue]#stringLimit#`
-|`String`の出力文字数の制限
+|`String` の出力文字数の制限
 |8192
 
 |`[blue]#nonPrintProperties#` +
@@ -354,7 +354,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |`[blue]#reflectionClasses#` +
 [olive]#_(v2.4.0~)_#
-|`[blue]#toString#`メソッドを実装していてもリフレクションで内容を出力するクラス名のリスト
+|`[blue]#toString#` メソッドを実装していてもリフレクションで内容を出力するクラス名のリスト
 |_<空リスト>_
 
 |`[blue]#mapNameMap#` +
@@ -376,22 +376,22 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `<数値>:<定数名>,` +
 `\...`
 |以下のマップ名が定義済み +
-`[blue]#Calendar#`: `Calendar.ERA`など +
-`[blue]#CalendarWeek#`: `Calendar.SUNDAY`など +
-`[blue]#CalendarMonth#`: `Calendar.JANUARY`など +
-`[blue]#CalendarAmPm#`: `Calendar.AM`など +
-`[blue]#SqlTypes#`: `java.sql.Types.BIT`など
+`[blue]#Calendar#`: `Calendar.ERA` など +
+`[blue]#CalendarWeek#`: `Calendar.SUNDAY` など +
+`[blue]#CalendarMonth#`: `Calendar.JANUARY` など +
+`[blue]#CalendarAmPm#`: `Calendar.AM` など +
+`[blue]#SqlTypes#`: `java.sql.Types.BIT` など
 
 |===
 
 ==== 4.1. *nonPrintProperties*, *nonPrintString*
 
-DebugTrace は、`[blue]#toString#`メソッドが実装されていない場合は、リフレクションを使用してオブジェクト内容を出力します。
+DebugTrace は、 `[blue]#toString#` メソッドが実装されていない場合は、リフレクションを使用してオブジェクト内容を出力します。
 他のオブジェクトの参照があれば、そのオブジェクトの内容も出力します。
 ただし循環参照がある場合は、自動的に検出して出力を中断します。  
-`[blue]#nonPrintProperties#`プロパティを指定して出力を抑制する事もできます。
+`[blue]#nonPrintProperties#` プロパティを指定して出力を抑制する事もできます。
 このプロパティの値は、カンマ区切りで複数指定できます。  
-`[blue]#nonPrintProperties#`で指定されたプロパティの値は、`[blue]#nonPrintString#`で指定された文字列(デフォルト: `\***`)で出力されます。
+`[blue]#nonPrintProperties#` で指定されたプロパティの値は、 `[blue]#nonPrintString#` で指定された文字列(デフォルト: `\***`)で出力されます。
 
 .nonPrintProperties の例 (DebugTrace.properties)
 ----
@@ -403,7 +403,7 @@ nonPrintProperties = \
 
 ==== 4.2. 定数マップ, *mapNameMap*
 
-定数マップは、キーが数値で値が定数名のマップです。このプロパティのキー(マップ名)を`[blue]#print#`メソッドの引数にしてコールすると数値に定数名が付加されて出力されます。
+定数マップは、キーが数値で値が定数名のマップです。このプロパティのキー(マップ名)を `[blue]#print#` メソッドの引数にしてコールすると数値に定数名が付加されて出力されます。
 
 .定数マップの例 (DebugTrace.properties)
 ----
@@ -427,7 +427,7 @@ DebugTrace.print("AppleBrand", "appleBrand", appleBrand);
 2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:29)
 ----
 
-変数名に対応するマップ名を`[blue]#mapNameMap#`プロパティで指定すると、マップ名を指定しない場合でも定数名が出力されます。
+変数名に対応するマップ名を `[blue]#mapNameMap#` プロパティで指定すると、マップ名を指定しない場合でも定数名が出力されます。
 
 .mapNameMap の例 (DebugTrace.properties)
 ----
@@ -457,7 +457,7 @@ DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 
 === 5. ロギング・ライブラリの使用例
 
-ロギング・ライブラリを使用する際の DebugTrace のロガー名は、`[blue]#org.debugtrace.DebugTrace#`です。
+ロギング・ライブラリを使用する際のDebugTraceのロガー名は、 `[blue]#org.debugtrace.DebugTrace#` です。
 
 ==== 5-1. *logging.properties* (JDK標準) の例
 
@@ -470,7 +470,7 @@ java.util.logging.SimpleFormatter.format = [Jdk] %1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 java.util.logging.ConsoleHandler.level = FINEST
 org.debugtrace.DebugTrace.level = FINEST
 ----
-*Java起動時オプションとして`-Djava.util.logging.config.file=<パス>/logging.properties`が必要*
+*Java起動時オプションとして `-Djava.util.logging.config.file=<パス>/logging.properties` が必要*
 
 ==== 5-2. *log4j.xml* (Log4j) の例
 

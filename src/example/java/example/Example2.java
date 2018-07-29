@@ -109,7 +109,7 @@ public class Example2 {
 			.forEach((index) -> ints[index] = points[index].x() * points[index].y() * (int)points[index].z());
 	/**/DebugTrace.print("ints", ints);
 
-		int[][][][][][] intss = new int[2][2][2][2][2][2];
+		int[][][][] intss = new int[2][3][4][5];
 	/**/DebugTrace.print("intss", intss);
 
 		Point p = new Point(10, 11, 12) {};

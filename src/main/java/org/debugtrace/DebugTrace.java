@@ -15,6 +15,17 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -151,16 +162,18 @@ public class DebugTrace {
 		singleLineComponentTypeSet.add(Date          .class);
 		singleLineComponentTypeSet.add(Time          .class);
 		singleLineComponentTypeSet.add(Timestamp     .class);
+		singleLineComponentTypeSet.add(LocalDate     .class);
+		singleLineComponentTypeSet.add(LocalTime     .class);
+		singleLineComponentTypeSet.add(LocalDateTime .class);
+		singleLineComponentTypeSet.add(OffsetDateTime.class);
+		singleLineComponentTypeSet.add(ZonedDateTime .class);
+		singleLineComponentTypeSet.add(Instant       .class);
 	}
 
 	// Prefixes of getter methods
 	private static final String[] getterPrefixes = {"", "get", "is"};
 
 	// The string part of package of Groovy runtime class
-// 2.4.5
-//	private static final String reflectPackage = ".reflect.";
-//	private static final String groovyPackage  = "groovy.";
-//	private static final String spockPackage   = ".spockframework.";
 	private static final String[] skipPackages = {
 		"sun.reflect.",
 		"java.lang.reflect.",
@@ -168,7 +181,6 @@ public class DebugTrace {
 		"groovy.lang.",
 		"org.spockframework."
 	};
-////
 
 	// Resources
 	private static final Resource resource = new Resource(DebugTrace.class);
@@ -187,11 +199,22 @@ public class DebugTrace {
 	private static final String varNameValueSeparator   = resource.getString("varNameValueSeparator"  ); // Separator between the variable name and value
 	private static final String keyValueSeparator       = resource.getString("keyValueSeparator"      ); // Separator between the key and value for Map object
 	private static final String fieldNameValueSeparator = resource.getString("fieldNameValueSeparator"); // Separator between the field name and value
-	private static final String printSuffixFormat       = resource.getString("printSuffixFormat"      ); // Format string of print suffix
-	private static final String utilDateFormat          = resource.getString("utilDateFormat"         ); // Format string of java.util.Date
-	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string of java.sql.Date
-	private static final String timeFormat              = resource.getString("timeFormat"             ); // Format string of java.sql.Time
-	private static final String timestampFormat         = resource.getString("timestampFormat"        ); // Format string of java.sql.Timestamp
+	private static final String printSuffixFormat       = resource.getString("printSuffixFormat"      ); // Format string for print suffix
+	private static final String utilDateFormat          = resource.getString("utilDateFormat"         ); // Format string for java.util.Date
+	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string for java.sql.Date
+	private static final String timeFormat              = resource.getString("timeFormat"             ); // Format string for java.sql.TTime
+	private static final String timestampFormat         = resource.getString("timestampFormat"        ); // Format string for java.sql.Timestamp
+
+	// since 2.5.0
+	private static final String localDateFormat         = resource.getString("localDateFormat"        ); // Format string for java.time.LocalDate
+	private static final String localTimeFormat         = resource.getString("localTimeFormat"        ); // Format string for java.time.LocalTime
+	private static final String offsetTimeFormat        = resource.getString("offsetTimeFormat"       ); // Format string for java.time.OffsetTime
+	private static final String localDateTimeFormat     = resource.getString("localDateTimeFormat"    ); // Format string for java.time.LocalDateTime
+	private static final String offsetDateTimeFormat    = resource.getString("offsetDateTimeFormat"   ); // Format string for java.time.OffsetDateTime
+	private static final String zonedDateTimeFormat     = resource.getString("zonedDateTimeFormat"    ); // Format string for java.time.ZonedDateTime
+	private static final String instantFormat           = resource.getString("instantFormat"          ); // Format string for java.time.Instant
+	private static final String logDateTimeFormat       = resource.getString("logDateTimeFormat"      ); // Format string for logging DateTime
+
 	private static final int    arrayLimit              = resource.getInt   ("arrayLimit"             ); // Limit of array and Collection elements to output
 	private static final int    byteArrayLimit          = resource.getInt   ("byteArrayLimit"         ); // Limit of byte array elements to output
 	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Limit of Map elements to output
@@ -210,30 +233,6 @@ public class DebugTrace {
 
 	// Logger
 	private static Logger logger = null;
-
-	static {
-		String loggerName = null;
-		try {
-			loggerName = resource.getString("logger");
-			if (loggerName != null) {
-				if (loggerName.indexOf('.') == -1)
-					loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
-				logger = (Logger)Class.forName(loggerName).newInstance();
-			}
-		}
-		catch (Exception e) {
-			System.err.println("DebugTrace: " + e.toString() + "(" + loggerName + ")");
-		}
-
-		if (logger == null)
-			logger = new Std.Out();
-
-		// Set a logging level
-		logger.setLevel(logLevel);
-	}
-
-	// Whether tracing is enabled
-	private static final boolean enabled = logger.isEnabled();
 
 	// Array of indent strings
 	private static final String[] indentStrings = new String[64];
@@ -260,14 +259,61 @@ public class DebugTrace {
 	// Reflected object list
 	private static final List<Object> reflectedObjects = new ArrayList<>();
 
-	// Non-printing property map (@since 1.5.0)
+	private static final Map<String, Map<Integer, String>> convertMapMap = new HashMap<>();
+	private static String lastLog = "";
+
+	static {
+		String loggerName = null;
+		try {
+			loggerName = resource.getString("logger");
+			if (loggerName != null) {
+				if (loggerName.indexOf('.') == -1)
+					loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
+				logger = (Logger)Class.forName(loggerName).newInstance();
+			}
+		}
+		catch (Exception e) {
+			System.err.println("DebugTrace: " + e.toString() + "(" + loggerName + ")");
+		}
+
+		if (logger == null)
+			logger = new Std.Out();
+
+		// Set a logging level
+		logger.setLevel(logLevel);
+	}
+
+	// Whether tracing is enabled
+	private static final boolean enabled = logger.isEnabled();
+
+	// @since 2.5.0
+	private static final DateTimeFormatter utilDateFormatter       = createDateTimeFormatter(utilDateFormat      );
+	private static final DateTimeFormatter sqlDateFormatter        = createDateTimeFormatter(sqlDateFormat       );
+	private static final DateTimeFormatter timeFormatter           = createDateTimeFormatter(timeFormat          );
+	private static final DateTimeFormatter timestampFormatter      = createDateTimeFormatter(timestampFormat     );
+	private static final DateTimeFormatter localDateFormatter      = createDateTimeFormatter(localDateFormat     );
+	private static final DateTimeFormatter localTimeFormatter      = createDateTimeFormatter(localTimeFormat     );
+	private static final DateTimeFormatter offsetTimeFormatter     = createDateTimeFormatter(offsetTimeFormat    );
+	private static final DateTimeFormatter localDateTimeFormatter  = createDateTimeFormatter(localDateTimeFormat );
+	private static final DateTimeFormatter offsetDateTimeFormatter = createDateTimeFormatter(offsetDateTimeFormat);
+	private static final DateTimeFormatter zonedDateTimeFormatter  = createDateTimeFormatter(zonedDateTimeFormat );
+	private static final DateTimeFormatter instantFormatter        = createDateTimeFormatter(instantFormat       );
+	private static final DateTimeFormatter logDateTimeFormatter    = createDateTimeFormatter(logDateTimeFormat   );
+
+	// @since 2.5.0
+	private static DateTimeFormatter createDateTimeFormatter(String format) {
+		try {
+			return DateTimeFormatter.ofPattern(format);
+		}
+		catch (Exception e) {
+			logger.log("\"" + format + "\": " + e.getMessage());
+		}
+		return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSSSS");
+	}
 
 	static {
 		logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getName());
 	}
-
-	private static final Map<String, Map<Integer, String>> convertMapMap = new HashMap<>();
-	private static String lastLog = "";
 
 	private DebugTrace() {}
 
@@ -279,7 +325,10 @@ public class DebugTrace {
 	 * @return a string appended a timestamp string
 	 */
 	public static String appendTimestamp(String string) {
-		return String.format(timestampFormat, new Timestamp(System.currentTimeMillis())) + " " + string;
+	// 2.5.0
+	//	return String.format(timestampFormat, new Timestamp(System.currentTimeMillis())) + " " + string;
+		return logDateTimeFormatter == null ? string : ZonedDateTime.now().format(logDateTimeFormatter) + " " + string;
+	////
 	}
 
 	/**
@@ -403,6 +452,10 @@ public class DebugTrace {
 				logger.log(lastLog);
 
 				upNest(state);
+
+			// 2.5.0
+				printEnd(); // Common end processing of output
+			////
 			}
 		}
 	}
@@ -478,6 +531,7 @@ public class DebugTrace {
 				lastLog = getIndentString(getState()) + message + suffix;
 			}
 			logger.log(lastLog);
+
 			printEnd(); // Common end processing of output
 		}
 	}
@@ -530,24 +584,6 @@ public class DebugTrace {
 	 * @returns a caller stack trace element
 	 */
 	private static StackTraceElement getStackTraceElement() {
-	// 2.4.5
-	//	StackTraceElement result = null;
-	//
-	//	String myClassName = DebugTrace.class.getName();
-	//
-	//	StackTraceElement[] elements = new Throwable().getStackTrace();
-	//	for (int index = 3; index < elements.length; ++index) {
-	//		StackTraceElement element = elements[index];
-	//		String className = element.getClassName();
-	//		if (   className.indexOf(myClassName) == -1
-	//			&& className.indexOf(reflectPackage) == -1
-	//			&& className.indexOf(groovyPackage) == -1
-	//			&& className.indexOf(spockPackage) == -1
-	//			) {
-	//			result = element;
-	//			break;
-	//		}
-	//	}
 		StackTraceElement result = null;
 
 		String myClassName = DebugTrace.class.getName();
@@ -581,7 +617,7 @@ public class DebugTrace {
 	 * @param state indent state
 	 * @param strings a string list
 	 * @param buff a string buffer
-	*/
+	 */
 	private static void lineFeed(State state, List<String> strings, StringBuilder buff) {
 		strings.add(getIndentString(getState()) + buff.toString());
 		buff.setLength(0);
@@ -834,7 +870,7 @@ public class DebugTrace {
 	 * @param <T> type of the value
 	 * @param name the name of the value
 	 * @param valueSupplier the supplier of value to output
-	*/
+	 */
 	public static <T> void print(String name, Supplier<T> valueSupplier) {
 		if (enabled)
 			printSub(null, name, valueSupplier.get(), false);
@@ -847,7 +883,7 @@ public class DebugTrace {
 	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
 	 * @param name the name of the value
 	 * @param valueSupplier the supplier of value to output
-	*/
+	 */
 	public static <T> void print(String mapName, String name, Supplier<T> valueSupplier) {
 		if (enabled)
 			printSub(mapName, name, valueSupplier.get(), false);
@@ -883,9 +919,12 @@ public class DebugTrace {
 
 			if (type.isArray()) {
 				// Array
-				if      (type == char[].class) append(state, strings, buff, ((char[])value)); // char Array
-				else if (type == byte[].class) append(state, strings, buff, ((byte[])value)); // byte Array
-				else                      appendArray(state, strings, buff, mapName, value ); // Other Array
+			// 2.5.0
+			//	if      (type == char[].class) append(state, strings, buff, (char[])value); // char array
+				if      (type == char[].class) append(state, strings, buff, new String((char[])value)); // sting
+			////
+				else if (type == byte[].class) append(state, strings, buff, (byte[])value); // byte Array
+				else                      appendArray(state, strings, buff, mapName, value); // Other Array
 
 			} else if (value instanceof Boolean) {
 				// Boolean
@@ -908,10 +947,31 @@ public class DebugTrace {
 
 			} else if (value instanceof java.util.Date) {
 				// Date
-				if      (value instanceof Date     ) buff.append(String.format(sqlDateFormat  , value)); // sql Date
-				else if (value instanceof Time     ) buff.append(String.format(timeFormat     , value)); // Time
-				else if (value instanceof Timestamp) buff.append(String.format(timestampFormat, value)); // Timestamp
-				else                                 buff.append(String.format(utilDateFormat , value)); // Other Date
+			// 2.5.0
+			//	if      (value instanceof Date     ) buff.append(String.format(sqlDateFormat  , value)); // java.sql.Date
+			//	else if (value instanceof Time     ) buff.append(String.format(timeFormat     , value)); // Time
+			//	else if (value instanceof Timestamp) buff.append(String.format(timestampFormat, value)); // Timestamp
+			//	else                                 buff.append(String.format(utilDateFormat , value)); // java.util.Date
+				Timestamp timestamp = value instanceof Timestamp ? (Timestamp)value : new Timestamp(((java.util.Date)value).getTime());
+				ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+				if      (value instanceof Date     ) buff.append(zonedDateTime.format(sqlDateFormatter  )); // java.sql.Date
+				else if (value instanceof Time     ) buff.append(zonedDateTime.format(timeFormatter     )); // Time
+				else if (value instanceof Timestamp) buff.append(zonedDateTime.format(timestampFormatter)); // Timestamp
+				else                                 buff.append(zonedDateTime.format(utilDateFormatter )); // java.util.Date
+			////
+
+		// 2.5.0
+			} else if (value instanceof Temporal) {
+				// Temporal
+				if      (value instanceof LocalDate     ) buff.append(((LocalDate     )value).format(localDateFormatter     )); // LocalDate
+				else if (value instanceof LocalTime     ) buff.append(((LocalTime     )value).format(localTimeFormatter     )); // LocalTime
+				else if (value instanceof OffsetTime    ) buff.append(((OffsetTime    )value).format(offsetTimeFormatter    )); // OffsetTime
+				else if (value instanceof LocalDateTime ) buff.append(((LocalDateTime )value).format(localDateTimeFormatter )); // LocalDateTime
+				else if (value instanceof OffsetDateTime) buff.append(((OffsetDateTime)value).format(offsetDateTimeFormatter)); // OffsetDateTime
+				else if (value instanceof ZonedDateTime ) buff.append(((ZonedDateTime )value).format(zonedDateTimeFormatter )); // ZonedDateTime
+				else if (value instanceof Instant) buff.append(((Instant)value).atOffset(ZoneOffset.ofHours(0)).format(instantFormatter       )); // Instant
+				else buff.append(value);
+		////
 
 			} else if (value instanceof OptionalInt) {
 				// OptionalInt
@@ -1013,7 +1073,7 @@ public class DebugTrace {
 	 * @param isElement true if the value is element of a container class, false otherwise
 	 * @param nest current nest count
 	 * @return the type name to be output to the log
-	*/
+	 */
 	@SuppressWarnings("rawtypes")
 	private static String getTypeName(Class<?>type, Object value, boolean isComponent, boolean isElement, int nest) {
 		String typeName = null;
@@ -1022,9 +1082,22 @@ public class DebugTrace {
 
 		if (type.isArray()) {
 			// Array
-			typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1) + "[]";
-			if (value != null)
-				length = Array.getLength(value);
+		// 2.5.0
+		//	typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1) + "[]";
+		//	if (value != null)
+		//		length = Array.getLength(value);
+			typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1);
+			if (typeName != null) {
+				String bracket = "[";
+				if (value != null)
+					bracket += Array.getLength(value);
+				bracket += ']';
+				int braIndex = typeName.indexOf('[');
+				if (braIndex < 0)
+					braIndex = typeName.length();
+				typeName = typeName.substring(0, braIndex) + bracket + typeName.substring(braIndex);
+			}
+		////
 		} else {
 			// Not Array
 			if (   nest > 0
@@ -1041,6 +1114,7 @@ public class DebugTrace {
 				if (   typeName.startsWith("java.lang.")
 					|| typeName.startsWith("java.math.")
 					|| typeName.startsWith("java.sql.")
+					|| typeName.startsWith("java.time.")
 					|| typeName.startsWith("java.util.") && !typeName.equals("java.util.Date"))
 					typeName = type.getSimpleName();
 				else
@@ -1131,18 +1205,36 @@ public class DebugTrace {
 	 * @param ch a character
 	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, char ch) {
-		if (ch >= ' ' && ch != '\u007F') {
-			if      (ch == '\'') buff.append("\\'" );
-			else if (ch == '\\') buff.append("\\\\");
-			else                 buff.append(ch);
-		} else {
-			if      (ch == '\b') buff.append("\\b" ); // 07 BEL
-			else if (ch == '\t') buff.append("\\t" ); // 09 HT
-			else if (ch == '\n') buff.append("\\n" ); // 0A LF
-			else if (ch == '\f') buff.append("\\f" ); // 0C FF
-			else if (ch == '\r') buff.append("\\r" ); // 0D CR
-			else buff.append("\\u").append(String.format("%04X", (short)ch));
+	// 2.5.0
+	//	if (ch >= ' ' && ch != '\u007F') {
+	//		if      (ch == '\'') buff.append("\\'" );
+	//		else if (ch == '\\') buff.append("\\\\");
+	//		else                 buff.append(ch);
+	//	} else {
+	//		if      (ch == '\b') buff.append("\\b" ); // 07 BS
+	//		else if (ch == '\t') buff.append("\\t" ); // 09 HT
+	//		else if (ch == '\n') buff.append("\\n" ); // 0A LF
+	//		else if (ch == '\f') buff.append("\\f" ); // 0C FF
+	//		else if (ch == '\r') buff.append("\\r" ); // 0D CR
+	//		else buff.append("\\u").append(String.format("%04X", (short)ch));
+	//	}
+		switch (ch) {
+		case '\b': buff.append("\\b" ); break; // 08 BS
+		case '\t': buff.append("\\t" ); break; // 09 HT
+		case '\n': buff.append("\\n" ); break; // 0A LF
+		case '\f': buff.append("\\f" ); break; // 0C FF
+		case '\r': buff.append("\\r" ); break; // 0D CR
+		case '"' : buff.append("\\\""); break; // "
+		case '\'': buff.append("\\'" ); break; // '
+		case '\\': buff.append("\\\\"); break; // \
+		default:
+			if (ch < ' ' || ch == '\u007F')
+				buff.append("\\u").append(String.format("%04X", (short)ch));
+			else
+				buff.append(ch);
+			break;
 		}
+	////
 	}
 
 	/**
@@ -1160,42 +1252,47 @@ public class DebugTrace {
 				buff.append(limitString);
 				break;
 			}
-			char ch = charSequence.charAt(index);
-			if (ch >= ' ' && ch != '\u007F') {
-				if      (ch == '"' ) buff.append("\\\"");
-				else if (ch == '\\') buff.append("\\\\");
-				else                 buff.append(ch);
-			} else {
-				if      (ch == '\b') buff.append("\\b" ); // 07 BEL
-				else if (ch == '\t') buff.append("\\t" ); // 09 HT
-				else if (ch == '\n') buff.append("\\n" ); // 0A LF
-				else if (ch == '\f') buff.append("\\f" ); // 0C FF
-				else if (ch == '\r') buff.append("\\r" ); // 0D CR
-				else buff.append("\\u").append(String.format("%04X", (short)ch));
-			}
+		// 2.5.0
+		//	char ch = charSequence.charAt(index);
+		//	if (ch >= ' ' && ch != '\u007F') {
+		//		if      (ch == '"' ) buff.append("\\\"");
+		//		else if (ch == '\\') buff.append("\\\\");
+		//		else                 buff.append(ch);
+		//	} else {
+		//		if      (ch == '\b') buff.append("\\b" ); // 08 BS
+		//		else if (ch == '\t') buff.append("\\t" ); // 09 HT
+		//		else if (ch == '\n') buff.append("\\n" ); // 0A LF
+		//		else if (ch == '\f') buff.append("\\f" ); // 0C FF
+		//		else if (ch == '\r') buff.append("\\r" ); // 0D CR
+		//		else buff.append("\\u").append(String.format("%04X", (short)ch));
+		//	}
+			append(state, strings, buff, charSequence.charAt(index));
+		////
 		}
 		buff.append('"');
 	}
 
-	/**
-	 * Appends a character array representation for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param chars a character array
-	 */
-	private static void append(State state, List<String> strings, StringBuilder buff, char[] chars) {
-		buff.append('"');
-		for (int index = 0; index < chars.length; ++index) {
-			if (index >= stringLimit) {
-				buff.append(limitString);
-				break;
-			}
-			append(state, strings, buff, chars[index]);
-		}
-		buff.append('"');
-	}
+// 2.5.0
+//	/**
+//	 * Appends a character array representation for logging to the string buffer.
+//	 *
+//	 * @param state indent state
+//	 * @param strings a string list
+//	 * @param buff a string buffer
+//	 * @param chars a character array
+//	 */
+//	private static void append(State state, List<String> strings, StringBuilder buff, char[] chars) {
+//		buff.append('"');
+//		for (int index = 0; index < chars.length; ++index) {
+//			if (index >= stringLimit) {
+//				buff.append(limitString);
+//				break;
+//			}
+//			append(state, strings, buff, chars[index]);
+//		}
+//		buff.append('"');
+//	}
+////
 
 	/**
 	 * Appends a byte array representation for logging to the string buffer.
@@ -1349,7 +1446,7 @@ public class DebugTrace {
 	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
 	 * @param map a Map
 	 */
-		private static <K,V> void append(State state, List<String> strings, StringBuilder buff, String mapName, Map<K,V> map) {
+	private static <K,V> void append(State state, List<String> strings, StringBuilder buff, String mapName, Map<K,V> map) {
 		Iterator<Map.Entry<K,V>> iterator = map.entrySet().iterator();
 
 		boolean multiLine = map.size() >= 2;

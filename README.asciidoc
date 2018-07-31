@@ -293,19 +293,19 @@ You can specify following properties in the `DebugTrace.properties` file.
 |`keyValueSeparator`
 |Separator between the key and value for Map object +
 [.small]#*Example:*# +
-&#160;&#160; `keyValueSeparator = :\s` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `keyValueSeparator = :\\s` [.small .blue]#*_(Default)_*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character# +
 
 |`fieldNameValueSeparator`
 |Separator between the field name and value +
 [.small]#*Example:*# +
-&#160;&#160; `fieldNameValueSeparator = :\s` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `fieldNameValueSeparator = :\\s` [.small .blue]#*_(Default)_*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character# +
 
 |`printSuffixFormat`
 |Output format of `print` method suffix +
 [.small]#*Example:*# +
-&#160;&#160; `printSuffixFormat = \s(%3$s:%4$d)` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `printSuffixFormat = \\s(%3$s:%4$d)` [.small .blue]#*_(Default)_*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character# +
 [.small]#*Parameters:*# +
 &#160;&#160; `%1`: The class name of the caller +

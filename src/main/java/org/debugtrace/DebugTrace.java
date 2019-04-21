@@ -177,6 +177,7 @@ public class DebugTrace {
 	private static final String[] skipPackages = {
 		"sun.reflect.",
 		"java.lang.reflect.",
+		"jdk.internal.reflect.", // since 2.5.1 for Java 11
 		"org.codehaus.groovy.",
 		"groovy.lang.",
 		"org.spockframework."
@@ -269,7 +270,10 @@ public class DebugTrace {
 			if (loggerName != null) {
 				if (loggerName.indexOf('.') == -1)
 					loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
-				logger = (Logger)Class.forName(loggerName).newInstance();
+			// 2.5.1
+			//	logger = (Logger)Class.forName(loggerName).newInstance();
+				logger = (Logger)Class.forName(loggerName).getConstructor().newInstance();
+			////
 			}
 		}
 		catch (Exception e) {
@@ -325,10 +329,7 @@ public class DebugTrace {
 	 * @return a string appended a timestamp string
 	 */
 	public static String appendTimestamp(String string) {
-	// 2.5.0
-	//	return String.format(timestampFormat, new Timestamp(System.currentTimeMillis())) + " " + string;
 		return logDateTimeFormatter == null ? string : ZonedDateTime.now().format(logDateTimeFormatter) + " " + string;
-	////
 	}
 
 	/**
@@ -453,9 +454,7 @@ public class DebugTrace {
 
 				upNest(state);
 
-			// 2.5.0
 				printEnd(); // Common end processing of output
-			////
 			}
 		}
 	}
@@ -588,12 +587,7 @@ public class DebugTrace {
 
 		String myClassName = DebugTrace.class.getName();
 
-	// 2.4.6
-	//	StackTraceElement[] elements = new Throwable().getStackTrace();
 		StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-	////
-	//	for (int index = 1; index < elements.length; ++index) // for DEBUGGING
-	//		System.out.println("elements[" + index + "]: " + elements[index].getClassName()); // for DEBUGGING
 		outerLoop:
 		for (int index = 3; index < elements.length; ++index) {
 			StackTraceElement element = elements[index];
@@ -606,7 +600,6 @@ public class DebugTrace {
 		}
 		if (result == null)
 			result = new StackTraceElement("--", "--", "--", 0);
-	////
 
 		return result;
 	}
@@ -919,10 +912,7 @@ public class DebugTrace {
 
 			if (type.isArray()) {
 				// Array
-			// 2.5.0
-			//	if      (type == char[].class) append(state, strings, buff, (char[])value); // char array
 				if      (type == char[].class) append(state, strings, buff, new String((char[])value)); // sting
-			////
 				else if (type == byte[].class) append(state, strings, buff, (byte[])value); // byte Array
 				else                      appendArray(state, strings, buff, mapName, value); // Other Array
 
@@ -947,20 +937,13 @@ public class DebugTrace {
 
 			} else if (value instanceof java.util.Date) {
 				// Date
-			// 2.5.0
-			//	if      (value instanceof Date     ) buff.append(String.format(sqlDateFormat  , value)); // java.sql.Date
-			//	else if (value instanceof Time     ) buff.append(String.format(timeFormat     , value)); // Time
-			//	else if (value instanceof Timestamp) buff.append(String.format(timestampFormat, value)); // Timestamp
-			//	else                                 buff.append(String.format(utilDateFormat , value)); // java.util.Date
 				Timestamp timestamp = value instanceof Timestamp ? (Timestamp)value : new Timestamp(((java.util.Date)value).getTime());
 				ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
 				if      (value instanceof Date     ) buff.append(zonedDateTime.format(sqlDateFormatter  )); // java.sql.Date
 				else if (value instanceof Time     ) buff.append(zonedDateTime.format(timeFormatter     )); // Time
 				else if (value instanceof Timestamp) buff.append(zonedDateTime.format(timestampFormatter)); // Timestamp
 				else                                 buff.append(zonedDateTime.format(utilDateFormatter )); // java.util.Date
-			////
 
-		// 2.5.0
 			} else if (value instanceof Temporal) {
 				// Temporal
 				if      (value instanceof LocalDate     ) buff.append(((LocalDate     )value).format(localDateFormatter     )); // LocalDate
@@ -971,7 +954,6 @@ public class DebugTrace {
 				else if (value instanceof ZonedDateTime ) buff.append(((ZonedDateTime )value).format(zonedDateTimeFormatter )); // ZonedDateTime
 				else if (value instanceof Instant) buff.append(((Instant)value).atOffset(ZoneOffset.ofHours(0)).format(instantFormatter       )); // Instant
 				else buff.append(value);
-		////
 
 			} else if (value instanceof OptionalInt) {
 				// OptionalInt
@@ -1082,10 +1064,6 @@ public class DebugTrace {
 
 		if (type.isArray()) {
 			// Array
-		// 2.5.0
-		//	typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1) + "[]";
-		//	if (value != null)
-		//		length = Array.getLength(value);
 			typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1);
 			if (typeName != null) {
 				String bracket = "[";
@@ -1097,7 +1075,6 @@ public class DebugTrace {
 					braIndex = typeName.length();
 				typeName = typeName.substring(0, braIndex) + bracket + typeName.substring(braIndex);
 			}
-		////
 		} else {
 			// Not Array
 			if (   nest > 0
@@ -1205,19 +1182,6 @@ public class DebugTrace {
 	 * @param ch a character
 	 */
 	private static void append(State state, List<String> strings, StringBuilder buff, char ch) {
-	// 2.5.0
-	//	if (ch >= ' ' && ch != '\u007F') {
-	//		if      (ch == '\'') buff.append("\\'" );
-	//		else if (ch == '\\') buff.append("\\\\");
-	//		else                 buff.append(ch);
-	//	} else {
-	//		if      (ch == '\b') buff.append("\\b" ); // 07 BS
-	//		else if (ch == '\t') buff.append("\\t" ); // 09 HT
-	//		else if (ch == '\n') buff.append("\\n" ); // 0A LF
-	//		else if (ch == '\f') buff.append("\\f" ); // 0C FF
-	//		else if (ch == '\r') buff.append("\\r" ); // 0D CR
-	//		else buff.append("\\u").append(String.format("%04X", (short)ch));
-	//	}
 		switch (ch) {
 		case '\b': buff.append("\\b" ); break; // 08 BS
 		case '\t': buff.append("\\t" ); break; // 09 HT
@@ -1234,7 +1198,6 @@ public class DebugTrace {
 				buff.append(ch);
 			break;
 		}
-	////
 	}
 
 	/**
@@ -1252,47 +1215,10 @@ public class DebugTrace {
 				buff.append(limitString);
 				break;
 			}
-		// 2.5.0
-		//	char ch = charSequence.charAt(index);
-		//	if (ch >= ' ' && ch != '\u007F') {
-		//		if      (ch == '"' ) buff.append("\\\"");
-		//		else if (ch == '\\') buff.append("\\\\");
-		//		else                 buff.append(ch);
-		//	} else {
-		//		if      (ch == '\b') buff.append("\\b" ); // 08 BS
-		//		else if (ch == '\t') buff.append("\\t" ); // 09 HT
-		//		else if (ch == '\n') buff.append("\\n" ); // 0A LF
-		//		else if (ch == '\f') buff.append("\\f" ); // 0C FF
-		//		else if (ch == '\r') buff.append("\\r" ); // 0D CR
-		//		else buff.append("\\u").append(String.format("%04X", (short)ch));
-		//	}
 			append(state, strings, buff, charSequence.charAt(index));
-		////
 		}
 		buff.append('"');
 	}
-
-// 2.5.0
-//	/**
-//	 * Appends a character array representation for logging to the string buffer.
-//	 *
-//	 * @param state indent state
-//	 * @param strings a string list
-//	 * @param buff a string buffer
-//	 * @param chars a character array
-//	 */
-//	private static void append(State state, List<String> strings, StringBuilder buff, char[] chars) {
-//		buff.append('"');
-//		for (int index = 0; index < chars.length; ++index) {
-//			if (index >= stringLimit) {
-//				buff.append(limitString);
-//				break;
-//			}
-//			append(state, strings, buff, chars[index]);
-//		}
-//		buff.append('"');
-//	}
-////
 
 	/**
 	 * Appends a byte array representation for logging to the string buffer.

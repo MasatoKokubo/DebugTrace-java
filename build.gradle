@@ -29,8 +29,8 @@ dependencies {
 	testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '8'
+targetCompatibility = '8'
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
 version             = '2.5.1'

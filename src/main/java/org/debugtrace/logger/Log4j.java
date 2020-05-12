@@ -17,54 +17,54 @@ import org.debugtrace.DebugTrace;
  * @author Masato Kokubo
  */
 public class Log4j implements Logger {
-	// Level Map
-	private static final Map<String, Level> levelMap = new HashMap<>();
-	static {
-		levelMap.put("default", Level.TRACE);
-		levelMap.put("trace"  , Level.TRACE);
-		levelMap.put("debug"  , Level.DEBUG);
-		levelMap.put("info"   , Level.INFO );
-		levelMap.put("warn"   , Level.WARN );
-		levelMap.put("error"  , Level.ERROR);
-		levelMap.put("fatal"  , Level.FATAL);
-	}
+    // Level Map
+    private static final Map<String, Level> levelMap = new HashMap<>();
+    static {
+        levelMap.put("default", Level.TRACE);
+        levelMap.put("trace"  , Level.TRACE);
+        levelMap.put("debug"  , Level.DEBUG);
+        levelMap.put("info"   , Level.INFO );
+        levelMap.put("warn"   , Level.WARN );
+        levelMap.put("error"  , Level.ERROR);
+        levelMap.put("fatal"  , Level.FATAL);
+    }
 
-	// Logger
-	private org.apache.log4j.Logger logger;
+    // Logger
+    private org.apache.log4j.Logger logger;
 
-	// Level
-	private Level level = Level.TRACE;
+    // Level
+    private Level level = Level.TRACE;
 
-	/**
-	 * Construct a Log4j.
-	 */
-	public Log4j() {
-		logger = LogManager.getLogger(DebugTrace.class);
-	}
+    /**
+     * Construct a Log4j.
+     */
+    public Log4j() {
+        logger = LogManager.getLogger(DebugTrace.class);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setLevel(String levelStr) {
-		Level level = levelMap.get(levelStr);
-		if (level != null)
-			this.level = level;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setLevel(String levelStr) {
+        Level level = levelMap.get(levelStr);
+        if (level != null)
+            this.level = level;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean isEnabled() {
-		return logger.isEnabledFor(level);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isEnabled() {
+        return logger.isEnabledFor(level);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void log(String message) {
-		logger.log(level, message);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void log(String message) {
+        logger.log(level, message);
+    }
 }

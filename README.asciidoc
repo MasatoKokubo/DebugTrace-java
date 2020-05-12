@@ -2,7 +2,7 @@
 
 link:README_ja.asciidoc[[Japanese]]
 
-`DebugTrace-java` is a library that outputs trace logs when debugging Java programs. It is available in Java 8 or later.  +
+*DebugTrace-java* is a library that outputs trace logs when debugging Java programs. It is available on Java 8 or later. +
 By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end of methods, you can output the execution status of the Java program under development to the log.
 
 === 1. Features
@@ -89,30 +89,24 @@ public class Example1 {
 
 .debugtrace.log
 ----
-2018-07-29 22:57:25.251+09:00 DebugTrace 2.5.0 / logger: org.debugtrace.logger.Std$Err
-2018-07-29 22:57:25.251+09:00 
-2018-07-29 22:57:25.251+09:00 ______________________________ main ______________________________
-2018-07-29 22:57:25.251+09:00 
-2018-07-29 22:57:25.251+09:00 Enter example.Example1.main (Example1.java:15)
-2018-07-29 22:57:25.265+09:00 | Enter example.Example1.newArray (Example1.java:25)
-2018-07-29 22:57:25.265+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
-2018-07-29 22:57:25.265+09:00 | | length = 2 (Example1.java:27)
-2018-07-29 22:57:25.265+09:00 | | 1 array = (example.Example1.Point[2])[
-2018-07-29 22:57:25.265+09:00 | |   null,
-2018-07-29 22:57:25.265+09:00 | |   null,
-2018-07-29 22:57:25.265+09:00 | | ] (Example1.java:30)
-2018-07-29 22:57:25.265+09:00 | | 2 array = (example.Example1.Point[2])[
-2018-07-29 22:57:25.265+09:00 | |   (example.Example1.Point)[
-2018-07-29 22:57:25.265+09:00 | |     x: 0,
-2018-07-29 22:57:25.265+09:00 | |     y: 0,
-2018-07-29 22:57:25.265+09:00 | |   ],
-2018-07-29 22:57:25.265+09:00 | |   (example.Example1.Point)[
-2018-07-29 22:57:25.265+09:00 | |     x: 0,
-2018-07-29 22:57:25.265+09:00 | |     y: 0,
-2018-07-29 22:57:25.265+09:00 | |   ],
-2018-07-29 22:57:25.265+09:00 | | ] (Example1.java:37)
-2018-07-29 22:57:25.265+09:00 | Leave example.Example1.newArray (Example1.java:38)
-2018-07-29 22:57:25.265+09:00 Leave example.Example1.main (Example1.java:20)
+2020-05-11 22:49:43.281+09:00 DebugTrace 3.0.0 uses org.debugtrace.logger.Std$Err
+2020-05-11 22:49:43.293+09:00 
+2020-05-11 22:49:43.295+09:00 ______________________________ main ______________________________
+2020-05-11 22:49:43.295+09:00 
+2020-05-11 22:49:43.296+09:00 Enter example.Example1.main (Example1.java:15)
+2020-05-11 22:49:43.301+09:00 | Enter example.Example1.newArray (Example1.java:25)
+2020-05-11 22:49:43.325+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
+2020-05-11 22:49:43.325+09:00 | | length = 2 (Example1.java:27)
+2020-05-11 22:49:43.326+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:30)
+2020-05-11 22:49:43.326+09:00 | | 
+2020-05-11 22:49:43.326+09:00 | | 2 array = (example.Example1.Point[2])[
+2020-05-11 22:49:43.326+09:00 | |   (example.Example1.Point)[x: 0, y: 0], 
+2020-05-11 22:49:43.326+09:00 | |   (example.Example1.Point)[x: 0, y: 0]
+2020-05-11 22:49:43.326+09:00 | | ] (Example1.java:37)
+2020-05-11 22:49:43.326+09:00 | | 
+2020-05-11 22:49:43.326+09:00 | Leave example.Example1.newArray (Example1.java:38) duration: 00:00:00.024000000
+2020-05-11 22:49:43.326+09:00 | 
+2020-05-11 22:49:43.326+09:00 Leave example.Example1.main (Example1.java:20) duration: 00:00:00.030000000
 ----
 
 === 3. Method List
@@ -155,7 +149,7 @@ The type of value is `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`,
 The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `Supplier<T>`.
 
 |`print` +
-[.small]#_[since v2.4.0]_#
+[.small .blue]#since 2.4.0#
 |`mapName`: the name of map to get constant name corresponding to number +
 `name`: a name of value +
 `value`: a value|Outputs to the log in the form of +
@@ -163,7 +157,7 @@ The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `S
 The type of value is `byte`, `short`, `int`, `long` or `Object`.
 
 |`print` +
-[.small]#_[since v2.4.0]_#
+[.small .blue]#since 2.4.0#
 |`mapName`: the name of map to get constant name corresponding to number +
 `name`: a name of the value +
 `valueSupplier`: a supplier of the value
@@ -186,17 +180,17 @@ You can specify following properties in the `DebugTrace.properties` file.
 |`logger`
 | Logger DebugTrace uses +
 [.small]#*Examples:*# +
-&#160;&#160; `logger = Std$Out` [.small .blue]#- output to stdout *_(Default for v2.4.6 or earlier)_*# +
-&#160;&#160; `logger = Std$Err` [.small .blue]#- output to stderr *_(Default for v2.5.0 or later)_*# +
+&#160;&#160; `logger = Std$Out` [.small .blue]#- output to stdout# +
+&#160;&#160; `logger = Std$Err` [.small .blue]#- output to stderr *[Default]*# +
 &#160;&#160; `logger = Jdk` [.small .blue]#- use JDK Logger# +
 &#160;&#160; `logger = Log4j` [.small .blue]#- use Log4j 1# +
 &#160;&#160; `logger = Log4j2` [.small .blue]#- use Log4j 2# +
-&#160;&#160; `logger = SLF4J` [.small .blue]#- use SLF4J# +
+&#160;&#160; `logger = SLF4J` [.small .blue]#- use SLF4J#
 
 |`logLevel`
-|Log level at log output +
+|Log level to use when outputting +
 [.small]#*Examples when use JDK:*# +
-&#160;&#160; `logLevel = default` [.small .blue]#- same as finest *_(Default)_*# +
+&#160;&#160; `logLevel = default` [.small .blue]#- same as finest *[Default]*# +
 &#160;&#160; `logLevel = finest` +
 &#160;&#160; `logLevel = finer` +
 &#160;&#160; `logLevel = fine` +
@@ -205,7 +199,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; `logLevel = warning` +
 &#160;&#160; `logLevel = severe` +
 [.small]#*Examples when use Log4j or Lo4j2:*# +
-&#160;&#160; `logLevel = default` [.small .blue]#- same as trace *_(Default)_*# +
+&#160;&#160; `logLevel = default` [.small .blue]#- same as trace *[Default]*# +
 &#160;&#160; `logLevel = trace` +
 &#160;&#160; `logLevel = debug` +
 &#160;&#160; `logLevel = info` +
@@ -213,99 +207,117 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; `logLevel = error` +
 &#160;&#160; `logLevel = fatal` +
 [.small]#*Examples when use SLF4J:*# +
-&#160;&#160; `logLevel = default` [.small .blue]#- same as trace *_(Default)_*# +
+&#160;&#160; `logLevel = default` [.small .blue]#- same as trace *[Default]*# +
 &#160;&#160; `logLevel = trace` +
 &#160;&#160; `logLevel = debug` +
 &#160;&#160; `logLevel = info` +
 &#160;&#160; `logLevel = warn` +
-&#160;&#160; `logLevel = error` +
+&#160;&#160; `logLevel = error`
 
-|`enterString`
-|The string used after `enter` method +
+|`enterFormat` +
+[.small .blue]#Renamed since 3.0.0# +
+ +
+`enterString` +
+[.small .blue]#Deprecated since 3.0.0#
+|Format string of log output when entering methods +
 [.small]#*Example:*# +
-&#160;&#160; `enterString = Enter %1$s.%2$s (%3$s:%4$d)` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `enterFormat = Enter %1$s.%2$s (%3$s:%4$d)` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
 &#160;&#160; `%1`: The class name of the caller +
 &#160;&#160; `%2`: The method name of the caller +
 &#160;&#160; `%3`: The file name of the caller +
 &#160;&#160; `%4`: The line number of the caller
 
-|`leaveString`
-|The string used before `leave` method +
+|`leaveFormat` +
+[.small .blue]#Renamed since 3.0.0# +
+ +
+`leaveString` +
+[.small .blue]#Deprecated since 3.0.0#
+|Format string of log output when leaving methods +
 [.small]#*Example:*# +
-&#160;&#160; `leaveString = Leave %1$s.%2$s (%3$s:%4$d)` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
 &#160;&#160; `%1`: The class name of the caller +
 &#160;&#160; `%2`: The method name of the caller +
 &#160;&#160; `%3`: The file name of the caller +
-&#160;&#160; `%4`: The line number of the caller
+&#160;&#160; `%4`: The line number of the caller +
+&#160;&#160; `%5`: The duration since invoking the corresponding `enter` method
 
-|`threadBoundaryString`
-|The string output in the threads boundary. +
+|`threadBoundaryFormat` +
+[.small .blue]#Renamed since 3.0.0# +
+ +
+`threadBoundaryString` +
+[.small .blue]#Deprecated since 3.0.0#
+|Format string of log output at threads boundary +
 [.small]#*Example:*# +
 &#160;&#160; [.small]`threadBoundaryString = \____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____` +
-&#160;&#160; [.small .blue]#*_(Default)_*# +
+&#160;&#160; [.small .blue]#*[Default]*# +
 [.small]#*Parameter:*# +
 &#160;&#160; `%1`: The thread name
 
-|`classBoundaryString`
-|The string output in the classes boundary. +
+|`classBoundaryFormat` +
+[.small .blue]#Renamed since 3.0.0# +
+ +
+`classBoundaryString` +
+[.small .blue]#Deprecated since 3.0.0#
+|Format string of log output at classes boundary +
 [.small]#*Example:*# +
-&#160;&#160; `classBoundaryString = \\____ %1$s \____` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `classBoundaryString = \\____ %1$s \____` [.small .blue]#*[Default]*# +
 [.small]#*Parameter:*# +
 &#160;&#160; `%1`: The class name
 
 |`indentString`
 |String of one code indent +
 [.small]#*Example:*# +
-&#160;&#160; `indentString = \s\s` [.small .blue]#*_(Default)_*# +
-&#160;&#160; [.small .blue]#`\\s` is change to a space character# +
+&#160;&#160; `indentString = \s\s` [.small .blue]#*[Default]*# +
+&#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
 |`dataIndentString`
 |String of one data indent +
 [.small]#*Example:*# +
-&#160;&#160; `dataIndentString = \\s\\s` [.small .blue]#*_(Default)_*# +
-&#160;&#160; [.small .blue]#`\\s` is change to a space character# +
+&#160;&#160; `dataIndentString = \\s\\s` [.small .blue]#*[Default]*# +
+&#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
 |`limitString`
-|The string to represent that it has exceeded the limit +
+|String to represent that it has exceeded the limit +
 [.small]#*Example:*# +
-&#160;&#160; `limitString = \...` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `limitString = \...` [.small .blue]#*[Default]*#
 
-|`nonPrintString` +
-[.small]#_[since v1.5.0]_#
-|String of value in the case of properties that do not print the value +
+|`nonOutputString` +
+[.small .blue]#Renamed since 3.0.0# +
+ +
+`nonPrintString` +
+[.small .blue]#since 1.5.0# +
+[.small .blue]#Deprecated since 3.0.0#
+|String to be output instead of not outputting value +
 [.small]#*Example:*# +
-&#160;&#160; `nonPrintString = \***` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `nonOutputString = \***` [.small .blue]#*[Default]*#
 
 |`cyclicReferenceString`
-|The string to represent that the cyclic reference occurs +
+|String to represent that the cyclic reference occurs +
 [.small]#*Example:*# +
-`cyclicReferenceString = \\s\*\** cyclic reference \***\\s` [.small .blue]#*_(Default)_*# +
-&#160;&#160; [.small .blue]#`\\s` is change to a space character# +
+`cyclicReferenceString = \\s\*\** cyclic reference \***\\s` [.small .blue]#*[Default]*# +
+&#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
 |`varNameValueSeparator`
-|Separator between the variable name and value +
+|Separator string　between the variable name and value +
 [.small]#*Example:*# +
-&#160;&#160; `varNameValueSeparator = \\s=\\s` [.small .blue]#*_(Default)_*# +
-&#160;&#160; [.small .blue]#`\\s` is change to a space character# +
+&#160;&#160; `varNameValueSeparator = \\s=\\s` [.small .blue]#*[Default]*# +
+&#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
-|`keyValueSeparator`
-|Separator between the key and value for Map object +
+|`keyValueSeparator` +
+ +
+[.small]#`fieldNameValueSeparator`# +
+[.small .blue]#Deleted since 3.0.0#
+|Separator string　between the key and value of Map object +
 [.small]#*Example:*# +
-&#160;&#160; `keyValueSeparator = :\\s` [.small .blue]#*_(Default)_*# +
-&#160;&#160; [.small .blue]#`\\s` is change to a space character# +
-
-|`fieldNameValueSeparator`
-|Separator between the field name and value +
-[.small]#*Example:*# +
-&#160;&#160; `fieldNameValueSeparator = :\\s` [.small .blue]#*_(Default)_*# +
-&#160;&#160; [.small .blue]#`\\s` is change to a space character# +
+&#160;&#160; `keyValueSeparator = :\\s` [.small .blue]#*[Default]*# +
+&#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
 |`printSuffixFormat`
 |Output format of `print` method suffix +
 [.small]#*Example:*# +
-&#160;&#160; `printSuffixFormat = \\s(%3$s:%4$d)` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `printSuffixFormat = \\s(%3$s:%4$d)` [.small .blue]#*[Default]*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character# +
 [.small]#*Parameters:*# +
 &#160;&#160; `%1`: The class name of the caller +
@@ -313,121 +325,146 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; `%3`: The file name of the caller +
 &#160;&#160; `%4`: The line number of the caller
 
+|`sizeFormat` +
+[.small .blue]#since 3.0.0#
+|Output format of the size of collections and maps +
+[.small]#*設定例:*# +
+&#160;&#160; `sizeFormat = size:%1d` [.small .blue]#*[Default]*# +
+[.small]#*パラメータ:*# +
+&#160;&#160; `%1`: 要素数
+
+|`minimumOutputSize` +
+[.small .blue]#since 3.0.0#
+|Minimum value to output the number of elements of array, collection and map +
+[.small]#*設定例:*# +
+&#160;&#160; `minimumOutputSize = 5` [.small .blue]#*[Default]*#
+
+|`lengthFormat` +
+[.small .blue]#since 3.0.0#
+|Output format of the length of strings +
+[.small]#*設定例:*# +
+&#160;&#160; `sizeFormat = length:%1d` [.small .blue]#*[Default]*# +
+[.small]#*パラメータ:*# +
+&#160;&#160; `%1`: 要素数
+
+|`minimumOutputLength` +
+[.small .blue]#since 3.0.0#
+|Minimum value to output the length of string +
+[.small]#*設定例:*# +
+&#160;&#160; `minimumOutputSize = 5` [.small .blue]#*[Default]*#
+
 |`utilDateFormat`
 |Output format of `java.util.Date` +
-[.small]#*Example:*#  [.small yellow-background]#_[v2.4.6 or earlier]_# +
-&#160;&#160; `utilDateFormat = %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS` [.small .blue]#*_(Default)_*# +
-[.small]#*Parameter:*# +
-&#160;&#160; `%1`: a `java.util.Date` +
- +
-[.small]#*Example:*# [.small lime-background]#_[v2.5.0 or later]_# +
-&#160;&#160; `utilDateFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*_(Default)_*# +
+[.small]#*Example:*# +
+&#160;&#160; `utilDateFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*[Default]*#
 
 |`sqlDateFormat`
 |Output format of `java.sql.Date` +
-[.small]#*Example:*#  [.small yellow-background]#_[v2.4.6 or earlier]_# +
-&#160;&#160; `sqlDateFormat = %1$tY-%1$tm-%1$td` [.small .blue]#*_(Default)_*# +
-[.small]#*Parameter:*# +
-&#160;&#160; `%1`: a `java.sql.Date` +
- +
-[.small]#*Example:*# [.small lime-background]#_[v2.5.0 or later]_# +
-&#160;&#160; `sqlDateFormat = yyyy-MM-ddxxx` [.small .blue]#*_(Default)_*# +
+[.small]#*Example:*# +
+&#160;&#160; `sqlDateFormat = yyyy-MM-ddxxx` [.small .blue]#*[Default]*#
 
 |`timeFormat`
 |Output format of `java.sql.Time` +
-[.small]#*Example:*#  [.small yellow-background]#_[v2.4.6 or earlier]_# +
-&#160;&#160; `timeFormat = %1$tH:%1$tM:%1$tS` [.small .blue]#*_(Default)_*# +
-[.small]#*Parameter:*# +
-&#160;&#160; `%1`: a `java.sql.Time` +
- +
-[.small]#*Example:*# [.small lime-background]#_[v2.5.0 or later]_# +
-&#160;&#160; `timeFormat = HH:mm:ss.SSSxxx` [.small .blue]#*_(Default)_*# +
+[.small]#*Example:*# +
+&#160;&#160; `timeFormat = HH:mm:ss.SSSxxx` [.small .blue]#*[Default]*#
 
 |`timestampFormat`
 |Output format of `java.sql.Timestamp` +
-[.small]#*Example:*#  [.small yellow-background]#_[v2.4.6 or earlier]_# +
-&#160;&#160; `timestampFormat = %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL` [.small .blue]#*_(Default)_*# +
-[.small]#*Parameter:*# +
-&#160;&#160; `%1`: a `java.sql.Timestamp` +
- +
-[.small]#*Example:*# [.small lime-background]#_[v2.5.0 or later]_# +
-&#160;&#160; `timestampFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*_(Default)_*# +
+[.small]#*Example:*# +
+&#160;&#160; `timestampFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[Default]*#
 
 |`localDateFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of `java.time.LocalDate` +
 [.small]#*Example:*# +
-&#160;&#160; `localDateFormat = yyyy-MM-dd` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `localDateFormat = yyyy-MM-dd` [.small .blue]#*[Default]*#
 
 |`localTimeFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of `java.time.LocalTime` +
 [.small]#*Example:*# +
-&#160;&#160; `localTimeFormat = HH:mm:ss.SSSSSSSSS` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `localTimeFormat = HH:mm:ss.SSSSSSSSS` [.small .blue]#*[Default]*#
 
 |`offsetTimeFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of `java.time.OffsetTime` +
 [.small]#*Example:*# +
-&#160;&#160; `offsetTimeFormat = HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `offsetTimeFormat = HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[Default]*#
 
 |`localDateTimeFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of `java.time.LocalDateTime` +
 [.small]#*Example:*# +
-&#160;&#160; `localDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSS` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `localDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSS` [.small .blue]#*[Default]*#
 
 |`offsetDateTimeFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of `java.time.OffsetDateTime` +
 [.small]#*Example:*# +
-&#160;&#160; `offsetDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `offsetDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[Default]*#
 
 |`zonedDateTimeFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of `java.time.ZonedDateTime` +
 [.small]#*Example:*# +
-&#160;&#160; `zonedDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `zonedDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV` [.small .blue]#*[Default]*#
 
 |`instantFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of `java.time.Instant` +
 [.small]#*Example:*# +
-&#160;&#160; `instantFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSX` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `instantFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSX` [.small .blue]#*[Default]*#
 
 |`logDateTimeFormat` +
-[.small lime-background]#_[since v2.5.0]_#
+[.small .blue]#since 2.5.0#
 |Output format of the date and time of the log when the logger is `Std$Out` or `Std$Err` +
 [.small]#*Example:*# +
-&#160;&#160; `logDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `logDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*[Default]*#
 
-|`arrayLimit`
-|Limit of array and Collection elements to output
-[.small]#*Example:*# +
-&#160;&#160; `arrayLimit = 512` [.small .blue]#*_(Default)_*# +
+|`maximumDataOutputWidth` +
+[.small .blue]#since 3.0.0#
+|Maximum output width of data +
+[.small]#*設定例:*# +
+`maximumDataOutputWidth = 70` [.small .blue]#*[Default]*#
+
+|`collectionLimit` +
+[.small .blue]#Renamed since 3.0.0# +
+ +
+[.small]#`arrayLimit`# +
+[.small .blue]#Deprecated since 3.0.0# +
+[.small]#`mapLimit`# +
+[.small .blue]#Removed since 3.0.0#
+|Limit of array, collection and map elements to output +
+[.small]#*設定例:*# +
+`collectionLimit = 512` [.small .blue]#*[Default]*#
 
 |`byteArrayLimit`
 |Limit of byte array (`byte[]`) elements to output
 [.small]#*Example:*# +
-&#160;&#160; `byteArrayLimit = 8192` [.small .blue]#*_(Default)_*# +
-
-|`mapLimit`
-|Limit of Map elements to output
-[.small]#*Example:*# +
-&#160;&#160; `mapLimit = 512` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `byteArrayLimit = 8192` [.small .blue]#*[Default]*#
 
 |`stringLimit`
-|Limit of String characters to output
+|Limit of string characters to output
 [.small]#*Example:*# +
-&#160;&#160; `stringLimit = 8192` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `stringLimit = 8192` [.small .blue]#*[Default]*#
 
-|`nonPrintProperties` +
-[.small]#_[since v2.2.0]_#
+|`reflectionNestLimit` +
+[.small .blue]#since 3.0.0#
+|Limit of number of reflection nest +
+[.small]#*Example:*# +
+`reflectionNestLimit = 4` [.small .blue]#*[Default]*#
+
+|`nonOutputProperties` +
+[.small .blue]#Renamed since 3.0.0# +
+ +
+[.small]#`nonPrintProperties`# +
+[.small .blue]#Deprecated since 3.0.0# +
+[.small .blue]#since 2.2.0#
 |Properties not to be output +
 [.small]#*Example (1 value):*# +
-&#160;&#160; `NonPrintProperties = org.lightsleep.helper.EntityInfo#columnInfos` +
+&#160;&#160; `nonOutputProperties = org.lightsleep.helper.EntityInfo#columnInfos` +
 [.small]#*Example (multi values):*# +
-&#160;&#160; `nonPrintProperties = \` +
+&#160;&#160; `nonOutputProperties = \` +
 &#160;&#160;&#160;&#160; `org.lightsleep.helper.EntityInfo#columnInfos,\` +
 &#160;&#160;&#160;&#160; `org.lightsleep.helper.EntityInfo#keyColumnInfos,\` +
 &#160;&#160;&#160;&#160; `org.lightsleep.helper.ColumnInfo#entityInfo` +
@@ -436,20 +473,20 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; `<Full class name>#<Property name>`
 
 |`defaultPackage` +
-[.small]#_[since v2.3.0]_#
+[.small .blue]#since 2.3.0#
 |Default package of your java source +
 [.small]#*Example:*# +
 &#160;&#160; `defaultPackage = org.debugtrace.DebugTraceExample` +
-&#160;&#160; [.small .blue]#No default value# +
+&#160;&#160; [.small .blue]#No default value#
 
 |`defaultPackageString` +
-[.small]#_[since v2.3.0]_#
+[.small .blue]#since 2.3.0#
 |String replacing the default package part +
 [.small]#*Example:*# +
-&#160;&#160; `defaultPackage = \...` [.small .blue]#*_(Default)_*# +
+&#160;&#160; `defaultPackageString = \...` [.small .blue]#*[Default]*# +
 
 |`reflectionClasses` +
-[.small]#_[since v2.4.0]_#
+[.small .blue]#since 2.4.0#
 |Classe names that output content by reflection even if `toString` method is implemented +
 [.small]#*Example (1 value):*# +
 &#160;&#160; `reflectionClasses = org.debugtrce.DebugTraceExample.Point` +
@@ -457,19 +494,19 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; `reflectionClasses = \` +
 &#160;&#160;&#160;&#160; `org.debugtrace.DebugTraceExample.Point,\` +
 &#160;&#160;&#160;&#160; `org.debugtrace.DebugTraceExample.Rectangle` +
-&#160;&#160; [.small .blue]#No default value# +
+&#160;&#160; [.small .blue]#No default value#
 
 |`mapNameMap` +
-[.small]#_[since v2.4.0]_#
+[.small .blue]#since 2.4.0#
 |Map for obtaining map name corresponding to variable name +
 [.small]#*Example:*# +
 &#160;&#160; `mapNameMap = appleBrand: AppleBrand` +
 [.small]#*Format of a value:*# +
 &#160;&#160; `<Variable Name>: <Map Name>` +
-&#160;&#160; [.small .blue]#No default value# +
+&#160;&#160; [.small .blue]#No default value#
 
 |`<Constant Map Name>` +
-[.small]#_[since v2.4.0]_#
+[.small .blue]#since 2.4.0#
 |Map of numbers (as key) and constant names (as value) corresponding to the numbers +
 &#160;&#160; `AppleBrand = \` +
 &#160;&#160;&#160;&#160; `0: Apple.NO_BRAND,\` + 
@@ -489,18 +526,18 @@ You can specify following properties in the `DebugTrace.properties` file.
 |===
 Specify the output format of the date and time in the form of the argument of `String.format` for *DebugTrace-java 2.4.6 or earlier*, and specify it in the form of the argument `DateTimeFormatter.ofPattern` for *DebugTrace-java 2.5.0 or later*.
 
-==== 4.1. *nonPrintProperties*, *nonPrintString*
+==== 4.1. *nonOutputProperties*, *nonOutputString*
 
 DebugTrace use reflection to output object contents if the `toString` method is not implemented.
 If there are other object references, the contents of objects are also output.
 However, if there is circular reference, it will automatically detect and suspend output.
-You can suppress output by specifying the `nonPrintProperties` property and
+You can suppress output by specifying the `nonOutputProperties` property and
 can specify multiple values of this property separated by commas.  
-The value of the property specified by `nonPrintProperties` are output as the string specified by `nonPrintString` (default: `\***`).
+The value of the property specified by `nonOutputProperties` are output as the string specified by `nonOutputString` (default: `\***`).
 
-.Example of nonPrintProperties in DebugTrace.properties
+.Example of nonOutputProperties in DebugTrace.properties
 ----
-nonPrintProperties = \
+nonOutputProperties = \
     org.lightsleep.helper.EntityInfo#columnInfos,\
     org.lightsleep.helper.EntityInfo#keyColumnInfos,\
     org.lightsleep.helper.ColumnInfo#entityInfo
@@ -659,3 +696,29 @@ link:LICENSE.txt[The MIT License (MIT)]
 === 8. Links
 
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specification]
+
+=== 9. Release Notes
+
+==== DebugTrace-java 3.0.0 [.small .gray]#May 12, 2020#
+
+* Improved the line breaking algorithm.
+
+* Added the following properties specified in DebugTrace.properties
+  ** `sizeFormat` - Output format of the size of collections and maps (default: `size:%1d`)
+  ** `minimumOutputSize` - Minimum value to output the number of elements of array, collection and map (default: `5`)
+  ** `lengthFormat` - Output format of the length of strings (default: `length:% 1d`)
+  ** `minimumOutputLength` - Minimum value to output the length of string length (default: `5`)
+  ** `maximumDataOutputWidth` - Maximum output width of data (default: `70`)
+
+* Changed the following property names specified in DebugTrace.properties. However, you can specify the previous names for compatibility.
+  ** `enterFormat` <- `enterString`
+  ** `leaveFormat` <- `leaveString`
+  ** `threadBoundaryFormat` <- `threadBoundaryString`
+  ** `classBoundaryFormat` <- `classBoundaryString`
+  ** `nonOutputString` <- `nonPrintString`
+  ** `collectionLimit` <- `arrayLimit`
+  ** `nonOutputProperties` <- `nonPrintProperties`
+
+* Delete the following properties specified in DebugTrace.properties.
+  ** `fieldNameValueSeparator` - integrated into `keyValueSeparator`
+  ** `mapLimit` - integrated into `collectionLimit`

@@ -11,27 +11,27 @@ package org.debugtrace.logger;
  */
 @FunctionalInterface
 public interface Logger {
-	/**
-	 * Set the logging level
-	 *
-	 * @param logLevelStr a logging level string
-	 */
-	default void setLevel(String logLevelStr) {
-	}
+    /**
+     * Set the logging level
+     *
+     * @param logLevelStr a logging level string
+     */
+    default void setLevel(String logLevelStr) {
+    }
 
-	/**
-	 * Returns whether logging is enabled.
-	 *
-	 * @return true if logging is enabled; false otherwise
-	 */
-	default boolean isEnabled() {
-		return true;
-	}
+    /**
+     * Returns whether logging is enabled.
+     *
+     * @return true if logging is enabled; false otherwise
+     */
+    default boolean isEnabled() {
+        return true;
+    }
 
-	/**
-	 * Output the message to the log.
-	 *
-	 * @param message a log message
-	 */
-	void log(String message);
+    /**
+     * Output the message to the log.
+     *
+     * @param message a log message
+     */
+    void log(String message);
 }

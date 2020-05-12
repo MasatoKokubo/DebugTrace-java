@@ -29,7 +29,6 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -46,1512 +45,1607 @@ import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import org.debugtrace.helper.MapUtils;
+import org.debugtrace.helper.Resource;
+import org.debugtrace.helper.SetUtils;
+import org.debugtrace.helper.Tuple;
 import org.debugtrace.logger.Logger;
 import org.debugtrace.logger.Std;
 
 /**
- * A utility class for debugging.<br>
- * Call DebugTrace.enter and DebugTrace.leave methods when enter and leave your methods,
- * then outputs execution trace of the program.
+ * Contains the main static methods of DebugTrace.
  * 
  * @since 1.0.0
  * @author Masato Kokubo
  */
 public class DebugTrace {
-	private static class State {
-		public int nestLevel       = 0; // Nest Level
-		public int beforeNestLevel = 0; // Before Nest Level
-		public int dataNestLevel   = 0; // Data Nest Level
-	}
-
-	// Map for wrppaer classes of primitive type to primitive type
-	private static final Map<Class<?>, Class<?>> primitiveTypeMap = new HashMap<>();
-	static {
-		primitiveTypeMap.put(boolean  .class, boolean.class);
-		primitiveTypeMap.put(char     .class, char   .class);
-		primitiveTypeMap.put(byte     .class, byte   .class);
-		primitiveTypeMap.put(short    .class, short  .class);
-		primitiveTypeMap.put(int      .class, int    .class);
-		primitiveTypeMap.put(long     .class, long   .class);
-		primitiveTypeMap.put(float    .class, float  .class);
-		primitiveTypeMap.put(double   .class, double .class);
-		primitiveTypeMap.put(Boolean  .class, boolean.class);
-		primitiveTypeMap.put(Character.class, char   .class);
-		primitiveTypeMap.put(Byte     .class, byte   .class);
-		primitiveTypeMap.put(Short    .class, short  .class);
-		primitiveTypeMap.put(Integer  .class, int    .class);
-		primitiveTypeMap.put(Long     .class, long   .class);
-		primitiveTypeMap.put(Float    .class, float  .class);
-		primitiveTypeMap.put(Double   .class, double .class);
-	}
-
-	// Set of classes that dose not output the type name
-	private static final Set<Class<?>> noOutputTypeSet = new HashSet<>();
-	static {
-		noOutputTypeSet.add(boolean  .class);
-		noOutputTypeSet.add(char     .class);
-		noOutputTypeSet.add(int      .class);
-		noOutputTypeSet.add(String   .class);
-		noOutputTypeSet.add(Date     .class);
-		noOutputTypeSet.add(Time     .class);
-		noOutputTypeSet.add(Timestamp.class);
-	}
-
-	// Set of component types of array that dose not output the type name
-	private static final Set<Class<?>> noOutputComponentTypeSet = new HashSet<>();
-	static {
-		noOutputComponentTypeSet.add(boolean  .class);
-		noOutputComponentTypeSet.add(char     .class);
-		noOutputComponentTypeSet.add(byte     .class);
-		noOutputComponentTypeSet.add(short    .class);
-		noOutputComponentTypeSet.add(int      .class);
-		noOutputComponentTypeSet.add(long     .class);
-		noOutputComponentTypeSet.add(float    .class);
-		noOutputComponentTypeSet.add(double   .class);
-		noOutputComponentTypeSet.add(Boolean  .class);
-		noOutputComponentTypeSet.add(Character.class);
-		noOutputComponentTypeSet.add(Byte     .class);
-		noOutputComponentTypeSet.add(Short    .class);
-		noOutputComponentTypeSet.add(Integer  .class);
-		noOutputComponentTypeSet.add(Long     .class);
-		noOutputComponentTypeSet.add(Float    .class);
-		noOutputComponentTypeSet.add(Double   .class);
-		noOutputComponentTypeSet.add(String   .class);
-		noOutputComponentTypeSet.add(BigInteger.class);
-		noOutputComponentTypeSet.add(BigDecimal.class);
-		noOutputComponentTypeSet.add(Date     .class);
-		noOutputComponentTypeSet.add(Time     .class);
-		noOutputComponentTypeSet.add(Timestamp.class);
-	}
-
-	private static final Set<Class<?>> noOutputElementTypeSet = new HashSet<>();
-	static {
-		noOutputElementTypeSet.add(int      .class);
-		noOutputElementTypeSet.add(long     .class);
-		noOutputElementTypeSet.add(double   .class);
-		noOutputElementTypeSet.add(Boolean  .class);
-		noOutputElementTypeSet.add(Character.class);
-		noOutputElementTypeSet.add(Integer  .class);
-		noOutputElementTypeSet.add(Date     .class);
-		noOutputElementTypeSet.add(Time     .class);
-		noOutputElementTypeSet.add(Timestamp.class);
-	}
-
-	// Set of component types of array that output on the single line
-	private static final Set<Class<?>> singleLineComponentTypeSet = new HashSet<>();
-	static {
-		singleLineComponentTypeSet.add(boolean       .class);
-		singleLineComponentTypeSet.add(char          .class);
-		singleLineComponentTypeSet.add(byte          .class);
-		singleLineComponentTypeSet.add(short         .class);
-		singleLineComponentTypeSet.add(int           .class);
-		singleLineComponentTypeSet.add(long          .class);
-		singleLineComponentTypeSet.add(float         .class);
-		singleLineComponentTypeSet.add(double        .class);
-		singleLineComponentTypeSet.add(Boolean       .class);
-		singleLineComponentTypeSet.add(Character     .class);
-		singleLineComponentTypeSet.add(Byte          .class);
-		singleLineComponentTypeSet.add(Short         .class);
-		singleLineComponentTypeSet.add(Integer       .class);
-		singleLineComponentTypeSet.add(Long          .class);
-		singleLineComponentTypeSet.add(Float         .class);
-		singleLineComponentTypeSet.add(Double        .class);
-		singleLineComponentTypeSet.add(BigInteger    .class);
-		singleLineComponentTypeSet.add(BigDecimal    .class);
-		singleLineComponentTypeSet.add(java.util.Date.class);
-		singleLineComponentTypeSet.add(Date          .class);
-		singleLineComponentTypeSet.add(Time          .class);
-		singleLineComponentTypeSet.add(Timestamp     .class);
-		singleLineComponentTypeSet.add(LocalDate     .class);
-		singleLineComponentTypeSet.add(LocalTime     .class);
-		singleLineComponentTypeSet.add(LocalDateTime .class);
-		singleLineComponentTypeSet.add(OffsetDateTime.class);
-		singleLineComponentTypeSet.add(ZonedDateTime .class);
-		singleLineComponentTypeSet.add(Instant       .class);
-	}
-
-	// Prefixes of getter methods
-	private static final String[] getterPrefixes = {"", "get", "is"};
-
-	// The string part of package of Groovy runtime class
-	private static final String[] skipPackages = {
-		"sun.reflect.",
-		"java.lang.reflect.",
-		"jdk.internal.reflect.", // since 2.5.1 for Java 11
-		"org.codehaus.groovy.",
-		"groovy.lang.",
-		"org.spockframework."
-	};
-
-	// Resources
-	private static final Resource resource = new Resource(DebugTrace.class);
-
-	private static final String version                 = resource.getString("version"                ); // The version string
-	private static final String logLevel                = resource.getString("logLevel"               ); // Log Level
-	private static final String enterString             = resource.getString("enterString"            ); // String at enter
-	private static final String leaveString             = resource.getString("leaveString"            ); // String at leave
-	private static final String threadBoundaryString    = resource.getString("threadBoundaryString"   ); // String of threads boundary
-	private static final String classBoundaryString     = resource.getString("classBoundaryString"    ); // String of classes boundary
-	private static final String indentString            = resource.getString("indentString"           ); // String of method call indent
-	private static final String dataIndentString        = resource.getString("dataIndentString"       ); // String of data indent
-	private static final String limitString             = resource.getString("limitString"            ); // String to represent that it has exceeded the limit
-	private static final String nonPrintString          = resource.getString("nonPrintString"         ); // String of value in the case of properties that do not display the value (@since 1.5.0)
-	private static final String cyclicReferenceString   = resource.getString("cyclicReferenceString"  ); // String to represent that the cyclic reference occurs
-	private static final String varNameValueSeparator   = resource.getString("varNameValueSeparator"  ); // Separator between the variable name and value
-	private static final String keyValueSeparator       = resource.getString("keyValueSeparator"      ); // Separator between the key and value for Map object
-	private static final String fieldNameValueSeparator = resource.getString("fieldNameValueSeparator"); // Separator between the field name and value
-	private static final String printSuffixFormat       = resource.getString("printSuffixFormat"      ); // Format string for print suffix
-	private static final String utilDateFormat          = resource.getString("utilDateFormat"         ); // Format string for java.util.Date
-	private static final String sqlDateFormat           = resource.getString("sqlDateFormat"          ); // Format string for java.sql.Date
-	private static final String timeFormat              = resource.getString("timeFormat"             ); // Format string for java.sql.TTime
-	private static final String timestampFormat         = resource.getString("timestampFormat"        ); // Format string for java.sql.Timestamp
-
-	// since 2.5.0
-	private static final String localDateFormat         = resource.getString("localDateFormat"        ); // Format string for java.time.LocalDate
-	private static final String localTimeFormat         = resource.getString("localTimeFormat"        ); // Format string for java.time.LocalTime
-	private static final String offsetTimeFormat        = resource.getString("offsetTimeFormat"       ); // Format string for java.time.OffsetTime
-	private static final String localDateTimeFormat     = resource.getString("localDateTimeFormat"    ); // Format string for java.time.LocalDateTime
-	private static final String offsetDateTimeFormat    = resource.getString("offsetDateTimeFormat"   ); // Format string for java.time.OffsetDateTime
-	private static final String zonedDateTimeFormat     = resource.getString("zonedDateTimeFormat"    ); // Format string for java.time.ZonedDateTime
-	private static final String instantFormat           = resource.getString("instantFormat"          ); // Format string for java.time.Instant
-	private static final String logDateTimeFormat       = resource.getString("logDateTimeFormat"      ); // Format string for logging DateTime
-
-	private static final int    arrayLimit              = resource.getInt   ("arrayLimit"             ); // Limit of array and Collection elements to output
-	private static final int    byteArrayLimit          = resource.getInt   ("byteArrayLimit"         ); // Limit of byte array elements to output
-	private static final int    mapLimit                = resource.getInt   ("mapLimit"               ); // Limit of Map elements to output
-	private static final int    stringLimit             = resource.getInt   ("stringLimit"            ); // Limit of String characters to output
-
-	// since 2.2.0
-	private static List<String> nonPrintProperties      = resource.getStringList("nonPrintProperties" ); // Non print properties (<class name>#<property name>)
-
-	// since 2.3.0
-	private static final String defaultPackage          = resource.getString("defaultPackage", ""     ); // Default package part
-	private static final String defaultPackageString    = resource.getString("defaultPackageString"   ); // String replacing the default package part
-
-	// since 2.4.0
-	private static final List<String> reflectionClasses = resource.getStringList("reflectionClasses"  ); // List of class names that output content in reflection even if toString method is implemented
-	private static final Map<String, String> mapNameMap = resource.getStringKeyMap("mapNameMap"       ); // Name to mapNmae map 
-
-	// Logger
-	private static Logger logger = null;
-
-	// Array of indent strings
-	private static final String[] indentStrings = new String[64];
-	static {
-		indentStrings[0] = "";
-		IntStream.iterate(1, index -> index + 1).limit(indentStrings.length - 1)
-			.forEach(index -> indentStrings[index] = indentStrings[index - 1] + indentString);
-	}
-
-	// Array of data indent strings
-	private static final String[] dataIndentStrings = new String[64];
-	static {
-		dataIndentStrings[0] = "";
-		IntStream.iterate(1, index -> index + 1).limit(dataIndentStrings.length - 1)
-			.forEach(index -> dataIndentStrings[index] = dataIndentStrings[index - 1] + dataIndentString);
-	}
-
-	// Map of thread id to the indent state
-	private static final Map<Long,  State> stateMap = new HashMap<>();
-
-	// Before thread id
-	private static long beforeThreadId;
-
-	// Reflected object list
-	private static final List<Object> reflectedObjects = new ArrayList<>();
-
-	private static final Map<String, Map<Integer, String>> convertMapMap = new HashMap<>();
-	private static String lastLog = "";
-
-	static {
-		String loggerName = null;
-		try {
-			loggerName = resource.getString("logger");
-			if (loggerName != null) {
-				if (loggerName.indexOf('.') == -1)
-					loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
-			// 2.5.1
-			//	logger = (Logger)Class.forName(loggerName).newInstance();
-				logger = (Logger)Class.forName(loggerName).getConstructor().newInstance();
-			////
-			}
-		}
-		catch (Exception e) {
-			System.err.println("DebugTrace: " + e.toString() + "(" + loggerName + ")");
-		}
-
-		if (logger == null)
-			logger = new Std.Out();
-
-		// Set a logging level
-		logger.setLevel(logLevel);
-	}
-
-	// Whether tracing is enabled
-	private static final boolean enabled = logger.isEnabled();
-
-	// @since 2.5.0
-	private static final DateTimeFormatter utilDateFormatter       = createDateTimeFormatter(utilDateFormat      );
-	private static final DateTimeFormatter sqlDateFormatter        = createDateTimeFormatter(sqlDateFormat       );
-	private static final DateTimeFormatter timeFormatter           = createDateTimeFormatter(timeFormat          );
-	private static final DateTimeFormatter timestampFormatter      = createDateTimeFormatter(timestampFormat     );
-	private static final DateTimeFormatter localDateFormatter      = createDateTimeFormatter(localDateFormat     );
-	private static final DateTimeFormatter localTimeFormatter      = createDateTimeFormatter(localTimeFormat     );
-	private static final DateTimeFormatter offsetTimeFormatter     = createDateTimeFormatter(offsetTimeFormat    );
-	private static final DateTimeFormatter localDateTimeFormatter  = createDateTimeFormatter(localDateTimeFormat );
-	private static final DateTimeFormatter offsetDateTimeFormatter = createDateTimeFormatter(offsetDateTimeFormat);
-	private static final DateTimeFormatter zonedDateTimeFormatter  = createDateTimeFormatter(zonedDateTimeFormat );
-	private static final DateTimeFormatter instantFormatter        = createDateTimeFormatter(instantFormat       );
-	private static final DateTimeFormatter logDateTimeFormatter    = createDateTimeFormatter(logDateTimeFormat   );
-
-	// @since 2.5.0
-	private static DateTimeFormatter createDateTimeFormatter(String format) {
-		try {
-			return DateTimeFormatter.ofPattern(format);
-		}
-		catch (Exception e) {
-			logger.log("\"" + format + "\": " + e.getMessage());
-		}
-		return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSSSS");
-	}
-
-	static {
-		logger.log("DebugTrace " + version + " / logger: " + logger.getClass().getName());
-	}
-
-	private DebugTrace() {}
-
-	/**
-	 * Append a timestamp to the head of the string.<br>
-	 * <i>This method is used internally.</i>
-	 *
-	 * @param string a string
-	 * @return a string appended a timestamp string
-	 */
-	public static String appendTimestamp(String string) {
-		return logDateTimeFormatter == null ? string : ZonedDateTime.now().format(logDateTimeFormatter) + " " + string;
-	}
-
-	/**
-	 * Returns indent state.
-	 */
-	private static State getState() {
-		State state = null;
-		Long threadId = Thread.currentThread().getId();
-
-		if (stateMap.containsKey(threadId)) {
-			state = stateMap.get(threadId);
-		} else {
-			state = new State();
-			stateMap.put(threadId, state);
-		}
-
-		return state;
-	}
-
-	/**
-	 * Returns whether tracing is enabled.
-	 *
-	 * @return true if tracing is enabled; false otherwise
-	 */
-	public static boolean isEnabled() {return enabled;}
-
-	/**
-	 * Returns a string corresponding to the current indent.
-	 *
-	 * @return A string corresponding to the current indent
-	 */
-	private static String getIndentString(State state) {
-		return indentStrings[
-			state.nestLevel < 0 ? 0 :
-			state.nestLevel >= indentStrings.length ? indentStrings.length - 1
-				: state.nestLevel]
-			+ dataIndentStrings[
-			state.dataNestLevel < 0 ? 0 :
-			state.dataNestLevel >= dataIndentStrings.length ? dataIndentStrings.length - 1
-				: state.dataNestLevel];
-	}
-
-	/**
-	 * Up the nest level.
-	 *
-	 * @param state a nest status of current thread
-	 */
-	private static void upNest(State state) {
-		state.beforeNestLevel = state.nestLevel;
-		++state.nestLevel;
-	}
-
-	/**
-	 * Down the nest level.
-	 *
-	 * @param state a nest status of current thread
-	 */
-	private static void downNest(State state) {
-		state.beforeNestLevel = state.nestLevel;
-		--state.nestLevel;
-	}
-
-	/**
-	 * Up the data nest level.
-	 *
-	 * @param state a nest status of current thread
-	 *
-	 * @since 1.4.0
-	 */
-	private static void upDataNest(State state) {
-		++state.dataNestLevel;
-	}
-
-	/**
-	 * Down the data nest level.
-	 *
-	 * @param state a nest status of current thread
-	 *
-	 * @since 1.4.0
-	 */
-	private static void downDataNest(State state) {
-		--state.dataNestLevel;
-	}
-
-	/**
-	 * Common start processing of output.
-	 */
-	private static void printStart() {
-		Thread thread = Thread.currentThread();
-		long threadId = thread.getId();
-		if (threadId !=  beforeThreadId) {
-			// Thread changing
-			logger.log(""); // Line break
-			logger.log(String.format(threadBoundaryString, thread.getName(), threadId));
-			logger.log(""); // Line break
-
-			beforeThreadId = threadId;
-		}
-	}
-
-	/**
-	 * Common end processing of output.
-	 */
-	private static void printEnd() {
-		beforeThreadId = Thread.currentThread().getId();
-	}
-
-	/**
-	 * Call this method at entrance of your methods.
-	 */
-	public static void enter() {
-		if (enabled) {
-			synchronized(stateMap) {
-				printStart(); // Common start processing of output
-
-				State state = getState();
-				if (state.beforeNestLevel > state.nestLevel)
-					logger.log(getIndentString(state)); // Line break
-
-				lastLog = getIndentString(state) + getCallerInfo(enterString);
-				logger.log(lastLog);
-
-				upNest(state);
-
-				printEnd(); // Common end processing of output
-			}
-		}
-	}
-
-	/**
-	 * Call this method at exit of your methods.
-	 */
-	public static void leave() {
-		if (enabled) {
-			synchronized(stateMap) {
-				printStart(); // Common start processing of output
-
-				State state = getState();
-				downNest(state);
-
-				lastLog = getIndentString(state) + getCallerInfo(leaveString);
-				logger.log(lastLog);
-
-				printEnd(); // Common end processing of output
-			}
-		}
-	}
-
-	/**
-	 * Returns a string of the caller information.
-	 */
-	private static String getCallerInfo(String baseString) {
-		StackTraceElement element = getStackTraceElement();
-		return String.format(baseString,
-			replaceTypeName(element.getClassName()),
-			element.getMethodName(),
-			element.getFileName(),
-			element.getLineNumber());
-	}
-
-	/**
-	 * Outputs the message to the log.
-	 *
-	 * @param message a message
-	 */
-	public static void print(String message) {
-		if (enabled)
-			printSub(message);
-	}
-
-	/**
-	 * Outputs a message to the log.
-	 *
-	 * @param messageSupplier a message supplier
-	 */
-	public static void print(Supplier<String> messageSupplier) {
-		if (enabled)
-			printSub(messageSupplier.get());
-	}
-
-	/**
-	 * Outputs the message to the log.
-	 *
-	 * @param message a message
-	 */
-	private static void printSub(String message) {
-		synchronized(stateMap) {
-			printStart(); // Common start processing of output
-
-			String lastLog = "";
-			if (!message.isEmpty()) {
-				StackTraceElement element = getStackTraceElement();
-				String suffix = String.format(printSuffixFormat,
-					replaceTypeName(element.getClassName()),
-					element.getMethodName(),
-					element.getFileName(),
-					element.getLineNumber());
-				lastLog = getIndentString(getState()) + message + suffix;
-			}
-			logger.log(lastLog);
-
-			printEnd(); // Common end processing of output
-		}
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param value the value to output (accept null)
-	 * @param isPrimitive true if the value is primitive type, false otherwise
-	 */
-	private static void printSub(String mapName, String name, Object value, boolean isPrimitive) {
-		synchronized(stateMap) {
-			printStart(); // Common start processing of output
-
-			reflectedObjects.clear();
-
-			State state = getState();
-			List<String> strings = new ArrayList<>();
-			StringBuilder buff = new StringBuilder();
-
-			buff.append(name).append(varNameValueSeparator);
-			if (mapName == null) {
-				String normalizedName = name.substring(name.lastIndexOf('.') + 1).trim();
-				normalizedName = normalizedName.substring(normalizedName.lastIndexOf(' ') + 1);
-				mapName = mapNameMap.get(normalizedName);
-			}
-			append(state, strings, buff, mapName, value, isPrimitive, false, false);
-
-			StackTraceElement element = getStackTraceElement();
-			String suffix = String.format(printSuffixFormat,
-				element.getClassName(),
-				element.getMethodName(),
-				element.getFileName(),
-				element.getLineNumber());
-			buff.append(suffix);
-			lineFeed(state, strings, buff);
-
-			strings.stream().forEach(logger::log);
-			lastLog = String.join("\n", strings);
-
-			printEnd(); // Common end processing of output
-		}
-	}
-
-	/**
-	 * Returns a caller stack trace element.
-	 *
-	 * @returns a caller stack trace element
-	 */
-	private static StackTraceElement getStackTraceElement() {
-		StackTraceElement result = null;
-
-		String myClassName = DebugTrace.class.getName();
-
-		StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-		outerLoop:
-		for (int index = 3; index < elements.length; ++index) {
-			StackTraceElement element = elements[index];
-			String className = element.getClassName();
-			if (className.indexOf(myClassName) >= 0) continue;
-			for (String skipPackage : skipPackages)
-				if (className.indexOf(skipPackage) >= 0) continue outerLoop;
-			result = element;
-			break;
-		}
-		if (result == null)
-			result = new StackTraceElement("--", "--", "--", 0);
-
-		return result;
-	}
-
-	/**
-	 * Line Feed.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 */
-	private static void lineFeed(State state, List<String> strings, StringBuilder buff) {
-		strings.add(getIndentString(getState()) + buff.toString());
-		buff.setLength(0);
-	}
-
-	/**
-	 * Outputs the name and the boolean value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the boolean value to output
-	 */
-	public static void print(String name, boolean value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the char value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the char value to output
-	 */
-	public static void print(String name, char value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the byte value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the byte value to output
-	 */
-	public static void print(String name, byte value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the byte value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param value the byte value to output
-	 *
-	 * @since 2.4.0
-	 */
-	public static void print(String mapName, String name, byte value) {
-		if (enabled)
-			printSub(mapName, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the short value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the short value to output
-	 */
-	public static void print(String name, short value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the short value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param value the short value to output
-	 *
-	 * @since 2.4.0
-	 */
-	public static void print(String mapName, String name, short value) {
-		if (enabled)
-			printSub(mapName, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the int value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the int value to output
-	 */
-	public static void print(String name, int value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the int value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param value the int value to output
-	 *
-	 * @since 2.4.0
-	 */
-	public static void print(String mapName, String name, int value) {
-		if (enabled)
-			printSub(mapName, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the long value to output
-	 */
-	public static void print(String name, long value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and the long value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param value the long value to output
-	 *
-	 * @since 2.4.0
-	 */
-	public static void print(String mapName, String name, long value) {
-		if (enabled)
-			printSub(mapName, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the float value to output
-	 */
-	public static void print(String name, float value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the double value to output
-	 */
-	public static void print(String name, double value) {
-		if (enabled)
-			printSub(null, name, value, true);
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param value the value to output (accept null)
-	 */
-	public static void print(String name, Object value) {
-		if (enabled)
-			printSub(null, name, value, false);
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param value the value to output (accept null)
-	 *
-	 * @since 2.4.0
-	 */
-	public static void print(String mapName, String name, Object value) {
-		if (enabled)
-			printSub(mapName, name, value, false);
-	}
-
-	/**
-	 * Outputs the name and boolean value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of boolean value to output
-	 */
-	public static void print(String name, BooleanSupplier valueSupplier) {
-		if (enabled)
-			printSub(null, name, valueSupplier.getAsBoolean(), true);
-	}
-
-	/**
-	 * Outputs a int value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of int value to output
-	 */
-	public static void print(String name, IntSupplier valueSupplier) {
-		if (enabled)
-			printSub(null, name, valueSupplier.getAsInt(), true);
-	}
-
-	/**
-	 * Outputs a int value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of int value to output
-	 *
-	 * @since 2.4.0
-	 */
-	public static void print(String mapName, String name, IntSupplier valueSupplier) {
-		if (enabled)
-			printSub(mapName, name, valueSupplier.getAsInt(), true);
-	}
-
-	/**
-	 * Outputs a long value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of long value to output
-	 */
-	public static void print(String name, LongSupplier valueSupplier) {
-		if (enabled)
-			printSub(null, name, valueSupplier.getAsLong(), true);
-	}
-
-	/**
-	 * Outputs a long value to the log.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of long value to output
-	 *
-	 * @since 2.4.0
-	 */
-	public static void print(String mapName, String name, LongSupplier valueSupplier) {
-		if (enabled)
-			printSub(mapName, name, valueSupplier.getAsLong(), true);
-	}
-
-	/**
-	 * Outputs a double value to the log.
-	 *
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of double value to output
-	 */
-	public static void print(String name, DoubleSupplier valueSupplier) {
-		if (enabled)
-			printSub(null, name, valueSupplier.getAsDouble(), true);
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param <T> type of the value
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of value to output
-	 */
-	public static <T> void print(String name, Supplier<T> valueSupplier) {
-		if (enabled)
-			printSub(null, name, valueSupplier.get(), false);
-	}
-
-	/**
-	 * Outputs the name and value to the log.
-	 *
-	 * @param <T> type of the value
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param name the name of the value
-	 * @param valueSupplier the supplier of value to output
-	 */
-	public static <T> void print(String mapName, String name, Supplier<T> valueSupplier) {
-		if (enabled)
-			printSub(mapName, name, valueSupplier.get(), false);
-	}
-
-	/**
-	 * Appends the value for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param value the value object
-	 * @param isPrimitive true if the value is primitive type, false otherwise
-	 * @param isComponent true if the value is component of an array, false otherwise
-	 * @param isElement true if the value is element of a container class, false otherwise
-	 */
-	private static void append(State state, List<String> strings, StringBuilder buff,
-		String mapName, Object value, boolean isPrimitive, boolean isComponent, boolean isElement) {
-		if (value == null) {
-			buff.append("null");
-		} else {
-			Class<?> type = value.getClass();
-			if (isPrimitive) {
-				type = primitiveTypeMap.get(type);
-				if (type == null)
-					type = value.getClass();
-			}
-
-			String typeName = getTypeName(type, value, isComponent, isElement, 0);
-			if (typeName != null)
-				buff.append(typeName);
-
-			if (type.isArray()) {
-				// Array
-				if      (type == char[].class) append(state, strings, buff, new String((char[])value)); // sting
-				else if (type == byte[].class) append(state, strings, buff, (byte[])value); // byte Array
-				else                      appendArray(state, strings, buff, mapName, value); // Other Array
-
-			} else if (value instanceof Boolean) {
-				// Boolean
-				buff.append(value);
-
-			} else if (value instanceof Character) {
-				// Character
-				buff.append('\'');
-				append(state, strings, buff, ((Character)value).charValue());
-				buff.append('\'');
-
-			} else if (value instanceof Number) {
-				// Number
-				if (value instanceof BigDecimal) buff.append(((BigDecimal)value).toPlainString()); // BigDecimal
-				else buff.append(value); // Other Number
-
-			} else if (value instanceof CharSequence) {
-				// CharSequence
-				append(state, strings, buff, (CharSequence)value);
-
-			} else if (value instanceof java.util.Date) {
-				// Date
-				Timestamp timestamp = value instanceof Timestamp ? (Timestamp)value : new Timestamp(((java.util.Date)value).getTime());
-				ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
-				if      (value instanceof Date     ) buff.append(zonedDateTime.format(sqlDateFormatter  )); // java.sql.Date
-				else if (value instanceof Time     ) buff.append(zonedDateTime.format(timeFormatter     )); // Time
-				else if (value instanceof Timestamp) buff.append(zonedDateTime.format(timestampFormatter)); // Timestamp
-				else                                 buff.append(zonedDateTime.format(utilDateFormatter )); // java.util.Date
-
-			} else if (value instanceof Temporal) {
-				// Temporal
-				if      (value instanceof LocalDate     ) buff.append(((LocalDate     )value).format(localDateFormatter     )); // LocalDate
-				else if (value instanceof LocalTime     ) buff.append(((LocalTime     )value).format(localTimeFormatter     )); // LocalTime
-				else if (value instanceof OffsetTime    ) buff.append(((OffsetTime    )value).format(offsetTimeFormatter    )); // OffsetTime
-				else if (value instanceof LocalDateTime ) buff.append(((LocalDateTime )value).format(localDateTimeFormatter )); // LocalDateTime
-				else if (value instanceof OffsetDateTime) buff.append(((OffsetDateTime)value).format(offsetDateTimeFormatter)); // OffsetDateTime
-				else if (value instanceof ZonedDateTime ) buff.append(((ZonedDateTime )value).format(zonedDateTimeFormatter )); // ZonedDateTime
-				else if (value instanceof Instant) buff.append(((Instant)value).atOffset(ZoneOffset.ofHours(0)).format(instantFormatter       )); // Instant
-				else buff.append(value);
-
-			} else if (value instanceof OptionalInt) {
-				// OptionalInt
-				if (((OptionalInt)value).isPresent())
-					append(state, strings, buff, mapName, ((OptionalInt)value).getAsInt(), true, false, true);
-				else
-					buff.append("empty");
-
-			} else if (value instanceof OptionalLong) {
-				// OptionalLong
-				if (((OptionalLong)value).isPresent())
-					append(state, strings, buff, mapName, ((OptionalLong)value).getAsLong(), true, false, true);
-				else
-					buff.append("empty");
-
-			} else if (value instanceof OptionalDouble) {
-				// OptionalDouble
-				if (((OptionalDouble)value).isPresent())
-					append(state, strings, buff, mapName, ((OptionalDouble)value).getAsDouble(), true, false, true);
-				else
-					buff.append("empty");
-
-			} else if (value instanceof Optional) {
-				// Optional
-				if (((Optional<?>)value).isPresent())
-					append(state, strings, buff, mapName, ((Optional<?>)value).get(), false, false, true);
-				else
-					buff.append("empty");
-
-			} else if (value instanceof Collection) {
-				// Collection
-				append(state, strings, buff, mapName, (Collection<?>)value);
-
-			} else if (value instanceof Map) {
-				// Map
-				append(state, strings, buff, mapName, (Map<?,?>)value);
-
-			} else if (value instanceof Clob) {
-				// Clob
-				try {
-					long length = ((Clob)value).length();
-					if (length > (long)stringLimit)
-						length = (long)(stringLimit + 1);
-					append(state, strings, buff, ((Clob)value).getSubString(1L, (int)length));
-				}
-				catch (SQLException e) {
-					buff.append(e);
-				}
-
-			} else if (value instanceof Blob) {
-				// Blob
-				try {
-					long length = ((Blob)value).length();
-					if (length > (long)byteArrayLimit)
-						length = (long)(byteArrayLimit + 1);
-					append(state, strings, buff, ((Blob)value).getBytes(1L, (int)length));
-				}
-				catch (SQLException e) {
-					buff.append(e);
-				}
-
-			} else {
-				// Other
-				boolean isReflection = reflectionClasses.contains(type.getName());
-				if (!isReflection && !hasToString(type)) {
-					isReflection = true;
-					reflectionClasses.add(type.getName());
-				}
-
-				if (isReflection) {
-					// Use Reflection
-					if (reflectedObjects.stream().anyMatch(object -> value == object))
-						// Cyclic reference
-						buff.append(cyclicReferenceString).append(value);
-					else {
-						// Use Reflection
-						reflectedObjects.add(value);
-						appendReflectString(state, strings, buff, value);
-						reflectedObjects.remove(reflectedObjects.size() - 1);
-					}
-				} else {
-					// Use toString method
-					buff.append(value);
-				}
-			}
-			String convertedValue =  getConvertedValue(mapName, value);
-			if (convertedValue != null)
-				buff.append('(').append(convertedValue).append(')');
-		}
-	}
-
-	/**
-	 * Returns the type name to be output to the log.<br>
-	 * If dose not output, returns null.
-	 *
-	 * @param type the type of the value
-	 * @param value the value object
-	 * @param isComponent true if the value is component of an array, false otherwise
-	 * @param isElement true if the value is element of a container class, false otherwise
-	 * @param nest current nest count
-	 * @return the type name to be output to the log
-	 */
-	@SuppressWarnings("rawtypes")
-	private static String getTypeName(Class<?>type, Object value, boolean isComponent, boolean isElement, int nest) {
-		String typeName = null;
-		long length = -1L;
-		int  size   = -1;
-
-		if (type.isArray()) {
-			// Array
-			typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1);
-			if (typeName != null) {
-				String bracket = "[";
-				if (value != null)
-					bracket += Array.getLength(value);
-				bracket += ']';
-				int braIndex = typeName.indexOf('[');
-				if (braIndex < 0)
-					braIndex = typeName.length();
-				typeName = typeName.substring(0, braIndex) + bracket + typeName.substring(braIndex);
-			}
-		} else {
-			// Not Array
-			if (   nest > 0
-				|| (isComponent
-						? !noOutputComponentTypeSet.contains(type)
-					: isElement
-						? !noOutputElementTypeSet.contains(type)
-						: !noOutputTypeSet.contains(type))
-				) {
-				// Output the type name
-				typeName = type.getCanonicalName();
-				if (typeName == null)
-					typeName = type.getName();
-				if (   typeName.startsWith("java.lang.")
-					|| typeName.startsWith("java.math.")
-					|| typeName.startsWith("java.sql.")
-					|| typeName.startsWith("java.time.")
-					|| typeName.startsWith("java.util.") && !typeName.equals("java.util.Date"))
-					typeName = type.getSimpleName();
-				else
-					typeName = replaceTypeName(typeName);
-
-				if (value != null) {
-					try {
-						if      (value instanceof Blob      ) length = ((Blob      )value).length();
-						else if (value instanceof Clob      ) length = ((Clob      )value).length();
-						else if (value instanceof Collection) size   = ((Collection)value).size  ();
-						else if (value instanceof Map       ) size   = ((Map       )value).size  ();
-					}
-					catch (SQLException e) {}
-				}
-			}
-		}
-
-		if (typeName != null) {
-			if (length != -1L)
-				typeName += " length:" + length;
-
-			else if (size != -1)
-				typeName += " size:" + size;
-
-			if (nest == 0)
-				typeName = "(" + typeName + ")";
-		}
-
-		return typeName;
-	}
-
-	/**
-	 * Replace a class name.
-	 *
-	 * @param className a class name
-	 * @return the replaced ckass name
-	 *
-	 * @since 2.3.0
-	 */
-	private static String replaceTypeName(String typeName) {
-		if (!defaultPackage.isEmpty() && typeName.startsWith(defaultPackage))
-			typeName = defaultPackageString + typeName.substring(defaultPackage.length());
-		return typeName;
-	}
-
-	/**
-	 * Returns the map for converting.
-	 *
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param value the value object
-	 * @return a converted value (mey be null)
-	 *
-	 * @since 2.4.0
-	 */
-	private static String getConvertedValue(String mapName, Object value) {
-		if (mapName == null || value == null)
-			return null;
-
-		Integer key = null;
-		if (value instanceof Byte)
-			key = (int)(byte)value;
-		else if (value instanceof Short)
-			key = (int)(short)value;
-		else if (value instanceof Integer)
-			key = (Integer)value;
-		else if (value instanceof Long) {
-			if ((long)value >= Integer.MIN_VALUE && (long)value <= Integer.MAX_VALUE)
-				key = (int)(long)value;
-		}
-		if (key == null)
-			return null;
-
-		Map<Integer, String> convertMap = convertMapMap.get(mapName);
-		if (convertMap == null) {
-			convertMap = resource.getIntegerKeyMap(mapName);
-			convertMapMap.put(mapName, convertMap);
-		}
-
-		return convertMap.get(key);
-	}
-
-	/**
-	 * Appends a character representation for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param ch a character
-	 */
-	private static void append(State state, List<String> strings, StringBuilder buff, char ch) {
-		switch (ch) {
-		case '\b': buff.append("\\b" ); break; // 08 BS
-		case '\t': buff.append("\\t" ); break; // 09 HT
-		case '\n': buff.append("\\n" ); break; // 0A LF
-		case '\f': buff.append("\\f" ); break; // 0C FF
-		case '\r': buff.append("\\r" ); break; // 0D CR
-		case '"' : buff.append("\\\""); break; // "
-		case '\'': buff.append("\\'" ); break; // '
-		case '\\': buff.append("\\\\"); break; // \
-		default:
-			if (ch < ' ' || ch == '\u007F')
-				buff.append("\\u").append(String.format("%04X", (short)ch));
-			else
-				buff.append(ch);
-			break;
-		}
-	}
-
-	/**
-	 * Appends a CharSequence representation for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param charSequence a CharSequence object
-	 */
-	private static void append(State state, List<String> strings, StringBuilder buff, CharSequence charSequence) {
-		buff.append('"');
-		for (int index = 0; index < charSequence.length(); ++index) {
-			if (index >= stringLimit) {
-				buff.append(limitString);
-				break;
-			}
-			append(state, strings, buff, charSequence.charAt(index));
-		}
-		buff.append('"');
-	}
-
-	/**
-	 * Appends a byte array representation for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param bytes a byte array
-	 */
-	private static void append(State state, List<String> strings, StringBuilder buff, byte[] bytes) {
-		boolean multiLine = bytes.length > 16 && byteArrayLimit > 16;
-
-		buff.append('[');
-		if (multiLine) {
-			lineFeed(state, strings, buff);
-			upDataNest(state);
-		}
-
-		int offset = 0;
-		for (int index = 0; index < bytes.length; ++index) {
-			if (offset > 0) buff.append(" ");
-
-			if (index >= byteArrayLimit) {
-				buff.append(limitString);
-				break;
-			}
-
-			int value = bytes[index];
-			if (value < 0) value += 256;
-			char ch = (char)(value / 16 + '0');
-			if (ch > '9') ch += 'A' - '9' - 1;
-			buff.append(ch);
-			ch = (char)(value % 16 + '0');
-			if (ch > '9') ch += 'A' - '9' - 1;
-			buff.append(ch);
-			++offset;
-
-			if (multiLine && offset == 16) {
-				lineFeed(state, strings, buff);
-				offset = 0;
-			}
-		}
-
-		if (multiLine) {
-			if (buff.length() > 0)
-				lineFeed(state, strings, buff);
-			downDataNest(state);
-		}
-		buff.append(']');
-	}
-
-	/**
-	 * Appends an object array representation for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param array an object array
-	 */
-	private static void appendArray(State state, List<String> strings, StringBuilder buff, String mapName, Object array) {
-		Class<?> componentType = array.getClass().getComponentType();
-
-		int length = Array.getLength(array);
-
-		boolean multiLine = length >= 2
-			&& !singleLineComponentTypeSet.contains(componentType)
-			&& !(Enum.class.isAssignableFrom(componentType))
-			;
-
-		buff.append('[');
-		if (multiLine) {
-			lineFeed(state, strings, buff);
-			upDataNest(state);
-		}
-
-		for (int index = 0; index < length; ++index) {
-			if (!multiLine && index > 0) buff.append(", ");
-
-			if (index < arrayLimit) {
-				Object value = Array.get(array, index);
-				append(state, strings, buff, mapName, value, componentType.isPrimitive(), true, false);
-			} else
-				buff.append(limitString);
-
-			if (multiLine) {
-				buff.append(",");
-				lineFeed(state, strings, buff);
-			}
-
-			if (index >= arrayLimit) break;
-		}
-
-		if (multiLine)
-			downDataNest(state);
-		buff.append(']');
-	}
-
-	/**
-	 * Appends a Collection representation for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param collection a Collection object
-	 */
-	private static <E> void append(State state, List<String> strings, StringBuilder buff, String mapName, Collection<E> collection) {
-		Iterator<E> iterator = collection.iterator();
-		boolean multiLine = collection.size() >= 2;
-
-		buff.append('[');
-		for (int index = 0; iterator.hasNext(); ++index) {
-			E element = iterator.next();
-			if (index == 0 && element != null) {
-				if (   singleLineComponentTypeSet.contains(element.getClass())
-					|| Enum.class.isAssignableFrom(element.getClass()))
-					multiLine = false;
-				if (multiLine) {
-					lineFeed(state, strings, buff);
-					upDataNest(state);
-				}
-			}
-
-			if (!multiLine && index > 0) buff.append(", ");
-
-			if (index < arrayLimit) {
-				append(state, strings, buff, mapName, element, false, false, true);
-			} else
-				buff.append(limitString);
-
-			if (multiLine) {
-				buff.append(",");
-				lineFeed(state, strings, buff);
-			}
-
-			if (index >= arrayLimit) break;
-		}
-
-		if (multiLine)
-			downDataNest(state);
-		buff.append(']');
-	}
-
-	/**
-	 * Appends a Map representation for logging to the string buffer.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param buff a string buffer
-	 * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-	 * @param map a Map
-	 */
-	private static <K,V> void append(State state, List<String> strings, StringBuilder buff, String mapName, Map<K,V> map) {
-		Iterator<Map.Entry<K,V>> iterator = map.entrySet().iterator();
-
-		boolean multiLine = map.size() >= 2;
-
-		buff.append('[');
-		for (int index = 0; iterator.hasNext(); ++index) {
-			Map.Entry<K,V> entry = iterator.next();
-			K key   = entry.getKey();
-			V value = entry.getValue();
-			if (index == 0) {
-				if (   key   != null && singleLineComponentTypeSet.contains(key  .getClass())
-					&& value != null && singleLineComponentTypeSet.contains(value.getClass()))
-					multiLine = false;
-				if (multiLine) {
-					lineFeed(state, strings, buff);
-					upDataNest(state);
-				}
-			}
-			if (!multiLine && index > 0) buff.append(", ");
-
-			if (index < mapLimit) {
-				append(state, strings, buff, mapName, key, false, false, true);
-				buff.append(keyValueSeparator);
-				append(state, strings, buff, mapName, value, false, false, true);
-			} else
-				buff.append(limitString);
-
-			if (multiLine) {
-				buff.append(",");
-				lineFeed(state, strings, buff);
-			}
-
-			if (index >= mapLimit) break;
-		}
-
-		if (multiLine)
-			downDataNest(state);
-		buff.append(']');
-	}
-
-	/**
-	 * Returns true, if this class or super classes without Object class has toString method.
-	 *
-	 * @param object an object
-	 * @return true if this class or super classes without Object class has toString method; false otherwise
-	 */
-	private static boolean hasToString(Class<?> clazz) {
-		boolean result = false;
-
-		while (clazz != Object.class) {
-			try {
-				clazz.getDeclaredMethod("toString");
-				result = true;
-				break;
-			}
-			catch (Exception e) {
-			}
-			clazz = clazz.getSuperclass();
-		}
-
-		return result;
-	}
-
-	/**
-	 * Returns a string representation of the object uses reflection.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param object an object
-	 */
-	private static void appendReflectString(State state, List<String> strings, StringBuilder buff, Object object) {
-		buff.append('[');
-		lineFeed(state, strings, buff);
-		upDataNest(state);
-
-		Class<?> clazz = object.getClass();
-		appendReflectStringSub(state, strings, buff, object, clazz, clazz.getSuperclass() != Object.class);
-
-		downDataNest(state);
-		buff.append(']');
-	}
-
-	/**
-	 * Returns a string representation of the object uses reflection.
-	 *
-	 * @param state indent state
-	 * @param strings a string list
-	 * @param object an object
-	 * @param clazz the class of the object
-	 * @param extended the class is extended
-	 */
-	private static void appendReflectStringSub(State state, List<String> strings, StringBuilder buff, Object object, Class<?> clazz, boolean extended) {
-		if (clazz == Object.class)
-			return;
-
-		// Call for the super class
-		appendReflectStringSub(state, strings, buff, object, clazz.getSuperclass(), extended);
-
-		if (extended) {
-			String className = clazz.getCanonicalName();
-			if (className == null)
-				className = clazz.getName();
-			buff.append(String.format(classBoundaryString, replaceTypeName(className)));
-			lineFeed(state, strings, buff);
-		}
-
-		String classNamePrefix = clazz.getName() + "#";
-
-		// field
-		Field[] fields = clazz.getDeclaredFields();
-		for (Field field : fields) {
-			int modifiers = field.getModifiers();
-			if (Modifier.isStatic(modifiers)) continue; // static
-
-			String fieldName = field.getName();
-
-			Object value = null;
-			Method method = null;
-
-			if (!Modifier.isPublic(modifiers)) {
-				// non public field
-				for (String getterPrefix : getterPrefixes) {
-					String methodName = getterPrefix.length() == 0
-						? fieldName
-						: getterPrefix + fieldName.substring(0, 1).toUpperCase(Locale.ENGLISH) + fieldName.substring(1);
-					try {
-						method = clazz.getDeclaredMethod(methodName);
-						if (method.getReturnType() == field.getType())
-							break;
-						else
-							method = null;
-					}
-					catch (Exception e) {
-					}
-				}
-			}
-
-			try {
-				if (method != null) {
-					// has a getter method
-					if (!Modifier.isPublic(method.getModifiers()))
-						// non public method
-						method.setAccessible(true);
-					value = method.invoke(object);
-				} else {
-					// does not have a getter method
-					if (!Modifier.isPublic(modifiers))
-						// non public field
-						field.setAccessible(true);
-					value = field.get(object);
-				}
-			}
-			catch (Exception e) {
-				value = "<" + e + ">";
-			}
-
-			buff.append(fieldName).append(fieldNameValueSeparator);
-
-			if (value != null && nonPrintProperties.contains(classNamePrefix + fieldName) || fieldName.equals("metaClass"))
-				// the property is non-printing and the value is not null or Groovy's metaClass
-				buff.append(nonPrintString);
-			else {
-				String mapName = mapNameMap.get(fieldName);
-				append(state, strings, buff, mapName, value, field.getType().isPrimitive(), false, false);
-			}
-
-			buff.append(",");
-			lineFeed(state, strings, buff);
-		}
-	}
-
-	/**
-	 * Returns the last log string output.
-	 *
-	 * @return the last log string output.
-	 *
-	 * @since 2.4.0
-	 */
-	public static String getLastLog() {
-		return lastLog;
-	}
+    /**
+     * DebugTrace version string
+     * 
+     * @since 3.0.0
+     */
+    public static final String VERSION = "3.0.0";
+
+    // A map for wrapper classes of primitive type to primitive type
+    private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
+        MapUtils.entry(boolean  .class, boolean.class),
+        MapUtils.entry(char     .class, char   .class),
+        MapUtils.entry(byte     .class, byte   .class),
+        MapUtils.entry(short    .class, short  .class),
+        MapUtils.entry(int      .class, int    .class),
+        MapUtils.entry(long     .class, long   .class),
+        MapUtils.entry(float    .class, float  .class),
+        MapUtils.entry(double   .class, double .class),
+        MapUtils.entry(Boolean  .class, boolean.class),
+        MapUtils.entry(Character.class, char   .class),
+        MapUtils.entry(Byte     .class, byte   .class),
+        MapUtils.entry(Short    .class, short  .class),
+        MapUtils.entry(Integer  .class, int    .class),
+        MapUtils.entry(Long     .class, long   .class),
+        MapUtils.entry(Float    .class, float  .class),
+        MapUtils.entry(Double   .class, double .class)
+    );
+
+    // A set of classes that dose not output the type name
+    private static final Set<Class<?>> noOutputTypeSet = SetUtils.of(
+        boolean  .class,
+        char     .class,
+        int      .class,
+        String   .class,
+        Date     .class,
+        Time     .class,
+        Timestamp.class
+    );
+
+    // A set of component types of array that dose not output the type name
+    private static final Set<Class<?>> noOutputComponentTypeSet = SetUtils.of(
+        boolean   .class,
+        char      .class,
+        byte      .class,
+        short     .class,
+        int       .class,
+        long      .class,
+        float     .class,
+        double    .class,
+        Boolean   .class,
+        Character .class,
+        Byte      .class,
+        Short     .class,
+        Integer   .class,
+        Long      .class,
+        Float     .class,
+        Double    .class,
+        String    .class,
+        BigInteger.class,
+        BigDecimal.class,
+        Date      .class,
+        Time      .class,
+        Timestamp .class
+    );
+
+    // A set of types that do not output the element type
+    private static final Set<Class<?>> noOutputElementTypeSet = SetUtils.of(
+        int      .class,
+        long     .class,
+        double   .class,
+        Boolean  .class,
+        Character.class,
+        Integer  .class,
+        String   .class,
+        Date     .class,
+        Time     .class,
+        Timestamp.class
+    );
+
+
+    // Prefixes of getter methods
+    private static final String[] getterPrefixes = {"", "get", "is"};
+
+    // The string part of package of Groovy runtime class
+    private static final String[] skipPackages = {
+        "sun.reflect.",
+        "java.lang.reflect.",
+        "jdk.internal.reflect.", // since 2.5.1 for Java 11
+        "org.codehaus.groovy.",
+        "groovy.lang.",
+        "org.spockframework."
+    };
+
+    // Resources
+//  private static Resource resource = new Resource(DebugTrace.class);
+    private static Resource resource;
+
+    protected static String logLevel                 ;
+    protected static String enterFormat              ; // since 3.0.0 enterFormat <- enterString
+    protected static String leaveFormat              ; // since 3.0.0 leaveFormat <- leaveString
+    protected static String threadBoundaryFormat     ;
+    protected static String classBoundaryFormat      ;
+    protected static String indentString             ;
+    protected static String dataIndentString         ;
+    protected static String limitString              ;
+    protected static String nonOutputString          ; // since 1.5.0, since 3.0.0 nonOutputString <- nonPrintString
+    protected static String cyclicReferenceString    ;
+    protected static String varNameValueSeparator    ;
+    protected static String keyValueSeparator        ;
+    protected static String printSuffixFormat        ;
+    protected static String sizeFormat               ; // since 3.0.0
+    protected static int    minimumOutputSize        ; // since 3.0.0
+    protected static String lengthFormat             ; // since 3.0.0
+    protected static int    minimumOutputLength      ; // since 3.0.0
+    protected static String utilDateFormat           ;
+    protected static String sqlDateFormat            ;
+    protected static String timeFormat               ;
+    protected static String timestampFormat          ;
+    protected static String localDateFormat          ; // since 2.5.0
+    protected static String localTimeFormat          ; // since 2.5.0
+    protected static String offsetTimeFormat         ; // since 2.5.0
+    protected static String localDateTimeFormat      ; // since 2.5.0
+    protected static String offsetDateTimeFormat     ; // since 2.5.0
+    protected static String zonedDateTimeFormat      ; // since 2.5.0
+    protected static String instantFormat            ; // since 2.5.0
+    protected static String logDateTimeFormat        ; // since 2.5.0
+    protected static int    maximumDataOutputWidth   ; // since 3.0.0
+    protected static int    collectionLimit          ;
+    protected static int    byteArrayLimit           ;
+    protected static int    stringLimit              ;
+    protected static int    reflectionNestLimit      ; // since 3.0.0
+    protected static List<String> nonOutputProperties; // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
+    protected static String defaultPackage           ; // since 2.3.0
+    protected static String defaultPackageString     ; // since 2.3.0
+    protected static List<String> reflectionClasses  ; // since 2.4.0
+    protected static Map<String, String> mapNameMap  ; // since 2.4.0
+
+    // @since 2.5.0
+    private static DateTimeFormatter utilDateFormatter      ;
+    private static DateTimeFormatter sqlDateFormatter       ;
+    private static DateTimeFormatter timeFormatter          ;
+    private static DateTimeFormatter timestampFormatter     ;
+    private static DateTimeFormatter localDateFormatter     ;
+    private static DateTimeFormatter localTimeFormatter     ;
+    private static DateTimeFormatter offsetTimeFormatter    ;
+    private static DateTimeFormatter localDateTimeFormatter ;
+    private static DateTimeFormatter offsetDateTimeFormatter;
+    private static DateTimeFormatter zonedDateTimeFormatter ;
+    private static DateTimeFormatter instantFormatter       ;
+    private static DateTimeFormatter logDateTimeFormatter   ;
+
+    // Array of indent strings
+    private static final String[] indentStrings = new String[64];
+
+    // Array of data indent strings
+    private static final String[] dataIndentStrings = new String[64];
+
+    // Logger
+    private static Logger logger = null;
+
+    // Map of thread id to the indent state
+    private static final Map<Long,  State> stateMap = new HashMap<>();
+
+    // Before thread id
+    private static long beforeThreadId;
+
+    // Reflected object list
+    private static final List<Object> reflectedObjects = new ArrayList<>();
+
+    private static final Map<String, Map<Integer, String>> convertMapMap = new HashMap<>();
+    private static String lastLog = "";
+
+    static {
+        initClass();
+    }
+
+    /**
+     * Initializes this class.
+     * 
+     * @since 3.0.0
+     */
+    public static void initClass() {
+        initClass("DebugTrace"); // "DebugTrace" is base name of DebugTrace.properties 
+    }
+
+    /**
+     * Initializes this class.
+     * 
+     * @param baseName the base name of the resource properties file
+     * 
+     * @since 3.0.0
+     */
+    public static void initClass(String baseName) {
+        resource = new Resource(DebugTrace.class, baseName);
+
+        logLevel                = resource.getString("logLevel"                                    , "default");
+        enterFormat             = resource.getString("enterFormat"         , "enterString"         , "Enter %1$s.%2$s (%3$s:%4$d)"); // since 3.0.0 enterFormat <- enterString
+        leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN"); // since 3.0.0 leaveFormat <- leaveString
+        threadBoundaryFormat    = resource.getString("threadBoundaryFormat", "threadBoundaryString",    "______________________________ %1$s ______________________________");
+        classBoundaryFormat     = resource.getString("classBoundaryFormat" , "classBoundaryString" , "____ %1$s ____");
+        indentString            = resource.getString("indentString"                                , "| ");
+        dataIndentString        = resource.getString("dataIndentString"                            , "  ");
+        limitString             = resource.getString("limitString"                                 , "...");
+        nonOutputString         = resource.getString("nonOutputString", "nonPrintString"           , "***"); // since 1.5.0, since 3.0.0 nonOutputString <- nonPrintString
+        cyclicReferenceString   = resource.getString("cyclicReferenceString"                       , "*** cyclic reference ***");
+        varNameValueSeparator   = resource.getString("varNameValueSeparator"                       , " = ");
+        keyValueSeparator       = resource.getString("keyValueSeparator"                           , ": ");
+        printSuffixFormat       = resource.getString("printSuffixFormat"                           , " (%3$s:%4$d)");
+        sizeFormat              = resource.getString("sizeFormat"                                  , "size:%1d"); // since 3.0.0
+        minimumOutputSize       = resource.getInt   ("minimumOutputSize"                           , 5); // since 3.0.0
+        lengthFormat            = resource.getString("lengthFormat"                                , "length:%1d"); // since 3.0.0
+        minimumOutputLength     = resource.getInt   ("minimumOutputLength"                         , 5); // since 3.0.0
+        utilDateFormat          = resource.getString("utilDateFormat"                              , "yyyy-MM-dd HH:mm:ss.SSSxxx");
+        sqlDateFormat           = resource.getString("sqlDateFormat"                               , "yyyy-MM-ddxxx");
+        timeFormat              = resource.getString("timeFormat"                                  , "HH:mm:ss.SSSxxx");
+        timestampFormat         = resource.getString("timestampFormat"                             , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx");
+        localDateFormat         = resource.getString("localDateFormat"                             , "yyyy-MM-dd"); // since 2.5.0
+        localTimeFormat         = resource.getString("localTimeFormat"                             , "HH:mm:ss.SSSSSSSSS"); // since 2.5.0
+        offsetTimeFormat        = resource.getString("offsetTimeFormat"                            , "HH:mm:ss.SSSSSSSSSxxx"); // since 2.5.0
+        localDateTimeFormat     = resource.getString("localDateTimeFormat"                         , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
+        offsetDateTimeFormat    = resource.getString("offsetDateTimeFormat"                        , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx"); // since 2.5.0
+        zonedDateTimeFormat     = resource.getString("zonedDateTimeFormat"                         , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV"); // since 2.5.0
+        instantFormat           = resource.getString("instantFormat"                               , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
+        logDateTimeFormat       = resource.getString("logDateTimeFormat"                           , "yyyy-MM-dd HH:mm:ss.SSSxxx"); // since 2.5.0
+        maximumDataOutputWidth  = resource.getInt   ("maximumDataOutputWidth"                      , 70); // since 3.0.0
+        collectionLimit         = resource.getInt   ("collectionLimit", "arrayLimit"               , 512);
+        byteArrayLimit          = resource.getInt   ("byteArrayLimit"                              , 8192);
+        stringLimit             = resource.getInt   ("stringLimit"                                 , 8192);
+        reflectionNestLimit     = resource.getInt   ("reflectionNestLimit"                         , 4); // since 3.0.0
+        nonOutputProperties     = resource.getStrings("nonOutputProperties", "nonPrintProperties"  ); // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
+        defaultPackage          = resource.getString("defaultPackage", ""                      , ""); // since 2.3.0
+        defaultPackageString    = resource.getString("defaultPackageString"                 , "..."); // since 2.3.0
+        reflectionClasses       = resource.getStrings("reflectionClasses"                          ); // since 2.4.0
+        mapNameMap              = resource.getStringKeyMap("mapNameMap"                            ); // since 2.4.0
+
+        utilDateFormatter       = createDateTimeFormatter(utilDateFormat      );
+        sqlDateFormatter        = createDateTimeFormatter(sqlDateFormat       );
+        timeFormatter           = createDateTimeFormatter(timeFormat          );
+        timestampFormatter      = createDateTimeFormatter(timestampFormat     );
+        localDateFormatter      = createDateTimeFormatter(localDateFormat     );
+        localTimeFormatter      = createDateTimeFormatter(localTimeFormat     );
+        offsetTimeFormatter     = createDateTimeFormatter(offsetTimeFormat    );
+        localDateTimeFormatter  = createDateTimeFormatter(localDateTimeFormat );
+        offsetDateTimeFormatter = createDateTimeFormatter(offsetDateTimeFormat);
+        zonedDateTimeFormatter  = createDateTimeFormatter(zonedDateTimeFormat );
+        instantFormatter        = createDateTimeFormatter(instantFormat       );
+        logDateTimeFormatter    = createDateTimeFormatter(logDateTimeFormat   );
+
+        indentStrings[0] = "";
+        IntStream.iterate(1, index -> index + 1).limit(indentStrings.length - 1)
+            .forEach(index -> indentStrings[index] = indentStrings[index - 1] + indentString);
+
+        dataIndentStrings[0] = "";
+        IntStream.iterate(1, index -> index + 1).limit(dataIndentStrings.length - 1)
+            .forEach(index -> dataIndentStrings[index] = dataIndentStrings[index - 1] + dataIndentString);
+
+        String loggerName = null;
+        try {
+            loggerName = resource.getString("logger", null);
+            if (loggerName != null) {
+                if (loggerName.indexOf('.') == -1)
+                    loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
+                logger = (Logger)Class.forName(loggerName).getConstructor().newInstance();
+            }
+        }
+        catch (Exception e) {
+            System.err.println("DebugTrace: " + e.toString() + "(" + loggerName + ")");
+        }
+
+        if (logger == null)
+            logger = new Std.Err();
+
+        // Set a logging level
+        logger.setLevel(logLevel);
+
+        logger.log("DebugTrace " + VERSION + " uses " + logger.getClass().getName());
+    }
+
+    private DebugTrace() {}
+
+    /**
+     * Creates a DateTimeFormatter.
+     * 
+     * @param format a format
+     * @return a DateTimeFormatter
+     * 
+     * @since 2.5.0
+     */
+    private static DateTimeFormatter createDateTimeFormatter(String format) {
+        try {
+            return DateTimeFormatter.ofPattern(format);
+        }
+        catch (Exception e) {
+            logger.log("\"" + format + "\": " + e.getMessage());
+        }
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSSSS");
+    }
+
+    /**
+     * Append a timestamp to the head of the string.<br>
+     * <i>This method is used internally.</i>
+     *
+     * @param string a string
+     * @return a string appended a timestamp string
+     */
+    public static String appendTimestamp(String string) {
+        return logDateTimeFormatter == null ? string : ZonedDateTime.now().format(logDateTimeFormatter) + " " + string;
+    }
+
+    /**
+     * Returns indent state.
+     */
+    private static State getCurrentState() {
+        State state;
+        Long threadId = Thread.currentThread().getId();
+
+        if (stateMap.containsKey(threadId)) {
+            state = stateMap.get(threadId);
+        } else {
+            state = new State(threadId);
+            stateMap.put(threadId, state);
+        }
+
+        return state;
+    }
+
+    /**
+     * Returns whether tracing is enabled.
+     *
+     * @return true if tracing is enabled; false otherwise
+     */
+    public static boolean isEnabled() {
+        return logger.isEnabled();
+    }
+
+    /**
+     * Returns a string corresponding to the code and data nest level.
+     *
+     * @param nestLevel the code nest level
+     * @param dataNestLevel the data nest level
+     * @return a string corresponding to the current indent
+     */
+    private static String getIndentString(int nestLevel, int dataNestLevel) {
+        return indentStrings[
+            nestLevel < 0 ? 0 :
+            nestLevel >= indentStrings.length ? indentStrings.length - 1
+                : nestLevel]
+            + dataIndentStrings[
+            dataNestLevel < 0 ? 0 :
+            dataNestLevel >= dataIndentStrings.length ? dataIndentStrings.length - 1
+                : dataNestLevel];
+    }
+
+    /**
+     * Common start processing of output.
+     */
+    private static void printStart() {
+        Thread thread = Thread.currentThread();
+        long threadId = thread.getId();
+        if (threadId !=  beforeThreadId) {
+            // Thread changing
+            logger.log(""); // Line break
+            logger.log(String.format(threadBoundaryFormat, thread.getName(), threadId));
+            logger.log(""); // Line break
+
+            beforeThreadId = threadId;
+        }
+    }
+
+    /**
+     * Call this method at entrance of your methods.
+     */
+    public static void enter() {
+        if (!isEnabled()) return;
+
+        synchronized(stateMap) {
+            State state = getCurrentState();
+
+            printStart(); // Common start processing of output
+
+            if (state.previousNestLevel() > state.nestLevel())
+                logger.log(getIndentString(state.nestLevel(), 0)); // Line break
+
+            lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(enterFormat, 0);
+            logger.log(lastLog);
+
+            state.setPreviousLineCount(1);
+
+            state.upNest();
+        }
+    }
+
+    /**
+     * Call this method at exit of your methods.
+     */
+    public static void leave() {
+        if (!isEnabled()) return;
+
+        synchronized(stateMap) {
+            State state = getCurrentState();
+
+            printStart(); // Common start processing of output
+
+            if (state.previousLineCount() > 1)
+                logger.log(getIndentString(state.nestLevel(), 0)); // Empty Line
+
+            long timeSpan = System.currentTimeMillis() - state.downNest();
+
+            lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(leaveFormat, timeSpan);
+            logger.log(lastLog);
+        }
+    }
+
+    /**
+     * Returns a string of the caller information.
+     */
+    private static String getCallerInfo(String baseString, long timeSpan) {
+        StackTraceElement element = getStackTraceElement();
+        Instant instant = Instant.ofEpochSecond(timeSpan / 1000, (timeSpan % 1000) * 1000_000);
+        OffsetDateTime dateTime = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
+        return String.format(baseString,
+            replaceTypeName(element.getClassName()),
+            element.getMethodName(),
+            element.getFileName(),
+            element.getLineNumber(),
+            dateTime);
+    }
+
+    /**
+     * Outputs the message to the log.
+     *
+     * @param message a message
+     */
+    public static void print(String message) {
+        if (!isEnabled()) return;
+        printSub(message);
+    }
+
+    /**
+     * Outputs a message to the log.
+     *
+     * @param messageSupplier a message supplier
+     */
+    public static void print(Supplier<String> messageSupplier) {
+        if (!isEnabled()) return;
+        printSub(messageSupplier.get());
+    }
+
+    /**
+     * Outputs the message to the log.
+     *
+     * @param message a message
+     */
+    private static void printSub(String message) {
+        synchronized(stateMap) {
+            printStart(); // Common start processing of output
+
+            String lastLog = "";
+            if (!message.isEmpty()) {
+                StackTraceElement element = getStackTraceElement();
+                String suffix = String.format(printSuffixFormat,
+                    replaceTypeName(element.getClassName()),
+                    element.getMethodName(),
+                    element.getFileName(),
+                    element.getLineNumber());
+                lastLog = getIndentString(getCurrentState().nestLevel(), 0) + message + suffix;
+            }
+            logger.log(lastLog);
+        }
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param value the value to output (accept null)
+     * @param isPrimitive true if the value is primitive type, false otherwise
+     */
+    private static void printSub(String mapName, String name, Object value, boolean isPrimitive) {
+        synchronized(stateMap) {
+            State state = getCurrentState();
+ 
+            printStart(); // Common start processing of output
+
+            reflectedObjects.clear();
+
+            LogBuffer buff = new LogBuffer();
+
+            buff.append(name).noBreakAppend(varNameValueSeparator);
+            if (mapName == null) {
+                String normalizedName = name.substring(name.lastIndexOf('.') + 1).trim();
+                normalizedName = normalizedName.substring(normalizedName.lastIndexOf(' ') + 1);
+                mapName = mapNameMap.get(normalizedName);
+            }
+            LogBuffer valueBuff = toString(mapName, value, isPrimitive, false, false);
+            buff.append(valueBuff);
+
+            StackTraceElement element = getStackTraceElement();
+            String suffix = String.format(printSuffixFormat,
+                element.getClassName(),
+                element.getMethodName(),
+                element.getFileName(),
+                element.getLineNumber());
+            buff.noBreakAppend(suffix);
+            buff.lineFeed();
+
+            if (state.previousLineCount() > 1 || buff.lines().size() > 1)
+                logger.log(getIndentString(state.nestLevel(), 0)); // Empty Line
+
+            StringBuilder lastLogBuff = new StringBuilder();
+            for (Tuple._2<Integer, String> dataNestLevelLine : buff.lines()) {
+                int dataNestLevel = dataNestLevelLine.value1();
+                String line = dataNestLevelLine.value2();
+                String log = getIndentString(state.nestLevel(), dataNestLevel) + line;
+                logger.log(log);
+                lastLogBuff.append(log).append('\n');
+            }
+            lastLog = lastLogBuff.toString();
+
+            state.setPreviousLineCount(buff.lines().size());
+        }
+    }
+
+    /**
+     * Returns a caller stack trace element.
+     *
+     * @returns a caller stack trace element
+     */
+    private static StackTraceElement getStackTraceElement() {
+        StackTraceElement result = null;
+
+        String myClassName = DebugTrace.class.getName();
+
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        outerLoop:
+        for (int index = 3; index < elements.length; ++index) {
+            StackTraceElement element = elements[index];
+            String className = element.getClassName();
+            if (className.indexOf(myClassName) >= 0) continue;
+            for (String skipPackage : skipPackages)
+                if (className.indexOf(skipPackage) >= 0) continue outerLoop;
+            result = element;
+            break;
+        }
+        if (result == null)
+            result = new StackTraceElement("--", "--", "--", 0);
+
+        return result;
+    }
+
+    /**
+     * Outputs the name and the boolean value to the log.
+     *
+     * @param name the name of the value
+     * @param value the boolean value to output
+     */
+    public static void print(String name, boolean value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the char value to the log.
+     *
+     * @param name the name of the value
+     * @param value the char value to output
+     */
+    public static void print(String name, char value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the byte value to the log.
+     *
+     * @param name the name of the value
+     * @param value the byte value to output
+     */
+    public static void print(String name, byte value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the byte value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param value the byte value to output
+     *
+     * @since 2.4.0
+     */
+    public static void print(String mapName, String name, byte value) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the short value to the log.
+     *
+     * @param name the name of the value
+     * @param value the short value to output
+     */
+    public static void print(String name, short value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the short value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param value the short value to output
+     *
+     * @since 2.4.0
+     */
+    public static void print(String mapName, String name, short value) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the int value to the log.
+     *
+     * @param name the name of the value
+     * @param value the int value to output
+     */
+    public static void print(String name, int value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the int value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param value the int value to output
+     *
+     * @since 2.4.0
+     */
+    public static void print(String mapName, String name, int value) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, value, true);
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param name the name of the value
+     * @param value the long value to output
+     */
+    public static void print(String name, long value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and the long value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param value the long value to output
+     *
+     * @since 2.4.0
+     */
+    public static void print(String mapName, String name, long value) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, value, true);
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param name the name of the value
+     * @param value the float value to output
+     */
+    public static void print(String name, float value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param name the name of the value
+     * @param value the double value to output
+     */
+    public static void print(String name, double value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, true);
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param name the name of the value
+     * @param value the value to output (accept null)
+     */
+    public static void print(String name, Object value) {
+        if (!isEnabled()) return;
+        printSub(null, name, value, false);
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param value the value to output (accept null)
+     *
+     * @since 2.4.0
+     */
+    public static void print(String mapName, String name, Object value) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, value, false);
+    }
+
+    /**
+     * Outputs the name and boolean value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of boolean value to output
+     */
+    public static void print(String name, BooleanSupplier valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(null, name, valueSupplier.getAsBoolean(), true);
+    }
+
+    /**
+     * Outputs a int value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of int value to output
+     */
+    public static void print(String name, IntSupplier valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(null, name, valueSupplier.getAsInt(), true);
+    }
+
+    /**
+     * Outputs a int value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param valueSupplier the supplier of int value to output
+     *
+     * @since 2.4.0
+     */
+    public static void print(String mapName, String name, IntSupplier valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, valueSupplier.getAsInt(), true);
+    }
+
+    /**
+     * Outputs a long value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of long value to output
+     */
+    public static void print(String name, LongSupplier valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(null, name, valueSupplier.getAsLong(), true);
+    }
+
+    /**
+     * Outputs a long value to the log.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param valueSupplier the supplier of long value to output
+     *
+     * @since 2.4.0
+     */
+    public static void print(String mapName, String name, LongSupplier valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, valueSupplier.getAsLong(), true);
+    }
+
+    /**
+     * Outputs a double value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of double value to output
+     */
+    public static void print(String name, DoubleSupplier valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(null, name, valueSupplier.getAsDouble(), true);
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param <T> type of the value
+     * @param name the name of the value
+     * @param valueSupplier the supplier of value to output
+     */
+    public static <T> void print(String name, Supplier<T> valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(null, name, valueSupplier.get(), false);
+    }
+
+    /**
+     * Outputs the name and value to the log.
+     *
+     * @param <T> type of the value
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param valueSupplier the supplier of value to output
+     */
+    public static <T> void print(String mapName, String name, Supplier<T> valueSupplier) {
+        if (!isEnabled()) return;
+        printSub(mapName, name, valueSupplier.get(), false);
+    }
+
+    /**
+     * Returns a string representation of the value as a LogBuffer.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param value the value object
+     * @param isPrimitive true if the value is primitive type, false otherwise
+     * @param isComponent true if the value is component of an array, false otherwise
+     * @param isElement true if the value is element of a container class, false otherwise
+     * @return a LogBuffer
+     */
+    private static LogBuffer toString(String mapName, Object value, boolean isPrimitive, boolean isComponent, boolean isElement) {
+        LogBuffer buff = new LogBuffer();
+
+        if (value == null) {
+            buff.append("null");
+            return buff;
+        }
+
+        Class<?> type = value.getClass();
+        if (isPrimitive) {
+            type = primitiveTypeMap.get(type);
+            if (type == null)
+                type = value.getClass();
+        }
+
+        String typeName = getTypeName(type, value, isComponent, isElement, 0);
+
+        if (type.isArray()) {
+            // Array
+            if (type == char[].class) {
+                // sting
+                buff.noBreakAppend(typeName);
+                appendString (buff, new String((char[])value));
+            } else if (type == byte[].class) {
+                // byte Array
+                LogBuffer valueBuff = toStringBytes((byte[])value);
+                buff.append(valueBuff);
+            } else {
+                // Other Array
+                LogBuffer valueBuff = toStringArray(mapName, value);
+                buff.append(valueBuff);
+            }
+
+        } else if (value instanceof Boolean) {
+            // Boolean
+            buff.noBreakAppend(typeName);
+            buff.noBreakAppend(value);
+
+        } else if (value instanceof Character) {
+            // Character
+            buff.noBreakAppend(typeName);
+            buff.noBreakAppend('\'');
+            appendChar(buff, ((Character)value).charValue());
+            buff.noBreakAppend('\'');
+
+        } else if (value instanceof Number) {
+            // Number
+            buff.noBreakAppend(typeName);
+            if (value instanceof BigDecimal) buff.append(((BigDecimal)value).toPlainString()); // BigDecimal
+            else buff.noBreakAppend(value); // Other Number
+
+        } else if (value instanceof CharSequence) {
+            // CharSequence
+            buff.noBreakAppend(typeName);
+            appendString(buff, (CharSequence)value);
+
+        } else if (value instanceof java.util.Date) {
+            // Date
+            buff.noBreakAppend(typeName);
+            Timestamp timestamp = value instanceof Timestamp ? (Timestamp)value : new Timestamp(((java.util.Date)value).getTime());
+            ZonedDateTime zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+            if      (value instanceof Date     ) buff.noBreakAppend(zonedDateTime.format(sqlDateFormatter  )); // java.sql.Date
+            else if (value instanceof Time     ) buff.noBreakAppend(zonedDateTime.format(timeFormatter     )); // Time
+            else if (value instanceof Timestamp) buff.noBreakAppend(zonedDateTime.format(timestampFormatter)); // Timestamp
+            else                                 buff.noBreakAppend(zonedDateTime.format(utilDateFormatter )); // java.util.Date
+
+        } else if (value instanceof Temporal) {
+            // Temporal
+            buff.noBreakAppend(typeName);
+            if      (value instanceof LocalDate     ) buff.noBreakAppend(((LocalDate     )value).format(localDateFormatter     )); // LocalDate
+            else if (value instanceof LocalTime     ) buff.noBreakAppend(((LocalTime     )value).format(localTimeFormatter     )); // LocalTime
+            else if (value instanceof OffsetTime    ) buff.noBreakAppend(((OffsetTime    )value).format(offsetTimeFormatter    )); // OffsetTime
+            else if (value instanceof LocalDateTime ) buff.noBreakAppend(((LocalDateTime )value).format(localDateTimeFormatter )); // LocalDateTime
+            else if (value instanceof OffsetDateTime) buff.noBreakAppend(((OffsetDateTime)value).format(offsetDateTimeFormatter)); // OffsetDateTime
+            else if (value instanceof ZonedDateTime ) buff.noBreakAppend(((ZonedDateTime )value).format(zonedDateTimeFormatter )); // ZonedDateTime
+            else if (value instanceof Instant) buff.noBreakAppend(((Instant)value).atOffset(ZoneOffset.ofHours(0)).format(instantFormatter       )); // Instant
+            else buff.noBreakAppend(value);
+
+        } else if (value instanceof OptionalInt) {
+            // OptionalInt
+            buff.noBreakAppend(typeName);
+            if (((OptionalInt)value).isPresent())
+                buff.noBreakAppend(((OptionalInt)value).getAsInt());
+            else
+                buff.noBreakAppend("empty");
+
+        } else if (value instanceof OptionalLong) {
+            // OptionalLong
+            buff.noBreakAppend(typeName);
+            if (((OptionalLong)value).isPresent())
+                buff.noBreakAppend(((OptionalLong)value).getAsLong());
+            else
+                buff.noBreakAppend("empty");
+
+        } else if (value instanceof OptionalDouble) {
+            // OptionalDouble
+            buff.noBreakAppend(typeName);
+            if (((OptionalDouble)value).isPresent())
+                buff.noBreakAppend(((OptionalDouble)value).getAsDouble());
+            else
+                buff.noBreakAppend("empty");
+
+        } else if (value instanceof Optional) {
+            // Optional
+            buff.noBreakAppend(typeName);
+            if (((Optional<?>)value).isPresent()) {
+                LogBuffer valueBuff = toString(mapName, ((Optional<?>)value).get(), false, false, true);
+                buff.append(valueBuff);
+            }else
+                buff.noBreakAppend("empty");
+
+        } else if (value instanceof Collection) {
+            // Collection
+            LogBuffer valueBuff = toStringCollection(mapName, (Collection<?>)value);
+            buff.append(valueBuff);
+
+        } else if (value instanceof Map) {
+            // Map
+            LogBuffer valueBuff = toStringMap(mapName, (Map<?,?>)value);
+            buff.append(valueBuff);
+
+        } else if (value instanceof Clob) {
+            // Clob
+            try {
+                long length = ((Clob)value).length();
+                if (length > (long)stringLimit)
+                    length = (long)(stringLimit + 1);
+                buff.noBreakAppend(typeName);
+                appendString(buff, ((Clob)value).getSubString(1L, (int)length));
+            }
+            catch (SQLException e) {
+                buff.append(e);
+            }
+
+        } else if (value instanceof Blob) {
+            // Blob
+            try {
+                long length = ((Blob)value).length();
+                if (length > (long)byteArrayLimit)
+                    length = (long)(byteArrayLimit + 1);
+                LogBuffer valueBuff = toStringBytes(((Blob)value).getBytes(1L, (int)length));
+                buff.noBreakAppend(typeName);
+                buff.append(valueBuff);
+            }
+            catch (SQLException e) {
+                buff.append(e);
+            }
+
+        } else {
+            // Other
+            boolean isReflection = reflectionClasses.contains(type.getName());
+            if (!isReflection && !hasToString(type)) {
+                isReflection = true;
+                reflectionClasses.add(type.getName());
+            }
+
+            if (isReflection) {
+                // Use Reflection
+                if (reflectedObjects.stream().anyMatch(object -> value == object))
+                    // Cyclic reference
+                    buff.append(cyclicReferenceString).append(value);
+
+                else if (reflectedObjects.size() >= reflectionNestLimit)
+                    // Over reflection level limitation
+                    buff.noBreakAppend(limitString);
+
+                else {
+                    // Use Reflection
+                    reflectedObjects.add(value);
+                    LogBuffer valueBuff = toStringUsingReflection(value);
+                    buff.append(valueBuff);
+                    reflectedObjects.remove(reflectedObjects.size() - 1);
+                    return buff;
+                }
+            } else {
+                // Use toString method
+                buff.noBreakAppend(typeName);
+                buff.noBreakAppend(value);
+            }
+        }
+        String convertedValue =  getConvertedValue(mapName, value);
+        if (convertedValue != null)
+            buff.noBreakAppend('(').noBreakAppend(convertedValue).noBreakAppend(')');
+
+        return buff;
+    }
+
+    /**
+     * Returns the type name to be output to the log.<br>
+     * If dose not output, returns null.
+     *
+     * @param type the type of the value
+     * @param value the value object
+     * @param isComponent true if the value is component of an array, false otherwise
+     * @param isElement true if the value is element of a container class, false otherwise
+     * @param nest current nest count
+     * @return the type name to be output to the log
+     */
+    @SuppressWarnings("rawtypes")
+    private static String getTypeName(Class<?>type, Object value, boolean isComponent, boolean isElement, int nest) {
+        String typeName = "";
+        long length = -1L;
+        int size = -1;
+
+        if (type.isArray()) {
+            // Array
+            typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1);
+            if (!typeName.isEmpty()) {
+                String bracket = "[";
+                if (value != null)
+                    bracket += Array.getLength(value);
+                bracket += ']';
+                int braIndex = typeName.indexOf('[');
+                if (braIndex < 0)
+                    braIndex = typeName.length();
+                typeName = typeName.substring(0, braIndex) + bracket + typeName.substring(braIndex);
+            }
+        } else {
+            // Not Array
+            if (   nest > 0
+                || (isComponent
+                        ? !noOutputComponentTypeSet.contains(type)
+                    : isElement
+                        ? !noOutputElementTypeSet.contains(type)
+                        : !noOutputTypeSet.contains(type))
+                ) {
+                // Output the type name
+                typeName = type.getCanonicalName();
+                if (typeName == null)
+                    typeName = type.getName();
+                if (   typeName.startsWith("java.lang.")
+                    || typeName.startsWith("java.math.")
+                    || typeName.startsWith("java.sql.")
+                    || typeName.startsWith("java.time.")
+                    || typeName.startsWith("java.util.") && !typeName.equals("java.util.Date"))
+                    typeName = type.getSimpleName();
+                else
+                    typeName = replaceTypeName(typeName);
+            }
+
+            if (value != null) {
+                try {
+                    if      (value instanceof CharSequence) length = ((CharSequence)value).length();
+                    else if (value instanceof Blob        ) length = ((Blob        )value).length();
+                    else if (value instanceof Clob        ) length = ((Clob        )value).length();
+                    else if (value instanceof Collection  ) size   = ((Collection  )value).size  ();
+                    else if (value instanceof Map         ) size   = ((Map         )value).size  ();
+                }
+                catch (SQLException e) {}
+            }
+    }
+
+        if (length >= minimumOutputLength) {
+            if (!typeName.isEmpty())
+                typeName += " ";
+            typeName += String.format(lengthFormat, length);
+
+        } else if (size >= minimumOutputSize) {
+            if (!typeName.isEmpty())
+                typeName += " ";
+            typeName += String.format(sizeFormat, size);
+        }
+
+        if (!typeName.isEmpty() && nest == 0)
+            typeName = "(" + typeName + ")";
+
+        return typeName;
+    }
+
+    /**
+     * Replace a class name.
+     *
+     * @param className a class name
+     * @return the replaced ckass name
+     *
+     * @since 2.3.0
+     */
+    private static String replaceTypeName(String typeName) {
+        if (!defaultPackage.isEmpty() && typeName.startsWith(defaultPackage))
+            typeName = defaultPackageString + typeName.substring(defaultPackage.length());
+        return typeName;
+    }
+
+    /**
+     * Returns the map for converting.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param value the value object
+     * @return a converted value (may be null)
+     *
+     * @since 2.4.0
+     */
+    private static String getConvertedValue(String mapName, Object value) {
+        if (mapName == null || value == null)
+            return null;
+
+        Integer key = null;
+        if (value instanceof Byte)
+            key = (int)(byte)value;
+        else if (value instanceof Short)
+            key = (int)(short)value;
+        else if (value instanceof Integer)
+            key = (Integer)value;
+        else if (value instanceof Long) {
+            if ((long)value >= Integer.MIN_VALUE && (long)value <= Integer.MAX_VALUE)
+                key = (int)(long)value;
+        }
+        if (key == null)
+            return null;
+
+        Map<Integer, String> convertMap = convertMapMap.get(mapName);
+        if (convertMap == null) {
+            convertMap = resource.getIntegerKeyMap(mapName);
+            convertMapMap.put(mapName, convertMap);
+        }
+
+        return convertMap.get(key);
+    }
+
+    /**
+     * Appends a character representation for logging to the string buffer.
+     *
+     * @param state indent state
+     * @param strings a string list
+     * @param buff a string buffer
+     * @param ch a character
+     */
+    private static void appendChar(LogBuffer buff, char ch) {
+        switch (ch) {
+        case '\b': buff.append("\\b" ); break; // 08 BS
+        case '\t': buff.append("\\t" ); break; // 09 HT
+        case '\n': buff.append("\\n" ); break; // 0A LF
+        case '\f': buff.append("\\f" ); break; // 0C FF
+        case '\r': buff.append("\\r" ); break; // 0D CR
+        case '"' : buff.append("\\\""); break; // "
+        case '\'': buff.append("\\'" ); break; // '
+        case '\\': buff.append("\\\\"); break; // \
+        default:
+            if (ch < ' ' || ch == '\u007F')
+                buff.noBreakAppend("\\u").noBreakAppend(String.format("%04X", (short)ch));
+            else
+                buff.noBreakAppend(ch);
+            break;
+        }
+    }
+
+    /**
+     * Appends a CharSequence representation for logging to the string buffer.
+     *
+     * @param state indent state
+     * @param strings a string list
+     * @param buff a string buffer
+     * @param charSequence a CharSequence object
+     */
+    private static void appendString(LogBuffer buff, CharSequence charSequence) {
+        buff.noBreakAppend('"');
+        for (int index = 0; index < charSequence.length(); ++index) {
+            if (index >= stringLimit) {
+                buff.noBreakAppend(limitString);
+                break;
+            }
+            appendChar(buff, charSequence.charAt(index));
+        }
+        buff.noBreakAppend('"');
+    }
+
+    /**
+     * Returns a string representation of the bytes as a LogBuffer.
+     *
+     * @param bytes a byte array
+     * @return a LogBuffer
+     */
+    private static LogBuffer toStringBytes(byte[] bytes) {
+        LogBuffer buff = new LogBuffer();
+
+        boolean isMultiLines = bytes.length > 16 && byteArrayLimit > 16;
+
+        buff.append(getTypeName(bytes.getClass(), bytes, false, false, 0));
+        buff.append('[');
+
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.upNest();
+        }
+
+        int offset = 0;
+        for (int index = 0; index < bytes.length; ++index) {
+            if (offset > 0) buff.append(" ");
+
+            if (index >= byteArrayLimit) {
+                buff.append(limitString);
+                break;
+            }
+
+            byte value = bytes[index];
+            if (value < 0) value += 256;
+            char ch = (char)(value / 16 + '0');
+            if (ch > '9') ch += 'A' - '9' - 1;
+            buff.append(ch);
+            ch = (char)(value % 16 + '0');
+            if (ch > '9') ch += 'A' - '9' - 1;
+            buff.append(ch);
+            ++offset;
+
+            if (isMultiLines && offset == 16) {
+                buff.lineFeed();
+                offset = 0;
+            }
+        }
+
+        if (isMultiLines) {
+            if (buff.length() > 0)
+                buff.lineFeed();
+            buff.downNest();
+        }
+        buff.append(']');
+
+        return buff;
+    }
+
+    /**
+     * Returns a string representation of the array as a LogBuffer.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param array an array
+     * @return a LogBuffer
+     */
+    private static LogBuffer toStringArray(String mapName, Object array) {
+        LogBuffer buff = new LogBuffer();
+
+        buff.append(getTypeName(array.getClass(), array, false, false, 0));
+        buff.append('[');
+
+        LogBuffer bodyBuff = toStringArrayBody(mapName, array);
+
+        boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
+
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.upNest();
+        }
+
+        buff.append(bodyBuff);
+
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.downNest();
+        }
+
+        buff.append(']');
+
+        return buff;
+    }
+
+    private static LogBuffer toStringArrayBody(String mapName, Object array) {
+        LogBuffer buff = new LogBuffer();
+
+        Class<?> componentType = array.getClass().getComponentType();
+
+        int length = Array.getLength(array);
+
+        for (int index = 0; index < length; ++index) {
+            if (index > 0)
+                buff.noBreakAppend(", "); // Append a delimiter
+
+            if (index >= collectionLimit) {
+                buff.append(limitString);
+                break;
+            }
+
+            Object component = Array.get(array, index);
+
+            LogBuffer elementBuff = toString(mapName, component, componentType.isPrimitive(), true, false);
+            if (index > 0 && elementBuff.isMultiLines())
+                buff.lineFeed();
+            buff.append(elementBuff);
+        }
+
+        return buff;
+    }
+
+    /**
+     * Returns a string representation of the collection as a LogBuffer.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param collection a Collection
+     * @return a LogBuffer
+     */
+    private static <E> LogBuffer toStringCollection(String mapName, Collection<E> collection) {
+        LogBuffer buff = new LogBuffer();
+
+        buff.append(getTypeName(collection.getClass(), collection, false, false, 0));
+        buff.append('[');
+
+        LogBuffer bodyBuff = toStringCollectionBody(mapName, collection);
+
+        boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
+
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.upNest();
+        }
+
+        buff.append(bodyBuff);
+
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.downNest();
+        }
+
+        buff.append(']');
+
+        return buff;
+    }
+
+    private static <E> LogBuffer toStringCollectionBody(String mapName, Collection<E> collection) {
+        LogBuffer buff = new LogBuffer();
+    
+        Iterator<E> iterator = collection.iterator();
+
+        for (int index = 0; iterator.hasNext(); ++index) {
+            if (index > 0)
+                buff.noBreakAppend(", ");
+
+            if (index >= collectionLimit) {
+                buff.append(limitString);
+                break;
+            }
+
+            E element = iterator.next();
+
+            LogBuffer elementBuff = toString(mapName, element, false, false, true);
+            if (index > 0 && elementBuff.isMultiLines())
+                buff.lineFeed();
+            buff.append(elementBuff);
+        }
+
+        return buff;
+    }
+
+    /**
+     * Returns a string representation of the map as a LogBuffer.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param map a Map
+     * @return a LogBuffer
+     */
+    private static <K, V> LogBuffer toStringMap(String mapName, Map<K, V> map) {
+        LogBuffer buff = new LogBuffer();
+
+        buff.append(getTypeName(map.getClass(), map, false, false, 0));
+        buff.append('[');
+
+        LogBuffer bodyBuff = toStringMapBody(mapName, map);
+
+        boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
+
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.upNest();
+        }
+
+        buff.append(bodyBuff);
+
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.downNest();
+        }
+
+        buff.append(']');
+
+        return buff;
+    }
+
+    private static <K, V> LogBuffer toStringMapBody(String mapName, Map<K, V> map) {
+        LogBuffer buff = new LogBuffer();
+    
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+
+        for (int index = 0; iterator.hasNext(); ++index) {
+            if (index > 0)
+                buff.noBreakAppend(", ");
+
+            if (index >= collectionLimit) {
+                buff.append(limitString);
+                break;
+            }
+
+            Map.Entry<K, V> keyValue = iterator.next();
+
+            LogBuffer keyBuff = toString(mapName, keyValue.getKey(), false, false, true);
+            if (index > 0 && keyBuff.isMultiLines())
+                buff.lineFeed();
+            buff.append(keyBuff);
+
+            buff.noBreakAppend(keyValueSeparator);
+
+            LogBuffer valueBuff = toString(mapName, keyValue.getValue(), false, false, true);
+            if (index > 0 && valueBuff.isMultiLines())
+                buff.lineFeed();
+            buff.append(valueBuff);
+        }
+
+        return buff;
+    }
+
+    /**
+     * Returns true, if this class or super classes without Object class has toString method.
+     *
+     * @param object an object
+     * @return true if this class or super classes without Object class has toString method; false otherwise
+     */
+    private static boolean hasToString(Class<?> clazz) {
+        boolean result = false;
+
+        while (clazz != Object.class) {
+            try {
+                clazz.getDeclaredMethod("toString");
+                result = true;
+                break;
+            }
+            catch (Exception e) {
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns a string representation of the object as a LogBuffer uses reflection.
+     *
+     * @param object an object
+     * @return a LogBuffer
+     */
+    private static LogBuffer toStringUsingReflection(Object object) {
+        LogBuffer buff = new LogBuffer();
+
+        Class<?> type = object.getClass();
+        buff.append(getTypeName(type, object, false, false, 0));
+        boolean isExtended = type.getSuperclass() != Object.class;
+
+        LogBuffer bodyBuff = toStringUsingReflectionBody(object, type, isExtended);
+
+        boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
+
+        buff.append('[');
+        if (isMultiLines) {
+            buff.lineFeed();
+            buff.upNest();
+        }
+
+        buff.append(bodyBuff);
+
+        if (isMultiLines) {
+            if (buff.length() > 0)
+                buff.lineFeed();
+            buff.downNest();
+        }
+        buff.append(']');
+
+        return buff;
+    }
+
+    private static LogBuffer toStringUsingReflectionBody(Object object, Class<?> type, boolean isExtended) {
+        LogBuffer buff = new LogBuffer();
+
+        Class<?> baseType = type.getSuperclass();
+        if (baseType != Object.class) {
+            // Call for the base type
+            LogBuffer baseBuff =  toStringUsingReflectionBody(object, baseType, isExtended);
+            buff.append(baseBuff);
+        }
+
+        String typeNamePrefix = type.getName() + "#";
+
+        if (isExtended) {
+            if (buff.length() > 0)
+                buff.lineFeed();
+            buff.append(String.format(classBoundaryFormat, replaceTypeName(type.getName())));
+            buff.lineFeed();
+        }
+
+        // fields
+        boolean first = true;
+        Field[] fields = type.getDeclaredFields();
+        for (Field field : fields) {
+            int modifiers = field.getModifiers();
+            if (Modifier.isStatic(modifiers)) continue; // static
+   
+            String fieldName = field.getName();
+   
+            Object value = null;
+            Method method = null; // getter method
+   
+            if (!Modifier.isPublic(modifiers)) {
+                // non public field
+                // get getter method
+                for (String getterPrefix : getterPrefixes) {
+                    String methodName = getterPrefix.length() == 0
+                        ? fieldName
+                        : getterPrefix + fieldName.substring(0, 1).toUpperCase(Locale.ENGLISH) + fieldName.substring(1);
+                    try {
+                        method = type.getDeclaredMethod(methodName);
+                        if (method.getReturnType() == field.getType())
+                            break;
+                        else
+                            // return type of the getter method is not the field type
+                            method = null;
+                    }
+                    catch (Exception e) {
+                    }
+                }
+            }
+   
+            try {
+                if (method != null) {
+                    // has a getter method
+                    if (!Modifier.isPublic(method.getModifiers()))
+                        // non public method
+                        method.setAccessible(true);
+                    value = method.invoke(object);
+                } else {
+                    // does not have a getter method
+                    if (!Modifier.isPublic(modifiers))
+                        // non public field
+                        field.setAccessible(true);
+                    value = field.get(object);
+                }
+            }
+            catch (Exception e) {
+                value = "<" + e + ">";
+            }
+
+            if (!first)
+                buff.noBreakAppend(", ");
+            first = false;
+
+            buff.append(fieldName).noBreakAppend(keyValueSeparator);
+
+            if (value != null && nonOutputProperties.contains(typeNamePrefix + fieldName) || fieldName.equals("metaClass"))
+                // the property is non-printing and the value is not null or Groovy's metaClass
+                buff.append(nonOutputString);
+            else {
+                String mapName = mapNameMap.get(fieldName);
+                LogBuffer valueBuff = toString(mapName, value, field.getType().isPrimitive(), false, false);
+                buff.append(valueBuff);
+            }
+        }
+
+        return buff;
+    }
+
+    /**
+     * Returns the last log string output.
+     *
+     * @return the last log string output.
+     *
+     * @since 2.4.0
+     */
+    public static String getLastLog() {
+        return lastLog;
+    }
 }

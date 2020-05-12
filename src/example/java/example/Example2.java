@@ -28,189 +28,189 @@ import org.debugtrace.DebugTrace;
  * Example2
  */
 public class Example2 {
-	public static void main(String[] args) {
-	/**/DebugTrace.enter();
-	/**/DebugTrace.print("args", args);
+    public static void main(String[] args) {
+    /**/DebugTrace.enter();
+    /**/DebugTrace.print("args", args);
 
-	Example2 example = new Example2();
-		try {
-			example.example1();
-			example.example2();
-			example.example3();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+    Example2 example = new Example2();
+        try {
+            example.example1();
+            example.example2();
+            example.example3();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	/**/DebugTrace.leave();
-	}
+    /**/DebugTrace.leave();
+    }
 
-	private void example1() {
-	/**/DebugTrace.enter();
+    private void example1() {
+    /**/DebugTrace.enter();
 
-		Thread[] thread = new Thread[5];
-		for (int index = 0; index < thread.length; ++index) {
-			thread[index] = new Thread(() -> {
-			/**/DebugTrace.enter();
-				try {
-					Thread.sleep(200);
-				}
-				catch (InterruptedException e) {
-					throw new RuntimeException(e);
-				}
-			/**/DebugTrace.leave();
-			});
-		}
+        Thread[] thread = new Thread[5];
+        for (int index = 0; index < thread.length; ++index) {
+            thread[index] = new Thread(() -> {
+            /**/DebugTrace.enter();
+                try {
+                    Thread.sleep(200);
+                }
+                catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            /**/DebugTrace.leave();
+            });
+        }
 
-		for (int index = 0; index < thread.length; ++index) {
-			thread[index].start();
-			try {
-				Thread.sleep(50);
-			}
-			catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
-		}
+        for (int index = 0; index < thread.length; ++index) {
+            thread[index].start();
+            try {
+                Thread.sleep(50);
+            }
+            catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-	/**/DebugTrace.leave();
-	}
+    /**/DebugTrace.leave();
+    }
 
-	private void example2() {
-	/**/DebugTrace.enter();
+    private void example2() {
+    /**/DebugTrace.enter();
 
-		Values values = new Values();
-	//	values.valuesOpt = Optional.of(new Values());
-		values.valuesOpt = Optional.of(values);
+        Values values = new Values();
+    //    values.valuesOpt = Optional.of(new Values());
+        values.valuesOpt = Optional.of(values);
 
-	/**/DebugTrace.print("values", values);
+    /**/DebugTrace.print("values", values);
 
-		List<Values> valueList = new ArrayList<>();
-		valueList.add(values);
-		valueList.add(values);
-	/**/DebugTrace.print("valueList", valueList);
+        List<Values> valueList = new ArrayList<>();
+        valueList.add(values);
+        valueList.add(values);
+    /**/DebugTrace.print("valueList", valueList);
 
-		Map<Integer, List<Values>> valueListMap = new LinkedHashMap<>();
-		valueListMap.put(1, valueList);
-//		valueListMap.put(2, valueList);
-	/**/DebugTrace.print("valueListMap", valueListMap);
+        Map<Integer, List<Values>> valueListMap = new LinkedHashMap<>();
+        valueListMap.put(1, valueList);
+//        valueListMap.put(2, valueList);
+    /**/DebugTrace.print("valueListMap", valueListMap);
 
-		Point[] points = IntStream.range(0, 51)
-			.mapToObj((index) -> new Point(index, index + 1, index + 2))
-			.toArray(Point[]::new);
-	/**/DebugTrace.print("points", points);
+        Point[] points = IntStream.range(0, 51)
+            .mapToObj((index) -> new Point(index, index + 1, index + 2))
+            .toArray(Point[]::new);
+    /**/DebugTrace.print("points", points);
 
-		Point[] points2 = IntStream.range(0, 10)
-			.mapToObj((index) -> new Point(index, index + 1, index + 2))
-			.toArray(Point[]::new);
-	/**/DebugTrace.print("points2", points2);
+        Point[] points2 = IntStream.range(0, 10)
+            .mapToObj((index) -> new Point(index, index + 1, index + 2))
+            .toArray(Point[]::new);
+    /**/DebugTrace.print("points2", points2);
 
-		int[] ints = new int[points.length];
-		IntStream.range(0, points.length)
-			.forEach((index) -> ints[index] = points[index].x() * points[index].y() * (int)points[index].z());
-	/**/DebugTrace.print("ints", ints);
+        int[] ints = new int[points.length];
+        IntStream.range(0, points.length)
+            .forEach((index) -> ints[index] = points[index].x() * points[index].y() * (int)points[index].z());
+    /**/DebugTrace.print("ints", ints);
 
-		int[][][][] intss = new int[2][3][4][5];
-	/**/DebugTrace.print("intss", intss);
+        int[][][][] intss = new int[2][3][4][5];
+    /**/DebugTrace.print("intss", intss);
 
-		Point p = new Point(10, 11, 12) {};
-	/**/DebugTrace.print("p", p);
+        Point p = new Point(10, 11, 12) {};
+    /**/DebugTrace.print("p", p);
 
-		List<Object> objects = Arrays.asList(true, 'A', (byte)1, (short)2, 3, 4L, new BigDecimal(5), 6.6F, 7.7D);
-	/**/DebugTrace.print("objects", objects);
+        List<Object> objects = Arrays.asList(true, 'A', (byte)1, (short)2, 3, 4L, new BigDecimal(5), 6.6F, 7.7D);
+    /**/DebugTrace.print("objects", objects);
 
-	/**/DebugTrace.leave();
-	}
+    /**/DebugTrace.leave();
+    }
 
-	private void example3() throws Exception {
-	/**/DebugTrace.enter();
+    private void example3() throws Exception {
+    /**/DebugTrace.enter();
 
-		DataSource dataSource = BasicDataSourceFactory.createDataSource(new Properties());
-	/**/DebugTrace.print("dataSource", dataSource);
+        DataSource dataSource = BasicDataSourceFactory.createDataSource(new Properties());
+    /**/DebugTrace.print("dataSource", dataSource);
 
-	/**/DebugTrace.leave();
-	}
+    /**/DebugTrace.leave();
+    }
 
-	public static class ValuesBase1 {
-		public boolean          booleanValue =                       true                 ;
-		public char             charValue    =                       'A'                  ;
-		public byte             byteValue    =                (byte )127                  ;
-		public short            shortValue   =                (short)32767                ;
-		public int              intValue     =                       123456789            ;
-		public long             longValue    =                       123456789123456789L  ;
-		public float            floatValue   =                       1234.5678F           ;
-		public double           doubleValue  =                       123456789.123456789D ;
-	}
+    public static class ValuesBase1 {
+        public boolean          booleanValue =                       true                 ;
+        public char             charValue    =                       'A'                  ;
+        public byte             byteValue    =                (byte )127                  ;
+        public short            shortValue   =                (short)32767                ;
+        public int              intValue     =                       123456789            ;
+        public long             longValue    =                       123456789123456789L  ;
+        public float            floatValue   =                       1234.5678F           ;
+        public double           doubleValue  =                       123456789.123456789D ;
+    }
 
-	public static class ValuesBase2 extends ValuesBase1 {
-		public BigInteger       bigInteger   = new BigInteger      ("123456789123456789" );
-		public BigDecimal       bigDecimal   = new BigDecimal      ("123456789.123456789");
-		public String           string       = "ABC\b\t\n\f\r\\\"  'EFG"                  ;
-		public java.util.Date   utilDate     = new java.util.Date  ( 0                   );
-		public java.sql.Date    sqlDate      = new java.sql.Date   ( 0                   );
-		public Time             time         = new Time            ( 0                   );
-		public Timestamp        timestamp    = new Timestamp       ( 0                   );
-		public OptionalInt      int1Opt      = OptionalInt   .empty(                     );
-		public OptionalInt      int2Opt      = OptionalInt   .of   ( 10                  );
-		public OptionalLong     long1Opt     = OptionalLong  .empty(                     );
-		public OptionalLong     long2Opt     = OptionalLong  .of   ( 20                  );
-		public OptionalDouble   double1Opt   = OptionalDouble.empty(                     );
-		public OptionalDouble   double2Opt   = OptionalDouble.of   ( 30.3                );
-		public Optional<String> string1Opt   = Optional      .empty(                     );
-		public Optional<String> string2Opt   = Optional      .of   ( "あいうえお"           );
-		public Optional<Values> valuesOpt    = Optional      .empty(                     );
-		public String           nullValue    = null;
-		public String           nonNullValue = "non null";
-	}
+    public static class ValuesBase2 extends ValuesBase1 {
+        public BigInteger       bigInteger   = new BigInteger      ("123456789123456789" );
+        public BigDecimal       bigDecimal   = new BigDecimal      ("123456789.123456789");
+        public String           string       = "ABC\b\t\n\f\r\\\"  'EFG"                  ;
+        public java.util.Date   utilDate     = new java.util.Date  ( 0                   );
+        public java.sql.Date    sqlDate      = new java.sql.Date   ( 0                   );
+        public Time             time         = new Time            ( 0                   );
+        public Timestamp        timestamp    = new Timestamp       ( 0                   );
+        public OptionalInt      int1Opt      = OptionalInt   .empty(                     );
+        public OptionalInt      int2Opt      = OptionalInt   .of   ( 10                  );
+        public OptionalLong     long1Opt     = OptionalLong  .empty(                     );
+        public OptionalLong     long2Opt     = OptionalLong  .of   ( 20                  );
+        public OptionalDouble   double1Opt   = OptionalDouble.empty(                     );
+        public OptionalDouble   double2Opt   = OptionalDouble.of   ( 30.3                );
+        public Optional<String> string1Opt   = Optional      .empty(                     );
+        public Optional<String> string2Opt   = Optional      .of   ( "あいうえお"           );
+        public Optional<Values> valuesOpt    = Optional      .empty(                     );
+        public String           nullValue    = null;
+        public String           nonNullValue = "non null";
+    }
 
-	public static class Values extends ValuesBase2 {
-		public boolean       [] booleans     = new boolean       [] {                      false                ,                       true                 };
-		public char          [] chars        = new char          [] {                      'A'                  ,                       'B'                  };
-		public byte          [] bytes        = new byte          [] {              (byte )-127                  ,                (byte )127                  };
-		public short         [] shorts       = new short         [] {              (short)-32767                ,                (short)32767                };
-		public int           [] ints         = new int           [] {                     -123456789            ,                       123456789            };
-		public long          [] longs        = new long          [] {                     -123456789123456789L  ,                       123456789123456789L  };
-		public float         [] floats       = new float         [] {                     -1234.5678F           ,                       1234.5678F           };
-		public double        [] doubles      = new double        [] {                     -123456789.123456789D ,                       123456789.123456789D };
-		public Boolean       [] c_booleans   = new Boolean       [] {                      false                ,                       true                 };
-		public Character     [] c_characters = new Character     [] {                      'A'                  ,                       'B'                  };
-		public Byte          [] c_bytes      = new Byte          [] {              (byte )-127                  ,                (byte )127                  };
-		public Short         [] c_shorts     = new Short         [] {              (short)-32767                ,                (short)32767                };
-		public Integer       [] c_integers   = new Integer       [] {                     -123456789            ,                       123456789            };
-		public Long          [] c_longs      = new Long          [] {                     -123456789123456789L  ,                       123456789123456789L  };
-		public Float         [] c_floats     = new Float         [] {                     -1234.5678F           ,                       1234.5678F           };
-		public Double        [] c_doubles    = new Double        [] {                     -123456789.123456789D ,                       123456789.123456789D };
-		public BigInteger    [] bigIntegers  = new BigInteger    [] {new BigInteger     ("-123456789123456789" ), new BigInteger      ("123456789123456789" )};
-		public BigDecimal    [] bigDecimals  = new BigDecimal    [] {new BigDecimal     ("-123456789.123456789"), new BigDecimal      ("123456789.123456789")};
-		public String        [] strings      = new String        [] {"ABC\b\t\n\f\r\\\"  'EFG"                  , "ABC\b\t\n\f\r\\\"  'EFG"                  };
-		public java.util.Date[] utilDates    = new java.util.Date[] {new java.util.Date  ( 0                   ), new java.util.Date  ( 1                   )};
-		public java.sql.Date [] sqlDates     = new java.sql.Date [] {new java.sql.Date   ( 0                   ), new java.sql.Date   ( 1                   )};
-		public Time          [] times        = new Time          [] {new Time            ( 0                   ), new Time            ( 1                   )};
-		public Timestamp     [] timestamps   = new Timestamp     [] {new Timestamp       ( 0                   ), new Timestamp       ( 1                   )};
-	}
+    public static class Values extends ValuesBase2 {
+        public boolean       [] booleans     = new boolean       [] {                      false                ,                       true                 };
+        public char          [] chars        = new char          [] {                      'A'                  ,                       'B'                  };
+        public byte          [] bytes        = new byte          [] {              (byte )-127                  ,                (byte )127                  };
+        public short         [] shorts       = new short         [] {              (short)-32767                ,                (short)32767                };
+        public int           [] ints         = new int           [] {                     -123456789            ,                       123456789            };
+        public long          [] longs        = new long          [] {                     -123456789123456789L  ,                       123456789123456789L  };
+        public float         [] floats       = new float         [] {                     -1234.5678F           ,                       1234.5678F           };
+        public double        [] doubles      = new double        [] {                     -123456789.123456789D ,                       123456789.123456789D };
+        public Boolean       [] c_booleans   = new Boolean       [] {                      false                ,                       true                 };
+        public Character     [] c_characters = new Character     [] {                      'A'                  ,                       'B'                  };
+        public Byte          [] c_bytes      = new Byte          [] {              (byte )-127                  ,                (byte )127                  };
+        public Short         [] c_shorts     = new Short         [] {              (short)-32767                ,                (short)32767                };
+        public Integer       [] c_integers   = new Integer       [] {                     -123456789            ,                       123456789            };
+        public Long          [] c_longs      = new Long          [] {                     -123456789123456789L  ,                       123456789123456789L  };
+        public Float         [] c_floats     = new Float         [] {                     -1234.5678F           ,                       1234.5678F           };
+        public Double        [] c_doubles    = new Double        [] {                     -123456789.123456789D ,                       123456789.123456789D };
+        public BigInteger    [] bigIntegers  = new BigInteger    [] {new BigInteger     ("-123456789123456789" ), new BigInteger      ("123456789123456789" )};
+        public BigDecimal    [] bigDecimals  = new BigDecimal    [] {new BigDecimal     ("-123456789.123456789"), new BigDecimal      ("123456789.123456789")};
+        public String        [] strings      = new String        [] {"ABC\b\t\n\f\r\\\"  'EFG"                  , "ABC\b\t\n\f\r\\\"  'EFG"                  };
+        public java.util.Date[] utilDates    = new java.util.Date[] {new java.util.Date  ( 0                   ), new java.util.Date  ( 1                   )};
+        public java.sql.Date [] sqlDates     = new java.sql.Date [] {new java.sql.Date   ( 0                   ), new java.sql.Date   ( 1                   )};
+        public Time          [] times        = new Time          [] {new Time            ( 0                   ), new Time            ( 1                   )};
+        public Timestamp     [] timestamps   = new Timestamp     [] {new Timestamp       ( 0                   ), new Timestamp       ( 1                   )};
+    }
 
-	public static class Point {
-		public  Point self;
-		private int x;
-		private int y;
-		private int z;
+    public static class Point {
+        public  Point self;
+        private int x;
+        private int y;
+        private int z;
 
-		public Point(int x, int y, int z) {
-			self = this;
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
+        public Point(int x, int y, int z) {
+            self = this;
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
 
-		protected int x() {return -x;}
-		private int y() {return -y;}
-		public long z() {return (long)-z;}
+        protected int x() {return -x;}
+        private int y() {return -y;}
+        public long z() {return (long)-z;}
 
-		public Point add(Point p) {return new Point(x + p.x, y + p.y, y + p.z);}
-		public Point sub(Point p) {return new Point(x - p.x, y - p.y, y - p.z);}
-		public Point mul(Point p) {return new Point(x * p.x, y * p.y, y * p.z);}
-		public Point div(Point p) {return new Point(x / p.x, y / p.y, y / p.z);}
-		public Point mod(Point p) {return new Point(x % p.x, y % p.y, y % p.z);}
-		public String toString() {return "(" + x + ", " + y + ", " + z + ")";}
-	}
+        public Point add(Point p) {return new Point(x + p.x, y + p.y, y + p.z);}
+        public Point sub(Point p) {return new Point(x - p.x, y - p.y, y - p.z);}
+        public Point mul(Point p) {return new Point(x * p.x, y * p.y, y * p.z);}
+        public Point div(Point p) {return new Point(x / p.x, y / p.y, y / p.z);}
+        public Point mod(Point p) {return new Point(x % p.x, y % p.y, y % p.z);}
+        public String toString() {return "(" + x + ", " + y + ", " + z + ")";}
+    }
 }
 

@@ -38,6 +38,8 @@ class LogBuffer {
      * Breaks the current line.
      */
     public void lineFeed() {
+        while (builder.length() > 0 && builder.charAt(builder.length() - 1) == ' ')
+            builder.setLength(builder.length() - 1);
         lines.add(Tuple.of(nestLevel + appendNestLevel, builder.toString()));
         appendNestLevel = 0;
         builder.setLength(0);

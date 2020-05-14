@@ -701,9 +701,13 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英�
 
 === 9. リリースノート
 
+==== DebugTrace-java 3.0.1 [.small .gray]#- 2020-05-15#
+
+* データ出力の改行アルゴリズムを改善
+
 ==== DebugTrace-java 3.0.0 [.small .gray]#- 2020-05-12#
 
-* 改行のアルゴリズムを改善
+* データ出力の改行アルゴリズムを改善
 
 * DebugTrace.propertiesで指定する以下のプロパティを追加
   ** `sizeFormat` - コレクションおよびマップの要素数の出力フォーマット (デフォルト: `size:%1d`)

@@ -64,7 +64,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "3.0.1";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -1049,7 +1049,7 @@ public class DebugTrace {
 
                 else if (reflectedObjects.size() >= reflectionNestLimit)
                     // Over reflection level limitation
-                    buff.noBreakAppend(limitString);
+                    buff.append(limitString);
 
                 else {
                     // Use Reflection
@@ -1475,17 +1475,14 @@ public class DebugTrace {
 
             Map.Entry<K, V> keyValue = iterator.next();
 
+            LogBuffer entryBuff = new LogBuffer();
             LogBuffer keyBuff = toString(mapName, keyValue.getKey(), false, false, true);
-            if (index > 0 && keyBuff.isMultiLines())
-                buff.lineFeed();
-            buff.append(keyBuff);
-
-            buff.noBreakAppend(keyValueSeparator);
-
             LogBuffer valueBuff = toString(mapName, keyValue.getValue(), false, false, true);
-            if (index > 0 && valueBuff.isMultiLines())
+            entryBuff.append(keyBuff).noBreakAppend(keyValueSeparator).append(valueBuff);
+
+            if (index > 0 && entryBuff.isMultiLines())
                 buff.lineFeed();
-            buff.append(valueBuff);
+            buff.append(entryBuff);
         }
 
         return buff;
@@ -1623,16 +1620,21 @@ public class DebugTrace {
                 buff.noBreakAppend(", ");
             first = false;
 
-            buff.append(fieldName).noBreakAppend(keyValueSeparator);
+            LogBuffer fieldBuff = new LogBuffer();
+            fieldBuff.append(fieldName).noBreakAppend(keyValueSeparator);
 
             if (value != null && nonOutputProperties.contains(typeNamePrefix + fieldName) || fieldName.equals("metaClass"))
                 // the property is non-printing and the value is not null or Groovy's metaClass
-                buff.append(nonOutputString);
+                fieldBuff.noBreakAppend(nonOutputString);
             else {
                 String mapName = mapNameMap.get(fieldName);
                 LogBuffer valueBuff = toString(mapName, value, field.getType().isPrimitive(), false, false);
-                buff.append(valueBuff);
+                fieldBuff.append(valueBuff);
             }
+
+            if (!first && fieldBuff.isMultiLines())
+                buff.lineFeed();
+            buff.append(fieldBuff);
         }
 
         return buff;

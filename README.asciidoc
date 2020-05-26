@@ -178,7 +178,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 |Property Name|Description
 
 |`logger`
-| Logger DebugTrace uses +
+| Logger used by DebugTrace +
 [.small]#*Examples:*# +
 &#160;&#160; `logger = Std$Out` [.small .blue]#- output to stdout# +
 &#160;&#160; `logger = Std$Err` [.small .blue]#- output to stderr *[Default]*# +
@@ -223,10 +223,10 @@ You can specify following properties in the `DebugTrace.properties` file.
 [.small]#*Example:*# +
 &#160;&#160; `enterFormat = Enter %1$s.%2$s (%3$s:%4$d)` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
-&#160;&#160; `%1`: The class name of the caller +
-&#160;&#160; `%2`: The method name of the caller +
-&#160;&#160; `%3`: The file name of the caller +
-&#160;&#160; `%4`: The line number of the caller
+&#160;&#160; `%1`: The class name +
+&#160;&#160; `%2`: The method name +
+&#160;&#160; `%3`: The file name +
+&#160;&#160; `%4`: The line number
 
 |`leaveFormat` +
 [.small .blue]#Renamed since 3.0.0# +
@@ -237,10 +237,10 @@ You can specify following properties in the `DebugTrace.properties` file.
 [.small]#*Example:*# +
 &#160;&#160; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
-&#160;&#160; `%1`: The class name of the caller +
-&#160;&#160; `%2`: The method name of the caller +
-&#160;&#160; `%3`: The file name of the caller +
-&#160;&#160; `%4`: The line number of the caller +
+&#160;&#160; `%1`: The class name +
+&#160;&#160; `%2`: The method name +
+&#160;&#160; `%3`: The file name +
+&#160;&#160; `%4`: The line number +
 &#160;&#160; `%5`: The duration since invoking the corresponding `enter` method
 
 |`threadBoundaryFormat` +
@@ -267,13 +267,13 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; `%1`: The class name
 
 |`indentString`
-|String of one code indent +
+|Indentation string for code +
 [.small]#*Example:*# +
 &#160;&#160; `indentString = \s\s` [.small .blue]#*[Default]*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
 |`dataIndentString`
-|String of one data indent +
+|Indentation string for data +
 [.small]#*Example:*# +
 &#160;&#160; `dataIndentString = \\s\\s` [.small .blue]#*[Default]*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character#
@@ -315,116 +315,116 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
 |`printSuffixFormat`
-|Output format of `print` method suffix +
+|Format string of `print` method suffix +
 [.small]#*Example:*# +
 &#160;&#160; `printSuffixFormat = \\s(%3$s:%4$d)` [.small .blue]#*[Default]*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character# +
 [.small]#*Parameters:*# +
-&#160;&#160; `%1`: The class name of the caller +
-&#160;&#160; `%2`: The method name of the caller +
-&#160;&#160; `%3`: The file name of the caller +
-&#160;&#160; `%4`: The line number of the caller
+&#160;&#160; `%1`: The class name +
+&#160;&#160; `%2`: The method name +
+&#160;&#160; `%3`: The file name +
+&#160;&#160; `%4`: The line number
 
 |`sizeFormat` +
 [.small .blue]#since 3.0.0#
-|Output format of the size of collections and maps +
-[.small]#*設定例:*# +
+|Format string of the size of collection and map +
+[.small]#*Example:*# +
 &#160;&#160; `sizeFormat = size:%1d` [.small .blue]#*[Default]*# +
-[.small]#*パラメータ:*# +
-&#160;&#160; `%1`: 要素数
+[.small]#*Parameters:*# +
+&#160;&#160; `%1`: The size of collections
 
 |`minimumOutputSize` +
 [.small .blue]#since 3.0.0#
 |Minimum value to output the number of elements of array, collection and map +
-[.small]#*設定例:*# +
+[.small]#*Example:*# +
 &#160;&#160; `minimumOutputSize = 5` [.small .blue]#*[Default]*#
 
 |`lengthFormat` +
 [.small .blue]#since 3.0.0#
-|Output format of the length of strings +
-[.small]#*設定例:*# +
+|Format string of the length of string +
+[.small]#*Example:*# +
 &#160;&#160; `sizeFormat = length:%1d` [.small .blue]#*[Default]*# +
-[.small]#*パラメータ:*# +
-&#160;&#160; `%1`: 要素数
+[.small]#*Parameters:*# +
+&#160;&#160; `%1`: The length of string
 
 |`minimumOutputLength` +
 [.small .blue]#since 3.0.0#
 |Minimum value to output the length of string +
-[.small]#*設定例:*# +
+[.small]#*Example:*# +
 &#160;&#160; `minimumOutputSize = 5` [.small .blue]#*[Default]*#
 
 |`utilDateFormat`
-|Output format of `java.util.Date` +
+|Format string of `java.util.Date` +
 [.small]#*Example:*# +
 &#160;&#160; `utilDateFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*[Default]*#
 
 |`sqlDateFormat`
-|Output format of `java.sql.Date` +
+|Format string of `java.sql.Date` +
 [.small]#*Example:*# +
 &#160;&#160; `sqlDateFormat = yyyy-MM-ddxxx` [.small .blue]#*[Default]*#
 
 |`timeFormat`
-|Output format of `java.sql.Time` +
+|Format string of `java.sql.Time` +
 [.small]#*Example:*# +
 &#160;&#160; `timeFormat = HH:mm:ss.SSSxxx` [.small .blue]#*[Default]*#
 
 |`timestampFormat`
-|Output format of `java.sql.Timestamp` +
+|Format string of `java.sql.Timestamp` +
 [.small]#*Example:*# +
 &#160;&#160; `timestampFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[Default]*#
 
 |`localDateFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of `java.time.LocalDate` +
+|Format string of `java.time.LocalDate` +
 [.small]#*Example:*# +
 &#160;&#160; `localDateFormat = yyyy-MM-dd` [.small .blue]#*[Default]*#
 
 |`localTimeFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of `java.time.LocalTime` +
+|Format string of `java.time.LocalTime` +
 [.small]#*Example:*# +
 &#160;&#160; `localTimeFormat = HH:mm:ss.SSSSSSSSS` [.small .blue]#*[Default]*#
 
 |`offsetTimeFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of `java.time.OffsetTime` +
+|Format string of `java.time.OffsetTime` +
 [.small]#*Example:*# +
 &#160;&#160; `offsetTimeFormat = HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[Default]*#
 
 |`localDateTimeFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of `java.time.LocalDateTime` +
+|Format string of `java.time.LocalDateTime` +
 [.small]#*Example:*# +
 &#160;&#160; `localDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSS` [.small .blue]#*[Default]*#
 
 |`offsetDateTimeFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of `java.time.OffsetDateTime` +
+|Format string of `java.time.OffsetDateTime` +
 [.small]#*Example:*# +
 &#160;&#160; `offsetDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[Default]*#
 
 |`zonedDateTimeFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of `java.time.ZonedDateTime` +
+|Format string of `java.time.ZonedDateTime` +
 [.small]#*Example:*# +
 &#160;&#160; `zonedDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV` [.small .blue]#*[Default]*#
 
 |`instantFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of `java.time.Instant` +
+|Format string of `java.time.Instant` +
 [.small]#*Example:*# +
 &#160;&#160; `instantFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSX` [.small .blue]#*[Default]*#
 
 |`logDateTimeFormat` +
 [.small .blue]#since 2.5.0#
-|Output format of the date and time of the log when the logger is `Std$Out` or `Std$Err` +
+|Format string of the date and time of the log when the logger is `Std$Out` or `Std$Err` +
 [.small]#*Example:*# +
 &#160;&#160; `logDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*[Default]*#
 
 |`maximumDataOutputWidth` +
 [.small .blue]#since 3.0.0#
 |Maximum output width of data +
-[.small]#*設定例:*# +
+[.small]#*Example:*# +
 `maximumDataOutputWidth = 70` [.small .blue]#*[Default]*#
 
 |`collectionLimit` +
@@ -434,23 +434,23 @@ You can specify following properties in the `DebugTrace.properties` file.
 [.small .blue]#Deprecated since 3.0.0# +
 [.small]#`mapLimit`# +
 [.small .blue]#Removed since 3.0.0#
-|Limit of array, collection and map elements to output +
-[.small]#*設定例:*# +
+|Limit value of elements for collection and map to output +
+[.small]#*Example:*# +
 `collectionLimit = 512` [.small .blue]#*[Default]*#
 
 |`byteArrayLimit`
-|Limit of byte array (`byte[]`) elements to output
+|Limit value of elements for byte array (`byte[]`) to output +
 [.small]#*Example:*# +
 &#160;&#160; `byteArrayLimit = 8192` [.small .blue]#*[Default]*#
 
 |`stringLimit`
-|Limit of string characters to output
+|Limit value of characters for string to output +
 [.small]#*Example:*# +
 &#160;&#160; `stringLimit = 8192` [.small .blue]#*[Default]*#
 
 |`reflectionNestLimit` +
 [.small .blue]#since 3.0.0#
-|Limit of number of reflection nest +
+|Limit value rof eflection nests +
 [.small]#*Example:*# +
 `reflectionNestLimit = 4` [.small .blue]#*[Default]*#
 
@@ -524,7 +524,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; `SqlTypes`: `java.sql.Types.BIT` etc.
 
 |===
-Specify the output format of the date and time in the form of the argument of `String.format` for *DebugTrace-java 2.4.6 or earlier*, and specify it in the form of the argument `DateTimeFormatter.ofPattern` for *DebugTrace-java 2.5.0 or later*.
+Specify the Format string of the date and time in the form of the argument of `String.format` for *DebugTrace-java 2.4.6 or earlier*, and specify it in the form of the argument `DateTimeFormatter.ofPattern` for *DebugTrace-java 2.5.0 or later*.
 
 ==== 4.1. *nonOutputProperties*, *nonOutputString*
 
@@ -708,9 +708,9 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specificati
 * Improved the line breaking algorithm for data output.
 
 * Added the following properties specified in DebugTrace.properties.
-  ** `sizeFormat` - Output format of the size of collections and maps (default: `size:%1d`)
+  ** `sizeFormat` - Format string of the size of collections and maps (default: `size:%1d`)
   ** `minimumOutputSize` - Minimum value to output the number of elements of array, collection and map (default: `5`)
-  ** `lengthFormat` - Output format of the length of strings (default: `length:% 1d`)
+  ** `lengthFormat` - Format string of the length of strings (default: `length:% 1d`)
   ** `minimumOutputLength` - Minimum value to output the length of string length (default: `5`)
   ** `maximumDataOutputWidth` - Maximum output width of data (default: `70`)
 

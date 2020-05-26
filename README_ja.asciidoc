@@ -220,14 +220,14 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
  +
 [.small]#`enterString`# +
 [.small .blue]#ver. 3.0.0より非推奨#
-|メソッドに入る際のログ出力のフォーマット文字列 +
+|メソッドに入る際に出力するログのフォーマット文字列 +
 [.small]#*設定例:*# +
 &#160;&#160; `enterFormat = Enter %1$s.%2$s (%3$s:%4$d)` [.small .blue]#*[デフォルト]*# +
 [.small]#*パラメータ:*# +
-&#160;&#160; `%1`: 呼出側のクラス名 +
-&#160;&#160; `%2`: 呼出側のメソッド名 +
-&#160;&#160; `%3`: 呼出側のファイル名 +
-&#160;&#160; `%4`: 呼出側の行番号
+&#160;&#160; `%1`: クラス名 +
+&#160;&#160; `%2`: メソッド名 +
+&#160;&#160; `%3`: ファイル名 +
+&#160;&#160; `%4`: 行番号
 
 |`leaveFormat` +
 [.small .blue]#ver. 3.0.0より名称変更# +
@@ -238,11 +238,11 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 [.small]#*設定例:*# +
 &#160;&#160; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN`  [.small .blue]#*[デフォルト]*# +
 [.small]#*パラメータ:*# +
-&#160;&#160; `%1`: 呼出側のクラス名 +
-&#160;&#160; `%2`: 呼出側のメソッド名 +
-&#160;&#160; `%3`: 呼出側のファイル名 +
-&#160;&#160; `%4`: 呼出側の行番号 +
-&#160;&#160; `%5`:  対応する `Enter` メソッドを呼び出してからの時間
+&#160;&#160; `%1`: クラス名 +
+&#160;&#160; `%2`: メソッド名 +
+&#160;&#160; `%3`: ファイル名 +
+&#160;&#160; `%4`: 行番号 +
+&#160;&#160; `%5`: 対応する `Enter` メソッドを呼び出してからの時間
 
 |`threadBoundaryFormat` +
 [.small .blue]#ver. 3.0.0より名称変更# +
@@ -280,7 +280,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 &#160;&#160; [.small .blue]#`\\s` は空白文字に置き換えられる#
 
 |`limitString`
-|制限を超えた場合の出力文字列 +
+|制限を超えた場合に出力する文字列 +
 [.small]#*設定例:*# +
 &#160;&#160; `limitString = \...` [.small .blue]#*[デフォルト]*#
 
@@ -290,18 +290,18 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 [.small]#`nonPrintString`# +
 [.small .blue]#ver. 1.5.0より# +
 [.small .blue]#ver. 3.0.0より非推奨#
-|出力しないプロパティ値の文字列 +
+|値を出力しない場合に代わりに出力する文字列 +
 [.small]#*設定例:*# +
 &#160;&#160; `nonOutputString = \***` [.small .blue]#*[デフォルト]*#
 
 |`cyclicReferenceString`
-|循環参照時の出力文字列 +
+|循環参照している場合に出力する文字列 +
 [.small]#*設定例:*# +
 &#160;&#160; `cyclicReferenceString = \\s\*\** cyclic reference \***\\s` [.small .blue]#*[デフォルト]*# +
 &#160;&#160; [.small .blue]#`\\s` は空白文字に置き換えられる#
 
 |`varNameValueSeparator`
-|変数名と値のセパレータ +
+|変数名と値のセパレータ文字列 +
 [.small]#*設定例:*# +
 &#160;&#160; `varNameValueSeparator = \\s=\\s` +
 &#160;&#160; [.small .blue]#`\\s` は空白文字に置き換えられる#
@@ -310,13 +310,13 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
  +
 [.small]#`fieldNameValueSeparator`# +
 [.small .blue]#ver. 3.0.0より削除#
-|マップのキーと値のセパレータまたはフィールド名と値のセパレータ +
+|マップのキーと値のおよびフィールド名と値のセパレータ文字列 +
 [.small]#*設定例:*# +
 &#160;&#160; `keyValueSeparator = :\\s` [.small .blue]#*[デフォルト]*# +
 [.small .blue]#`\\s` は空白文字に置き換えられる#
 
-|`printSuffixFormat`
-|`print` メソッドで付加される文字列の出力フォーマット +
+|`printSuffixFormat`oyobi
+|`print` メソッドで付加される文字列のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `printSuffixFormat = \\s(%3$s:%4$d)` +
 &#160;&#160; [.small .blue]#`\\s` は空白文字に置き換えられる# +
@@ -328,7 +328,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |`sizeFormat` +
 [.small .blue]#ver. 3.0.0より# +
-|コレクションおよびマップの要素数の出力フォーマット +
+|コレクションおよびマップの要素数のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `sizeFormat = size:%1d` [.small .blue]#*[デフォルト]*# +
 [.small]#*パラメータ:*# +
@@ -342,7 +342,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |`lengthFormat` +
 [.small .blue]#ver. 3.0.0より# +
-|文字列長の出力フォーマット +
+|文字列長のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `sizeFormat = length:%1d` [.small .blue]#*[デフォルト]*# +
 [.small]#*パラメータ:*# +
@@ -355,70 +355,70 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 &#160;&#160; `minimumOutputSize = 5` [.small .blue]#*[デフォルト]*#
 
 |`utilDateFormat`
-|`java.util.Date` の出力フォーマット +
+|`java.util.Date` のフォーマット +
 [.small]#*設定例:*# +
 `utilDateFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*[デフォルト]*#
 
 |`sqlDateFormat`
-|`java.sql.Date` の出力フォーマット +
+|`java.sql.Date` のフォーマット +
 [.small]#*設定例:*# +
 `sqlDateFormat = yyyy-MM-ddxxx` [.small .blue]#*[デフォルト]*#
 
 |`timeFormat`
-|`java.sql.Time` の出力フォーマット +
+|`java.sql.Time` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `timeFormat = HH:mm:ss.SSSxxx` [.small .blue]#*[デフォルト]*#
 
 |`timestampFormat`
-|`java.sql.Timestamp` の出力フォーマット +
+|`java.sql.Timestamp` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `timestampFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[デフォルト]*#
 
 |`localDateFormat` +
 [.small .blue]#ver. 2.5.0より#
-|`java.time.LocalDate` の出力フォーマット +
+|`java.time.LocalDate` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `localDateFormat = yyyy-MM-dd` [.small .blue]#*[デフォルト]*#
 
 |`localTimeFormat` +
 [.small .blue]#ver. 2.5.0より#
-|`java.time.LocalTime` の出力フォーマット +
+|`java.time.LocalTime` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `localTimeFormat = HH:mm:ss.SSSSSSSSS` [.small .blue]#*[デフォルト]*#
 
 |`offsetTimeFormat` +
 [.small .blue]#ver. 2.5.0より#
-|`java.time.OffsetTime` の出力フォーマット +
+|`java.time.OffsetTime` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `offsetTimeFormat = offsetTimeFormat = HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[デフォルト]*#
 
 |`localDateTimeFormat` +
 [.small .blue]#ver. 2.5.0より#
-|`java.time.LocalDateTime` の出力フォーマット +
+|`java.time.LocalDateTime` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `localDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSS` [.small .blue]#*[デフォルト]*#
 
 |`offsetDateTimeFormat` +
 [.small .blue]#ver. 2.5.0より#
-|`java.time.OffsetDateTime` の出力フォーマット +
+|`java.time.OffsetDateTime` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `offsetDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small .blue]#*[デフォルト]*#
 
 |`zonedDateTimeFormat` +
 [.small .blue]#ver. 2.5.0より#
-|`java.time.ZonedDateTime` の出力フォーマット +
+|`java.time.ZonedDateTime` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `zonedDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV` [.small .blue]#*[デフォルト]*# +
 
 |`instantFormat` +
 [.small .blue]#ver. 2.5.0より#
-|`java.time.Instant` の出力フォーマット +
+|`java.time.Instant` のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `instantFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSX` [.small .blue]#*[デフォルト]*#
 
 |`logDateTimeFormat` +
 [.small .blue]#ver. 2.5.0より#
-|ロガーが `Std$Out` または `Std$Err` の際のログの日時の出力フォーマット +
+|`logger` が `Std$Out` および `Std$Err` の場合のログの日時のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `logDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small .blue]#*[デフォルト]*#
 
@@ -440,18 +440,18 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `collectionLimit = 512` [.small .blue]#*[デフォルト]*#
 
 |`byteArrayLimit`
-|バイト配列(`byte[]`)要素の出力数の制限 +
+|バイト配列(`byte[]`)要素の出力数の制限値 +
 [.small]#*設定例:*# +
 &#160;&#160; `byteArrayLimit = 8192` [.small .blue]#*[デフォルト]*#
 
 |`stringLimit`
-|文字列の出力文字数の制限 +
+|文字列の出力文字数の制限値 +
 [.small]#*設定例:*# +
 &#160;&#160; `stringLimit = 8192` [.small .blue]#*[デフォルト]*#
 
 |`reflectionNestLimit` +
 [.small .blue]#ver. 3.0.0より# +
-|リフレクションのネスト数の制限 +
+|リフレクションのネスト数の制限値 +
 [.small]#*設定例:*# +
 `reflectionNestLimit = 4` [.small .blue]#*[デフォルト]*#
 
@@ -461,7 +461,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 [.small]#`nonPrintProperties`# +
 [.small .blue]#ver. 2.2.0より# +
 [.small .blue]#ver. 3.0.0より非推奨#
-|出力しないプロパティのリスト +
+|出力しないプロパティ名のリスト +
 [.small]#*設定例(値が1つ):*# +
 &#160;&#160; `nonOutputProperties = org.lightsleep.helper.EntityInfo#columnInfos` +
 [.small]#*設定例(値が複数):*# +
@@ -526,7 +526,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 &#160;&#160; `SqlTypes`: `java.sql.Types.BIT` など
 
 |===
-DebugTrace-java 2.4.6までは、日時の出力フォーマットを `String.format` の引数の形式で指定し、2.5.0以降では `DateTimeFormatter.ofPattern` の引数の形式で指定してください。
+DebugTrace-java 2.4.6までは、日時のフォーマットを `String.format` の引数の形式で指定し、2.5.0以降では `DateTimeFormatter.ofPattern` の引数の形式で指定してください。
 
 ==== 4.1. *nonOutputProperties*, *nonOutputString*
 
@@ -710,9 +710,9 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英�
 * データ出力の改行アルゴリズムを改善
 
 * DebugTrace.propertiesで指定する以下のプロパティを追加
-  ** `sizeFormat` - コレクションおよびマップの要素数の出力フォーマット (デフォルト: `size:%1d`)
+  ** `sizeFormat` - コレクションおよびマップの要素数のフォーマット (デフォルト: `size:%1d`)
   ** `minimumOutputSize` - 配列、コレクションおよびマップの要素数を出力する最小値 (デフォルト: `5`)
-  ** `lengthFormat` - 文字列長の出力フォーマット (デフォルト: `length:%1d`)
+  ** `lengthFormat` - 文字列長のフォーマット (デフォルト: `length:%1d`)
   ** `minimumOutputLength` - 文字列長を出力する最小値 (デフォルト: `5`)
   ** `maximumDataOutputWidth` - データの出力幅の最大値 (デフォルト: `70`)
 

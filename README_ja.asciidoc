@@ -167,6 +167,11 @@ valueのタイプは `byte`, `short`, `int`, `long` または `Object`
 の形式でログに出力する +
 valueSupplierのタイプは `IntSupplier`, `LongSupplier` または `Supplier<T>`
 
+|`printStack` +
+[.small .blue]#ver. 3.0.2より#
+|`maxCount`: 出力するスタックトレース要素の最大数
+|スタックトレース要素のリストを出力する
+
 |===
 
 === 4. *DebugTrace.properties* ファイルのプロパティ
@@ -315,7 +320,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 &#160;&#160; `keyValueSeparator = :\\s` [.small .blue]#*[デフォルト]*# +
 [.small .blue]#`\\s` は空白文字に置き換えられる#
 
-|`printSuffixFormat`oyobi
+|`printSuffixFormat` +
 |`print` メソッドで付加される文字列のフォーマット +
 [.small]#*設定例:*# +
 &#160;&#160; `printSuffixFormat = \\s(%3$s:%4$d)` +
@@ -346,7 +351,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 [.small]#*設定例:*# +
 &#160;&#160; `sizeFormat = length:%1d` [.small .blue]#*[デフォルト]*# +
 [.small]#*パラメータ:*# +
-&#160;&#160; `%1`: 要素数
+&#160;&#160; `%1`: 文字列長
 
 |`minimumOutputLength` +
 [.small .blue]#ver. 3.0.0より# +
@@ -701,13 +706,19 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英�
 
 === 9. リリースノート
 
+==== DebugTrace-java 3.0.2 [.small .gray]#- 2020-07-06#
+
+* リフレクションでの出力の括弧を変更 (`{}` ← `[]`)
+* データ出力の改行処理を改善
+* `printStack` メソッドを追加
+
 ==== DebugTrace-java 3.0.1 [.small .gray]#- 2020-05-15#
 
-* データ出力の改行アルゴリズムを改善
+* データ出力の改行処理を改善
 
 ==== DebugTrace-java 3.0.0 [.small .gray]#- 2020-05-12#
 
-* データ出力の改行アルゴリズムを改善
+* データ出力の改行処理を改善
 
 * DebugTrace.propertiesで指定する以下のプロパティを追加
   ** `sizeFormat` - コレクションおよびマップの要素数のフォーマット (デフォルト: `size:%1d`)

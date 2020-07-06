@@ -35,7 +35,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.0.1'
+version             = '3.0.2'
 
 sourceSets {
     main {
@@ -69,7 +69,7 @@ sourceSets {
 }
 
 wrapper {
-    gradleVersion = '6.4'
+    gradleVersion = '6.5.1'
 }
 
 compileJava {
@@ -99,7 +99,7 @@ task compileJava_ja(type:JavaCompile) {
 
 jar {
     manifest {
-        attributes    'Implementation-Title'    : project.name,
+        attributes  'Implementation-Title'    : project.name,
                     'Implementation-Version'  : version,
                     'Implementation-Vendor'   : 'Masato Kokubo',
                     'Implementation-Vendor-Id': 'jp.masatokokubo'

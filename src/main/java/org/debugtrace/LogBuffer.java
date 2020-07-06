@@ -6,7 +6,6 @@ package org.debugtrace;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.debugtrace.helper.ListUtils;
 import org.debugtrace.helper.Tuple;
 
 /**
@@ -23,47 +22,38 @@ class LogBuffer {
     private final List<Tuple._2<Integer, String>> lines = new ArrayList<>();
 
     // buffer for a line of logs
-    private StringBuilder builder = new StringBuilder();
+    private final StringBuilder lastLine = new StringBuilder();
 
     /**
-     * Returns tuples of data indentation level and log string.
-     *
-     * @return tuples of data indentation level and log string
-     */
-    public List<Tuple._2<Integer, String>> lines() {
-        return ListUtils.copyOf(lines);
-    }
-
-   /**
      * Breaks the current line.
      */
     public void lineFeed() {
-        while (builder.length() > 0 && builder.charAt(builder.length() - 1) == ' ')
-            builder.setLength(builder.length() - 1);
-        lines.add(Tuple.of(nestLevel + appendNestLevel, builder.toString()));
+        while (lastLine.length() > 0 && lastLine.charAt(lastLine.length() - 1) == ' ')
+            lastLine.setLength(lastLine.length() - 1);
+        lines.add(Tuple.of(nestLevel + appendNestLevel, lastLine.toString()));
         appendNestLevel = 0;
-        builder.setLength(0);
+        lastLine.setLength(0);
     }
 
-   /**
+    /**
      * Ups the nest level.
      */
     public void upNest() {
-    	++nestLevel;
+        ++nestLevel;
     }
 
-   /**
+    /**
      * Downs the nest level.
      */
     public void downNest() {
-    	--nestLevel;
+        --nestLevel;
     }
 
-   /**
+    /**
      * Appends a string representation of the value.
      *
      * @param value the value to append
-     * @param nestLevel >the nest level of the value
+     * @param nestLevel the nest level of the value
      * @param noBreak if true, does not break even if the maximum width is exceeded
      * @return this object
      */
@@ -72,11 +62,11 @@ class LogBuffer {
         if (!noBreak && length() > 0 && length() + str.length() > DebugTrace.maximumDataOutputWidth)
             lineFeed();
         appendNestLevel = nestLevel;
-        builder.append(str);
+        lastLine.append(str);
         return this;
     }
 
-   /**
+    /**
      * Appends a string representation of the value.
      *
      * @param value the value to append
@@ -84,20 +74,20 @@ class LogBuffer {
      * @return this object
      */
     public LogBuffer append(Object value, int nestLevel) {
-    	return append(value, nestLevel, false);
+        return append(value, nestLevel, false);
     }
- 
-   /**
+
+    /**
      * Appends a string representation of the value.
      *
      * @param value the value to append
      * @return this object
      */
     public LogBuffer append(Object value) {
-    	return append(value, 0, false);
+        return append(value, 0, false);
     }
- 
-   /**
+
+    /**
      * Appends a string representation of the value.
      * Does not break even if the maximum width is exceeded.
      *
@@ -105,19 +95,18 @@ class LogBuffer {
      * @return this object
      */
     public LogBuffer noBreakAppend(Object value) {
-    	return append(value, 0, true);
+        return append(value, 0, true);
     }
- 
-   /**
+
+    /**
      * Appends lines of another LogBuffer.
      *
      * @param buff another LogBuffer
      * @return this object
      */
     public LogBuffer append(LogBuffer buff) {
-        buff.lineFeed();
         int index = 0;
-        for (Tuple._2<Integer, String> line : buff.lines) {
+        for (Tuple._2<Integer, String> line : buff.lines()) {
             if (index > 0)
                 lineFeed();
             append(line.value2(), line.value1());
@@ -126,21 +115,33 @@ class LogBuffer {
         return this;
     }
 
-   /**
-     * Returns log length of the current line.
+    /**
+     * Returns log length of the last line.
      *
-     * @return log length of the current line
+     * @return log length of the last line
      */
     public int length() {
-    	return builder.length();
+        return lastLine.length();
     }
 
-   /**
+    /**
      * Returns true if multiple line.
      *
      * @return true if multiple line, false otherwise
      */
     public boolean isMultiLines() {
-    	return lines.size() > 1 || lines.size() == 1 && length() > 0;
+        return lines.size() > 1 || lines.size() == 1 && length() > 0;
+    }
+
+    /**
+     * Returns tuples of data indentation level and log string.
+     *
+     * @return tuples of data indentation level and log string
+     */
+    public List<Tuple._2<Integer, String>> lines() {
+        List<Tuple._2<Integer, String>> lines = new ArrayList<>(this.lines);
+        if (lastLine.length() > 0)
+            lines.add(Tuple.of(nestLevel, lastLine.toString()));
+        return lines;
     }
 }

@@ -29,7 +29,7 @@ public interface MapUtils {
     }
 
     /**
-     * Returns a Map.Entry containing the entries.
+     * Returns an unmodifiable map containing the entries.
      *
      * @param <K> the type of the map keys
      * @param <V> the type of the map values

@@ -1,4 +1,4 @@
-// PropertySpec.groovy
+// LineBreakSpec.groovy
 // (C) 2015 Masato Kokubo
 
 package org.debugtrace.test;
@@ -29,17 +29,21 @@ class LineBreakSpec extends Specification {
             this.firstName   = firstName
             this.lastName    = lastName
             this.birthday    = new LocalDate(birthday.value1(), birthday.value2(), birthday.value3())
-            this.phoneNumber = phoneNumber 
+            this.phoneNumber = phoneNumber
         } 
     }
 
-    static class Contact2 {
+    static class Contact4 {
         private Contact contact1
         private Contact contact2
+        private Contact contact3
+        private Contact contact4
 
-        public Contact2(Contact contact1, Contact contact2) {
+        public Contact4(Contact contact1, Contact contact2, Contact contact3, Contact contact4) {
             this.contact1 = contact1
             this.contact2 = contact2
+            this.contact3 = contact3
+            this.contact4 = contact4
         }
     }
 
@@ -55,20 +59,24 @@ class LineBreakSpec extends Specification {
         setup:
             DebugTrace.enter()
             DebugTrace.maximumDataOutputWidth = 60
-            def contact2 = [ 
+            def contacts = [ 
                 new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
-                new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222')
+                new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
+                null,
+                null
             ] as Contact[]
 
         when:
-            DebugTrace.print('contact2', contact2)
+            DebugTrace.print('contacts', contacts)
 
         then:
-            DebugTrace.lastLog.contains('firstName: (length:')
-            DebugTrace.lastLog.contains('lastName: (length:')
-            DebugTrace.lastLog.contains('birthday: (LocalDate)')
-            DebugTrace.lastLog.contains('phoneNumber: (length:')
-            DebugTrace.lastLog.contains('],\n|   (....LineBreakSpec.Contact)[\n')
+            DebugTrace.lastLog.contains('[\n|   (....LineBreakSpec.Contact){')
+            DebugTrace.lastLog.contains('  firstName:')
+            DebugTrace.lastLog.contains(', lastName:')
+            DebugTrace.lastLog.contains('  birthday:')
+            DebugTrace.lastLog.contains('  phoneNumber:')
+            DebugTrace.lastLog.contains('},\n|   (....LineBreakSpec.Contact){')
+            DebugTrace.lastLog.contains('},\n|   null, null')
 
         cleanup:
             DebugTrace.leave()
@@ -78,20 +86,24 @@ class LineBreakSpec extends Specification {
         setup:
             DebugTrace.enter()
             DebugTrace.maximumDataOutputWidth = 60
-            def contact2 = [ 
+            def contacts = [ 
                 new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
-                new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222')
+                new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
+                null,
+                null
             ]
 
         when:
-            DebugTrace.print('contact2', contact2)
+            DebugTrace.print('contacts', contacts)
 
         then:
-            DebugTrace.lastLog.contains('firstName: (length:')
-            DebugTrace.lastLog.contains('lastName: (length:')
-            DebugTrace.lastLog.contains('birthday: (LocalDate)')
-            DebugTrace.lastLog.contains('phoneNumber: (length:')
-            DebugTrace.lastLog.contains('],\n|   (....LineBreakSpec.Contact)[\n')
+            DebugTrace.lastLog.contains('[\n|   (....LineBreakSpec.Contact){')
+            DebugTrace.lastLog.contains('  firstName:')
+            DebugTrace.lastLog.contains(', lastName:')
+            DebugTrace.lastLog.contains('  birthday:')
+            DebugTrace.lastLog.contains('  phoneNumber:')
+            DebugTrace.lastLog.contains('},\n|   (....LineBreakSpec.Contact){')
+            DebugTrace.lastLog.contains('},\n|   null, null')
 
         cleanup:
             DebugTrace.leave()
@@ -101,20 +113,30 @@ class LineBreakSpec extends Specification {
         setup:
             DebugTrace.enter()
             DebugTrace.maximumDataOutputWidth = 60
-            def contact2 = [ 
+            def contacts = [ 
                 1: new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
-                2: new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222')
+                2: new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
+                3: null,
+                4: null
             ]
 
         when:
-            DebugTrace.print('contact2', contact2)
+            DebugTrace.print('contacts', contacts)
 
         then:
             DebugTrace.lastLog.contains('firstName: (length:')
             DebugTrace.lastLog.contains('lastName: (length:')
             DebugTrace.lastLog.contains('birthday: (LocalDate)')
             DebugTrace.lastLog.contains('phoneNumber: (length:')
-            DebugTrace.lastLog.contains('],\n|   2: (....LineBreakSpec.Contact)[\n')
+            DebugTrace.lastLog.contains('},\n|   2: (....LineBreakSpec.Contact){\n')
+
+            DebugTrace.lastLog.contains('[\n|   1:')
+            DebugTrace.lastLog.contains('  firstName:')
+            DebugTrace.lastLog.contains(', lastName:')
+            DebugTrace.lastLog.contains('  birthday:')
+            DebugTrace.lastLog.contains('  phoneNumber:')
+            DebugTrace.lastLog.contains('  2:')
+            DebugTrace.lastLog.contains('  3: null, 4: null')
 
         cleanup:
             DebugTrace.leave()
@@ -124,20 +146,24 @@ class LineBreakSpec extends Specification {
         setup:
             DebugTrace.enter()
             DebugTrace.maximumDataOutputWidth = 60
-            def contact2 = new Contact2(
+            def contacts = new Contact4(
                 new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
-                new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222')
+                new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
+                null,
+                null
             )
 
         when:
-            DebugTrace.print('contact2', contact2)
+            DebugTrace.print('contacts', contacts)
 
         then:
-            DebugTrace.lastLog.contains('firstName: (length:')
-            DebugTrace.lastLog.contains('lastName: (length:')
-            DebugTrace.lastLog.contains('birthday: (LocalDate)')
-            DebugTrace.lastLog.contains('phoneNumber: (length:')
-            DebugTrace.lastLog.contains('],\n|   contact2: (....LineBreakSpec.Contact)[\n')
+            DebugTrace.lastLog.contains('{\n|   contact1:')
+            DebugTrace.lastLog.contains('  firstName:')
+            DebugTrace.lastLog.contains(', lastName:')
+            DebugTrace.lastLog.contains('  birthday:')
+            DebugTrace.lastLog.contains('  phoneNumber:')
+            DebugTrace.lastLog.contains('  contact2:')
+            DebugTrace.lastLog.contains('  contact3: null, contact4: null')
 
         cleanup:
             DebugTrace.leave()

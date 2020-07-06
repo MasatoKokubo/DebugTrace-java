@@ -165,6 +165,11 @@ The type of value is `byte`, `short`, `int`, `long` or `Object`.
 `<value name> = <value>(<constant name>)` +
 The valueSupplier type is `IntSupplier`, `LongSupplier` or `Supplier<T>`.
 
+|`printStack` +
+[.small .blue]#since 3.0.2#
+|`maxCount`:  maximum number of stack trace elements to output
+|Outputs a list of StackTraceElements to the log.
+
 |===
 
 === 4. Properties of *DebugTrace.properties* file
@@ -300,7 +305,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 &#160;&#160; [.small .blue]#`\\s` is change to a space character#
 
 |`varNameValueSeparator`
-|Separator string　between the variable name and value +
+|Separator string between the variable name and value +
 [.small]#*Example:*# +
 &#160;&#160; `varNameValueSeparator = \\s=\\s` [.small .blue]#*[Default]*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character#
@@ -309,7 +314,7 @@ You can specify following properties in the `DebugTrace.properties` file.
  +
 [.small]#`fieldNameValueSeparator`# +
 [.small .blue]#Deleted since 3.0.0#
-|Separator string　between the key and value of Map object +
+|Separator string between the key and value of Map object +
 [.small]#*Example:*# +
 &#160;&#160; `keyValueSeparator = :\\s` [.small .blue]#*[Default]*# +
 &#160;&#160; [.small .blue]#`\\s` is change to a space character#
@@ -331,7 +336,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 [.small]#*Example:*# +
 &#160;&#160; `sizeFormat = size:%1d` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
-&#160;&#160; `%1`: The size of collections
+&#160;&#160; `%1`: The size
 
 |`minimumOutputSize` +
 [.small .blue]#since 3.0.0#
@@ -345,7 +350,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 [.small]#*Example:*# +
 &#160;&#160; `sizeFormat = length:%1d` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
-&#160;&#160; `%1`: The length of string
+&#160;&#160; `%1`: The string length
 
 |`minimumOutputLength` +
 [.small .blue]#since 3.0.0#
@@ -450,7 +455,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 
 |`reflectionNestLimit` +
 [.small .blue]#since 3.0.0#
-|Limit value rof eflection nests +
+|Limit value reflection nests +
 [.small]#*Example:*# +
 `reflectionNestLimit = 4` [.small .blue]#*[Default]*#
 
@@ -699,13 +704,19 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specificati
 
 === 9. Release Notes
 
+==== DebugTrace-java 3.0.2 [.small .gray]#July 6, 2020#
+
+* Changed the output parentheses in reflection. (`{}` <- `[]`)
+* Improved the line breaking processing for data output.
+* Added `printStack` method.
+
 ==== DebugTrace-java 3.0.1 [.small .gray]#May 15, 2020#
 
-* Improved the line breaking algorithm for data output.
+* Improved the line breaking processing for data output.
 
 ==== DebugTrace-java 3.0.0 [.small .gray]#May 12, 2020#
 
-* Improved the line breaking algorithm for data output.
+* Improved the line breaking processing for data output.
 
 * Added the following properties specified in DebugTrace.properties.
   ** `sizeFormat` - Format string of the size of collections and maps (default: `size:%1d`)

@@ -4,7 +4,6 @@
 package org.debugtrace.helper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,16 +27,5 @@ public interface ListUtils {
         for (E element : elements)
             list.add(element);
         return Collections.unmodifiableList(list);
-    }
-
-    /**
-     * Returns an unmodifiable List containing the elements of the given Collection.
-     *
-     * @param <E> the element type
-     * @param collection a Collection
-     * @return a List
-     */
-    public static <E> List<E> copyOf(Collection<? extends E> collection) {
-        return Collections.unmodifiableList(new ArrayList<E>(collection));
     }
 }

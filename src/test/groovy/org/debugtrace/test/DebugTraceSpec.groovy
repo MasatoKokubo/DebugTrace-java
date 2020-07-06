@@ -63,7 +63,7 @@ class DebugTraceSpec extends Specification {
 
     // nonPrintPropertiesSpec
     def nonPrintPropertiesSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when:
             def p = new Point(2, 3);
@@ -73,12 +73,12 @@ class DebugTraceSpec extends Specification {
             DebugTrace.lastLog.indexOf('y: ***') >= 0
             DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // defaultPackageSpec
     def defaultPackageSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when:
             def p = new Point(2, 3);
@@ -88,27 +88,27 @@ class DebugTraceSpec extends Specification {
             DebugTrace.lastLog.indexOf('....DebugTraceSpec.Point') >= 0
             DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // reflectionClassesSpec
     def reflectionClassesSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when:
             def p = new Point(2, 3);
             DebugTrace.print('p', p)
 
         then:
-            DebugTrace.lastLog.indexOf('Point)[') >= 0
+            DebugTrace.lastLog.indexOf('Point){') >= 0
             DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // printSpec
     def printSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when: DebugTrace.print('v', true)
         then: DebugTrace.lastLog.indexOf('v = true') >= 0
@@ -162,12 +162,12 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (long)1(Calendar.YEAR)') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // simpleTypeNameSpec
     def simpleTypeNameSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when: DebugTrace.print('v', null)
         then: DebugTrace.lastLog.indexOf('v = null') >= 0
@@ -231,7 +231,7 @@ class DebugTraceSpec extends Specification {
 
         when:DebugTrace.print('v', new Name('F', 'L'))
         then:
-            DebugTrace.lastLog.indexOf('v = (....DebugTraceSpec.Name)[') >= 0
+            DebugTrace.lastLog.indexOf('v = (....DebugTraceSpec.Name){') >= 0
             DebugTrace.lastLog.indexOf('first: "F",') >= 0
             DebugTrace.lastLog.indexOf('last: "L",') >= 0
             DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
@@ -241,12 +241,12 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (....DebugTraceSpec.Fruits)APPLE') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // optionalTypeNameSpec
     def optionalTypeNameSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when: DebugTrace.print('v', OptionalInt.empty())
         then: DebugTrace.lastLog.indexOf('v = (OptionalInt)empty') >= 0
@@ -284,12 +284,12 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (Optional)(Long)1') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // arrayTypeNameSpec
     def arrayTypeNameSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when: DebugTrace.print('v', [false, true] as boolean[])
         then: DebugTrace.lastLog.indexOf('v = (boolean[2])[false, true]') >= 0
@@ -375,12 +375,12 @@ class DebugTraceSpec extends Specification {
             DebugTrace.lastLog.indexOf('v = (Integer[5])[1, 2, 3, 4, 5]') >= 0
             DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // listTypeNameSpec
     def listTypeNameSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when: DebugTrace.print('v', [false, true])
         then: DebugTrace.lastLog.indexOf('v = (ArrayList)[false, true]') >= 0
@@ -481,12 +481,12 @@ class DebugTraceSpec extends Specification {
             DebugTrace.lastLog.indexOf('v = (ArrayList size:5)[1, 2, 3, 4, 5]') >= 0
             DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
     // mapTypeNameSpec
     def mapTypeNameSpec() {
-        DebugTrace.enter()
+        setup: DebugTrace.enter()
 
         when: DebugTrace.print('v', [(false): true, (true): false])
         then: DebugTrace.lastLog.indexOf('v = (LinkedHashMap)[false: true, true: false]') >= 0
@@ -555,7 +555,54 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (LinkedHashMap size:5)[1: "A", 2: "AB", 3: "ABC", 4: "ABCD", 5: (length:5)"ABCDE"]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.leave()
+        cleanup: DebugTrace.leave()
     }
 
+    // bytesSpec
+    def bytesSpec() {
+        setup: DebugTrace.enter()
+
+        when: DebugTrace.print('v', [] as byte[])
+        then: DebugTrace.lastLog.indexOf('v = (byte[0])[]') >= 0
+ 
+        when: DebugTrace.print('v', [0] as byte[])
+        then: DebugTrace.lastLog.indexOf('v = (byte[1])[00]') >= 0
+ 
+        when: DebugTrace.print('v', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] as byte[])
+        then: DebugTrace.lastLog.indexOf('v = (byte[15])[00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E]') >= 0
+ 
+        when: DebugTrace.print('v', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] as byte[])
+        then: DebugTrace.lastLog.indexOf('v = (byte[16])[00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F]') >= 0
+
+        when: DebugTrace.print('v', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as byte[])
+        then: DebugTrace.lastLog
+            .indexOf('v = (byte[17])[\n|   00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n|   10\n| ]') >= 0
+
+         cleanup: DebugTrace.leave()
+    }
+
+    // printStackSpec
+    def printStackSpec() {
+        setup: DebugTrace.enter()
+ 
+        when: func1()
+        then:
+            DebugTrace.lastLog.contains('func3')
+            DebugTrace.lastLog.contains('func2')
+            DebugTrace.lastLog.contains('func1')
+
+        cleanup: DebugTrace.leave()
+    }
+
+    private void func1() {
+        func2()
+    }
+
+    private void func2() {
+        func3()
+    }
+
+    private void func3() {
+        DebugTrace.printStack(10)
+    }
 }

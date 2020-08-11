@@ -1,4 +1,4 @@
-#### Improved the line breaking algorithm for data output.
+#### Improved the line break handling of data output.
 
 <font color="blue">*The following are Japanese.*</font>
 

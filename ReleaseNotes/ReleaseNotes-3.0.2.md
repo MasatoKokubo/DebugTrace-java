@@ -1,5 +1,5 @@
 #### Changed the output parentheses in reflection. (`{}` <- `[]`)
-#### Improved the line breaking processing for data output.
+#### Improved the line break handling of data output.
 #### Added `printStack` method.
 
 <font color="blue">*The following are Japanese.*</font>

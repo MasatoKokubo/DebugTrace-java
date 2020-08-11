@@ -1,4 +1,4 @@
-#### Improved the line breaking algorithm for data output.
+#### Improved the line break handling of data output.
 
 #### Added the following properties specified in DebugTrace.properties.
 * `sizeFormat` - Output format of the size of collections and maps (default: `size:%1d`)

@@ -17,7 +17,7 @@ class State {
     private int nestLevel;
     private int previousNestLevel;
     private int previousLineCount;
-    private Deque<Long> times = new ArrayDeque<>();
+    private final Deque<Long> times = new ArrayDeque<>();
 
     /**
      * Constructs a State.
@@ -106,7 +106,10 @@ class State {
     public void upNest() {
         previousNestLevel = nestLevel;
         if (nestLevel >= 0)
-            times.push(System.currentTimeMillis());
+        // 3.0.3
+        //  times.push(System.currentTimeMillis());
+            times.push(System.nanoTime());
+        ////
         ++nestLevel;
     }
 
@@ -118,6 +121,9 @@ class State {
     public long downNest() {
         previousNestLevel = nestLevel;
         --nestLevel;
-        return times.size() > 0 ? times.pop() : System.currentTimeMillis();
+    // 3.0.3
+    //  return times.size() > 0 ? times.pop() : System.currentTimeMillis();
+        return times.size() > 0 ? times.pop() : System.nanoTime();
+    ////
     }
 }

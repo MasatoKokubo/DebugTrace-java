@@ -12,30 +12,30 @@ import org.debugtrace.DebugTrace;
 public class Example1 {
     // main
     public static void main(String[] args) {
-        DebugTrace.enter(); // for DEBUGGING
+        DebugTrace.enter(); // for Debugging
 
         @SuppressWarnings("unused")
         Point[] points = newArray(Point.class, 2);
 
-        DebugTrace.leave(); // for DEBUGGING
+        DebugTrace.leave(); // for Debugging
     }
 
     // newArray
     public static <E> E[] newArray(Class<E> elementType, int length) {
-        DebugTrace.enter(); // for DEBUGGING
-        DebugTrace.print("elementType", elementType); // for DEBUGGING
-        DebugTrace.print("length", length); // for DEBUGGING
+        DebugTrace.enter(); // for Debugging
+        DebugTrace.print("elementType", elementType); // for Debugging
+        DebugTrace.print("length", length); // for Debugging
         @SuppressWarnings("unchecked")
         E[] array = (E[])Array.newInstance(elementType, length);
-        DebugTrace.print("1 array", array); // for DEBUGGING
+        DebugTrace.print("1 array", array); // for Debugging
         try {
             for (int index = 0; index < length; ++index)
                 array[index] = elementType.getConstructor().newInstance();
         }
         catch (RuntimeException e) {throw e;}
         catch (Exception e) {throw new RuntimeException(e);}
-        DebugTrace.print("2 array", array); // for DEBUGGING
-        DebugTrace.leave(); // for DEBUGGING
+        DebugTrace.print("2 array", array); // for Debugging
+        DebugTrace.leave(); // for Debugging
         return array;
     }
 

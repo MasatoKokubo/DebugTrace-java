@@ -64,7 +64,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.0.2";
+    public static final String VERSION = "3.0.3";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -255,7 +255,10 @@ public class DebugTrace {
 
         logLevel                = resource.getString("logLevel"                                    , "default");
         enterFormat             = resource.getString("enterFormat"         , "enterString"         , "Enter %1$s.%2$s (%3$s:%4$d)"); // since 3.0.0 enterFormat <- enterString
-        leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN"); // since 3.0.0 leaveFormat <- leaveString
+    // 3.0.3
+    //  leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN"); // since 3.0.0 leaveFormat <- leaveString
+        leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL"); // since 3.0.0 leaveFormat <- leaveString
+    ////
         threadBoundaryFormat    = resource.getString("threadBoundaryFormat", "threadBoundaryString",    "______________________________ %1$s ______________________________");
         classBoundaryFormat     = resource.getString("classBoundaryFormat" , "classBoundaryString" , "____ %1$s ____");
         indentString            = resource.getString("indentString"                                , "| ");
@@ -466,7 +469,10 @@ public class DebugTrace {
             if (state.previousLineCount() > 1)
                 logger.log(getIndentString(state.nestLevel(), 0)); // Empty Line
 
-            long timeSpan = System.currentTimeMillis() - state.downNest();
+        // 3.0.3
+        //  long timeSpan = System.currentTimeMillis() - state.downNest();
+            long timeSpan = System.nanoTime() - state.downNest();
+        ////
 
             lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(leaveFormat, timeSpan);
             logger.log(lastLog);
@@ -478,7 +484,10 @@ public class DebugTrace {
      */
     private static String getCallerInfo(String baseString, long timeSpan) {
         StackTraceElement element = getStackTraceElement();
-        Instant instant = Instant.ofEpochSecond(timeSpan / 1000, (timeSpan % 1000) * 1000_000);
+    // 3.0.3
+    //  Instant instant = Instant.ofEpochSecond(timeSpan / 1000, (timeSpan % 1000) * 1000_000);
+        Instant instant = Instant.ofEpochSecond(timeSpan / 1000_000_000, timeSpan % 1000_000_000);
+    ////
         OffsetDateTime dateTime = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
         return String.format(baseString,
             replaceTypeName(element.getClassName()),
@@ -1631,7 +1640,7 @@ public class DebugTrace {
                     }
                 }
             }
-   
+
             try {
                 if (method != null) {
                     // has a getter method

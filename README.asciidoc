@@ -241,7 +241,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 [.small .blue]#Deprecated since 3.0.0#
 |The format string of log output when leaving methods +
 [.small]#*Example:*# +
-&#xa0;&#xa0; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN` [.small .blue]#*[Default]*# +
+&#xa0;&#xa0; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
 &#xa0;&#xa0; `%1`: The class name +
 &#xa0;&#xa0; `%2`: The method name +
@@ -608,7 +608,7 @@ DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 
 The logger name of DebugTrace is `org.debugtrace.DebugTrace`.   
 
-==== 5.1. Example of *logging.properties* (Jdk)
+==== 5.1. Example of *logging.properties* (*JDK*)
 
 .logging.properties
 ----
@@ -620,7 +620,7 @@ org.debugtrace.DebugTrace.level = FINEST
 ----
 *`-Djava.util.logging.config.file=<path>/logging.properties` is required as Java startup option*
 
-==== 5.2. Example of *log4j.xml* (Log4j)
+==== 5.2. Example of *log4j.xml* (*Log4j*)
 
 [source,xml]
 .log4j.xml
@@ -642,7 +642,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </log4j:configuration>
 ----
 
-==== 5.3. Example of *log4j2.xml* (Log4j2)
+==== 5.3. Example of *log4j2.xml* (*Log4j2*)
 
 [source,xml]
 .log4j2.xml
@@ -662,7 +662,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </configuration>
 ----
 
-==== 5.4. Example of *logback.xml* (SLF4J / Logback)
+==== 5.4. Example of *logback.xml* (*SLF4J* / *Logback*)
 
 [source,xml]
 .logback.xml
@@ -704,6 +704,10 @@ link:LICENSE.txt[The MIT License (MIT)]
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specification]
 
 === 9. Release Notes
+
+==== DebugTrace-java 3.0.3 [.small .gray]#October 24, 2020#
+
+* Changed the default output format of ``duration`` of the ``leave`` method from nanoseconds to milliseconds.
 
 ==== DebugTrace-java 3.0.2 [.small .gray]#July 6, 2020#
 

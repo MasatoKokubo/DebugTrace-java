@@ -33,13 +33,13 @@ class LineBreakSpec extends Specification {
         } 
     }
 
-    static class Contact4 {
+    static class Contacts {
         private Contact contact1
         private Contact contact2
         private Contact contact3
         private Contact contact4
 
-        public Contact4(Contact contact1, Contact contact2, Contact contact3, Contact contact4) {
+        public Contacts(Contact contact1, Contact contact2, Contact contact3, Contact contact4) {
             this.contact1 = contact1
             this.contact2 = contact2
             this.contact3 = contact3
@@ -49,6 +49,7 @@ class LineBreakSpec extends Specification {
 
     def setupSpec() {
         maximumDataOutputWidth = DebugTrace.maximumDataOutputWidth
+        DebugTrace.maximumDataOutputWidth = 60
     }
 
     def cleanupSpec() {
@@ -58,8 +59,7 @@ class LineBreakSpec extends Specification {
     def lineBreakOfArraySpec() {
         setup:
             DebugTrace.enter()
-            DebugTrace.maximumDataOutputWidth = 60
-            def contacts = [ 
+            def contacts = [
                 new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
                 new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
                 null,
@@ -85,7 +85,6 @@ class LineBreakSpec extends Specification {
     def lineBreakOfListSpec() {
         setup:
             DebugTrace.enter()
-            DebugTrace.maximumDataOutputWidth = 60
             def contacts = [ 
                 new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
                 new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
@@ -112,7 +111,6 @@ class LineBreakSpec extends Specification {
     def lineBreakOfMapSpec() {
         setup:
             DebugTrace.enter()
-            DebugTrace.maximumDataOutputWidth = 60
             def contacts = [ 
                 1: new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
                 2: new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
@@ -145,8 +143,7 @@ class LineBreakSpec extends Specification {
     def lineBreakOfReflectionSpec() {
         setup:
             DebugTrace.enter()
-            DebugTrace.maximumDataOutputWidth = 60
-            def contacts = new Contact4(
+            def contacts = new Contacts(
                 new Contact('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
                 new Contact('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
                 null,

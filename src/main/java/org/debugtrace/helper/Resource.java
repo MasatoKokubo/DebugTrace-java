@@ -320,7 +320,6 @@ public class Resource {
         return getList(key1, key2, stringConverter);
     }
 
-// 3.0.0
     /**
      * Returns a map created from the resource property value if it is found,
      * an empty map otherwise.

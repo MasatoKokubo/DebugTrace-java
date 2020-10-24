@@ -29,8 +29,8 @@ import org.debugtrace.DebugTrace;
  */
 public class Example2 {
     public static void main(String[] args) {
-    /**/DebugTrace.enter();
-    /**/DebugTrace.print("args", args);
+        DebugTrace.enter(); // for Debugging
+        DebugTrace.print("args", args); // for Debugging
 
     Example2 example = new Example2();
         try {
@@ -42,23 +42,23 @@ public class Example2 {
             e.printStackTrace();
         }
 
-    /**/DebugTrace.leave();
+        DebugTrace.leave(); // for Debugging
     }
 
     private void example1() {
-    /**/DebugTrace.enter();
+        DebugTrace.enter(); // for Debugging
 
         Thread[] thread = new Thread[5];
         for (int index = 0; index < thread.length; ++index) {
             thread[index] = new Thread(() -> {
-            /**/DebugTrace.enter();
+                DebugTrace.enter(); // for Debugging
                 try {
                     Thread.sleep(200);
                 }
                 catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-            /**/DebugTrace.leave();
+                DebugTrace.leave(); // for Debugging
             });
         }
 
@@ -72,62 +72,62 @@ public class Example2 {
             }
         }
 
-    /**/DebugTrace.leave();
+        DebugTrace.leave(); // for Debugging
     }
 
     private void example2() {
-    /**/DebugTrace.enter();
+        DebugTrace.enter(); // for Debugging
 
         Values values = new Values();
-    //    values.valuesOpt = Optional.of(new Values());
+    //  values.valuesOpt = Optional.of(new Values());
         values.valuesOpt = Optional.of(values);
 
-    /**/DebugTrace.print("values", values);
+        DebugTrace.print("values", values); // for Debugging
 
         List<Values> valueList = new ArrayList<>();
         valueList.add(values);
         valueList.add(values);
-    /**/DebugTrace.print("valueList", valueList);
+        DebugTrace.print("valueList", valueList); // for Debugging
 
         Map<Integer, List<Values>> valueListMap = new LinkedHashMap<>();
         valueListMap.put(1, valueList);
-//        valueListMap.put(2, valueList);
-    /**/DebugTrace.print("valueListMap", valueListMap);
+//      valueListMap.put(2, valueList);
+        DebugTrace.print("valueListMap", valueListMap); // for Debugging
 
         Point[] points = IntStream.range(0, 51)
             .mapToObj((index) -> new Point(index, index + 1, index + 2))
             .toArray(Point[]::new);
-    /**/DebugTrace.print("points", points);
+        DebugTrace.print("points", points); // for Debugging
 
         Point[] points2 = IntStream.range(0, 10)
             .mapToObj((index) -> new Point(index, index + 1, index + 2))
             .toArray(Point[]::new);
-    /**/DebugTrace.print("points2", points2);
+        DebugTrace.print("points2", points2); // for Debugging
 
         int[] ints = new int[points.length];
         IntStream.range(0, points.length)
             .forEach((index) -> ints[index] = points[index].x() * points[index].y() * (int)points[index].z());
-    /**/DebugTrace.print("ints", ints);
+        DebugTrace.print("ints", ints); // for Debugging
 
         int[][][][] intss = new int[2][3][4][5];
-    /**/DebugTrace.print("intss", intss);
+        DebugTrace.print("intss", intss); // for Debugging
 
         Point p = new Point(10, 11, 12) {};
-    /**/DebugTrace.print("p", p);
+        DebugTrace.print("p", p); // for Debugging
 
         List<Object> objects = Arrays.asList(true, 'A', (byte)1, (short)2, 3, 4L, new BigDecimal(5), 6.6F, 7.7D);
-    /**/DebugTrace.print("objects", objects);
+        DebugTrace.print("objects", objects); // for Debugging
 
-    /**/DebugTrace.leave();
+        DebugTrace.leave(); // for Debugging
     }
 
     private void example3() throws Exception {
-    /**/DebugTrace.enter();
+        DebugTrace.enter(); // for Debugging
 
         DataSource dataSource = BasicDataSourceFactory.createDataSource(new Properties());
-    /**/DebugTrace.print("dataSource", dataSource);
+        DebugTrace.print("dataSource", dataSource); // for Debugging
 
-    /**/DebugTrace.leave();
+        DebugTrace.leave(); // for Debugging
     }
 
     public static class ValuesBase1 {
@@ -213,4 +213,3 @@ public class Example2 {
         public String toString() {return "(" + x + ", " + y + ", " + z + ")";}
     }
 }
-

@@ -5,7 +5,7 @@ link:README.asciidoc[[English]]
 *DebugTrace-java* は、Javaプログラムのデバッグ時にトレースログを出力するライブラリで、Java 8以降で利用できます。 +
 メソッドの開始と終了箇所に `DebugTrace.enter()` および `DebugTrace.leave()` を埋め込む事で、開発中のJavaプログラムの実行状況をログに出力する事ができます。
 
-=== 1. 特徴
+=== 1. [.small]#特徴#
 
 * 呼び出し元のクラス名、メソッド名、ソースファイルおよび行番号を自動的に出力。
 * メソッドやオブジェクトのネストで、ログを自動的にインデント。
@@ -20,7 +20,7 @@ link:README.asciidoc[[English]]
     ** SLF4J
     ** コンソール(stdoutおよびstderr)
 
-=== 2. 使用方法
+=== 2. [.small]#使用方法#
 
 デバッグ対象および関連するメソッドに対して以下を行います。
 
@@ -109,7 +109,7 @@ public class Example1 {
 2020-05-11 22:49:43.326+09:00 Leave example.Example1.main (Example1.java:20) duration: 00:00:00.030000000
 ----
 
-=== 3. メソッド一覧
+=== 3. [.small]#メソッド一覧#
 
 このライブラリには以下のメソッドがあります。すべてorg.debugtrace.DebugTraceクラスの静的メソッドで、戻り値なしです。
 
@@ -174,7 +174,7 @@ valueSupplierのタイプは `IntSupplier`, `LongSupplier` または `Supplier<T
 
 |===
 
-=== 4. *DebugTrace.properties* ファイルのプロパティ
+=== 4. DebugTrace.properties[.small]##ファイルのプロパティ##
 
 DebugTrace は、クラスパスにある `DebugTrace.properties` ファイルを起動時に読み込みます。
 `DebugTrace.properties` ファイルには以下のプロパティを指定できます。
@@ -241,7 +241,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 [.small .blue]#ver. 3.0.0より非推奨#
 |メソッドから出る際のログ出力のフォーマット文字列 +
 [.small]#*設定例:*# +
-&#xa0;&#xa0; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN`  [.small .blue]#*[デフォルト]*# +
+&#xa0;&#xa0; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL`  [.small .blue]#*[デフォルト]*# +
 [.small]#*パラメータ:*# +
 &#xa0;&#xa0; `%1`: クラス名 +
 &#xa0;&#xa0; `%2`: メソッド名 +
@@ -542,7 +542,7 @@ DebugTrace は、 `toString` メソッドが実装されていない場合は、
 このプロパティの値は、カンマ区切りで複数指定できます。  
 `nonOutputProperties` で指定されたプロパティの値は、 `nonOutputString` で指定された文字列(デフォルト: `\***`)で出力されます。
 
-.nonOutputProperties の例 (DebugTrace.properties)
+.nonOutputPropertiesの例 (DebugTrace.properties)
 ----
 nonOutputProperties = \
     org.lightsleep.helper.EntityInfo#columnInfos,\
@@ -550,7 +550,7 @@ nonOutputProperties = \
     org.lightsleep.helper.ColumnInfo#entityInfo
 ----
 
-==== 4.2. 定数マップ, *mapNameMap*
+==== 4.2. [.small]#定数マップ#, *mapNameMap*
 
 定数マップは、キーが数値で値が定数名のマップです。このプロパティのキー(マップ名)を `print` メソッドの引数にしてコールすると数値に定数名が付加されて出力されます。
 
@@ -571,14 +571,14 @@ int appleBrand = Apple.AKANE;
 DebugTrace.print("AppleBrand", "appleBrand", appleBrand);
 ----
 
-.Logの例
+.Log[.small]##の例##
 ----
 2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:29)
 ----
 
 変数名に対応するマップ名を `mapNameMap` プロパティで指定すると、マップ名を指定しない場合でも定数名が出力されます。
 
-.mapNameMap の例 (DebugTrace.properties)
+.mapNameMap[.small]##の例## (DebugTrace.properties)
 ----
 mapNameMap = appleBrand: AppleBrand
 ----
@@ -596,7 +596,7 @@ appleBrand = Apple.YUKARI;
 DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 ----
 
-.Log の例
+.Logの例
 ----
 2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:38)
 2017-07-29 13:45:32.489 |  2 appleBrand  = 2(Apple.AKIYO) (README_example.java:40)
@@ -604,11 +604,11 @@ DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 2017-07-29 13:45:32.489 |  4 example. appleBrand  = 4(Apple.YUKARI) (README_example.java:44)
 ----
 
-=== 5. ロギング・ライブラリの使用例
+=== 5. [.small]#ロギング・ライブラリの使用例#
 
 ロギング・ライブラリを使用する際のDebugTraceのロガー名は、 `org.debugtrace.DebugTrace` です。
 
-==== 5-1. *logging.properties* (JDK標準) の例
+==== 5-1. *logging.properties* (*JDK[.small]##標準##*)[.small]#の例#
 
 .logging.properties
 ----
@@ -621,7 +621,7 @@ org.debugtrace.DebugTrace.level = FINEST
 ----
 *Java起動時オプションとして `-Djava.util.logging.config.file=<パス>/logging.properties` が必要*
 
-==== 5-2. *log4j.xml* (Log4j) の例
+==== 5-2. *log4j.xml* (*Log4j*)[.small]#の例#
 
 [source,xml]
 .log4j.xml
@@ -643,7 +643,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </log4j:configuration>
 ----
 
-==== 5-3. *log4j2.xml* (Log4j2) の例
+==== 5-3. *log4j2.xml* (*Log4j2*)[.small]#の例#
 
 [source,xml]
 .log4j2.xml
@@ -663,7 +663,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </configuration>
 ----
 
-==== 5-4. *logback.xml* (SLF4J/Logback) の例
+==== 5-4. *logback.xml* (*SLF4J*/*Logback*)[.small]#の例#
 
 [source,xml]
 .logback.xml
@@ -680,7 +680,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </configuration>
 ----
 
-=== 6. *build.gradle* の記述例
+=== 6. *build.gradle*[.small]##の記述例##
 
 [source,groovy]
 .build.gradle
@@ -694,17 +694,21 @@ dependencies {
 }
 ----
 
-=== 7. ライセンス
+=== 7. [.small]#ライセンス#
 
 link:LICENSE.txt[MIT ライセンス(MIT)]
 
 _(C) 2015 Masato Kokubo_
 
-=== 8. リンク
+=== 8. [.small]#リンク#
 
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
-=== 9. リリースノート
+=== 9. [.small]#リリースノート#
+
+==== DebugTrace-java 3.0.3 [.small .gray]#- 2020-10-24#
+
+* ``leave``メソッドの``duration``のデフォルトの出力フォーマットをナノ秒からミリ秒に変更 +
 
 ==== DebugTrace-java 3.0.2 [.small .gray]#- 2020-07-06#
 

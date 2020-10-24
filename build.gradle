@@ -35,7 +35,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.0.2'
+version             = '3.0.3'
 
 sourceSets {
     main {
@@ -61,6 +61,9 @@ sourceSets {
         java {
             srcDir 'src/example/java'
         }
+        resources {
+            srcDir 'src/example/resources'
+        }
         compileClasspath += main.output
         compileClasspath += sourceSets.test.compileClasspath
         runtimeClasspath += main.output
@@ -69,7 +72,7 @@ sourceSets {
 }
 
 wrapper {
-    gradleVersion = '6.5.1'
+    gradleVersion = '6.7'
 }
 
 compileJava {

@@ -706,21 +706,25 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英�
 
 === 9. [.small]#リリースノート#
 
-==== DebugTrace-java 3.0.3 [.small .gray]#- 2020-10-24#
+==== DebugTrace-java 3.0.4 [.small .gray]#- 2020/11/1#
+
+* 負の``byte[]``要素を間違った文字列に変換する不具合を修正 +
+
+==== DebugTrace-java 3.0.3 [.small .gray]#- 2020/10/24#
 
 * ``leave``メソッドの``duration``のデフォルトの出力フォーマットをナノ秒からミリ秒に変更 +
 
-==== DebugTrace-java 3.0.2 [.small .gray]#- 2020-07-06#
+==== DebugTrace-java 3.0.2 [.small .gray]#- 2020/7/6#
 
 * リフレクションでの出力の括弧を変更 (`{}` ← `[]`)
 * データ出力の改行処理を改善
 * `printStack` メソッドを追加
 
-==== DebugTrace-java 3.0.1 [.small .gray]#- 2020-05-15#
+==== DebugTrace-java 3.0.1 [.small .gray]#- 2020/5/15#
 
 * データ出力の改行処理を改善
 
-==== DebugTrace-java 3.0.0 [.small .gray]#- 2020-05-12#
+==== DebugTrace-java 3.0.0 [.small .gray]#- 2020/5/12#
 
 * データ出力の改行処理を改善
 

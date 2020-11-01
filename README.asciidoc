@@ -705,9 +705,13 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specificati
 
 === 9. Release Notes
 
+==== DebugTrace-java 3.0.4 [.small .gray]#November 1, 2020#
+
+* Fixed a bug that converted negative `byte[]` elements to the wrong string.
+
 ==== DebugTrace-java 3.0.3 [.small .gray]#October 24, 2020#
 
-* Changed the default output format of ``duration`` of the ``leave`` method from nanoseconds to milliseconds.
+* Changed the default output format of `duration` of the `leave` method from nanoseconds to milliseconds.
 
 ==== DebugTrace-java 3.0.2 [.small .gray]#July 6, 2020#
 

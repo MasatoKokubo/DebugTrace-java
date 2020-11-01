@@ -64,7 +64,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.0.3";
+    public static final String VERSION = "3.0.4";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -1311,7 +1311,10 @@ public class DebugTrace {
                 break;
             }
 
-            byte value = bytes[index];
+        // 3.0.4
+        //  byte value = bytes[index];
+            int value = bytes[index];
+        ////
             if (value < 0) value += 256;
             char ch = (char)(value / 16 + '0');
             if (ch > '9') ch += 'A' - '9' - 1;

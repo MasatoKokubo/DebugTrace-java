@@ -299,28 +299,28 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (char[2])"AB"') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as byte[])
-        then: DebugTrace.lastLog.indexOf('v = (byte[2])[01 02]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as byte[])
+        then: DebugTrace.lastLog.indexOf('v = (byte[4])[FF 00 01 02]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as short[])
-        then: DebugTrace.lastLog.indexOf('v = (short[2])[1, 2]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as short[])
+        then: DebugTrace.lastLog.indexOf('v = (short[4])[-1, 0, 1, 2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as int[])
-        then: DebugTrace.lastLog.indexOf('v = (int[2])[1, 2]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as int[])
+        then: DebugTrace.lastLog.indexOf('v = (int[4])[-1, 0, 1, 2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as long[])
-        then: DebugTrace.lastLog.indexOf('v = (long[2])[1, 2]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as long[])
+        then: DebugTrace.lastLog.indexOf('v = (long[4])[-1, 0, 1, 2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1.1, 2.2] as float[])
-        then: DebugTrace.lastLog.indexOf('v = (float[2])[1.1, 2.2]') >= 0
+        when: DebugTrace.print('v', [-1.1, 0, 1.1, 2.2] as float[])
+        then: DebugTrace.lastLog.indexOf('v = (float[4])[-1.1, 0.0, 1.1, 2.2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1.1, 2.2] as double[])
-        then: DebugTrace.lastLog.indexOf('v = (double[2])[1.1, 2.2]') >= 0
+        when: DebugTrace.print('v', [-1.1, 0, 1.1, 2.2] as double[])
+        then: DebugTrace.lastLog.indexOf('v = (double[4])[-1.1, 0.0, 1.1, 2.2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
         when: DebugTrace.print('v', [false, true] as Boolean[])
@@ -331,32 +331,32 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (Character[2])[\'A\', \'B\']') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as Byte[])
-        then: DebugTrace.lastLog.indexOf('v = (Byte[2])[1, 2]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as Byte[])
+        then: DebugTrace.lastLog.indexOf('v = (Byte[4])[-1, 0, 1, 2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as Short[])
-        then: DebugTrace.lastLog.indexOf('v = (Short[2])[1, 2]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as Short[])
+        then: DebugTrace.lastLog.indexOf('v = (Short[4])[-1, 0, 1, 2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as Integer[])
-        then: DebugTrace.lastLog.indexOf('v = (Integer[2])[1, 2]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as Integer[])
+        then: DebugTrace.lastLog.indexOf('v = (Integer[4])[-1, 0, 1, 2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2] as Long[])
-        then: DebugTrace.lastLog.indexOf('v = (Long[2])[1, 2]') >= 0
+        when: DebugTrace.print('v', [-1, 0, 1, 2] as Long[])
+        then: DebugTrace.lastLog.indexOf('v = (Long[4])[-1, 0, 1, 2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1.1, 2.2] as Float[])
-        then: DebugTrace.lastLog.indexOf('v = (Float[2])[1.1, 2.2]') >= 0
+        when: DebugTrace.print('v', [-1.1, 0, 1.1, 2.2] as Float[])
+        then: DebugTrace.lastLog.indexOf('v = (Float[4])[-1.1, 0.0, 1.1, 2.2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1.1, 2.2] as Double[])
-        then: DebugTrace.lastLog.indexOf('v = (Double[2])[1.1, 2.2]') >= 0
+        when: DebugTrace.print('v', [-1.1, 0, 1.1, 2.2] as Double[])
+        then: DebugTrace.lastLog.indexOf('v = (Double[4])[-1.1, 0.0, 1.1, 2.2]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1.1, 2.2] as BigDecimal[])
-        then: DebugTrace.lastLog.indexOf('v = (BigDecimal[2])[1.1, 2.2]') >= 0
+        when: DebugTrace.print('v', [-1.1, 0, 1.1, 2.2] as BigDecimal[])
+        then: DebugTrace.lastLog.indexOf('v = (BigDecimal[4])[-1.1, 0, 1.1, 2.2]') >= 0
 
         when: DebugTrace.print('v', ["A", "B"] as String[])
         then: DebugTrace.lastLog.indexOf('v = (String[2])["A", "B"]') >= 0

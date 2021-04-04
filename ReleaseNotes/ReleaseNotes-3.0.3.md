@@ -2,4 +2,4 @@ Changed the default output format of `duration` of the `leave` method from nanos
 
 <font color="blue">*The following are Japanese.*</font>
 
-`leave`メソッドの``duration``のデフォルトの出力フォーマットをナノ秒からミリ秒に変更
+`leave`メソッドの`duration`のデフォルトの出力フォーマットをナノ秒からミリ秒に変更

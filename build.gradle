@@ -1,15 +1,14 @@
 // (C) 2015 Masato Kokubo
 plugins {
-    id 'com.jfrog.bintray' version '1.8.5'
+    id 'maven-publish'
+    id 'signing'
 }
 
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'java-library'
 apply plugin: 'groovy'
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -35,7 +34,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.0.4'
+version             = '3.0.5'
 
 sourceSets {
     main {
@@ -72,7 +71,7 @@ sourceSets {
 }
 
 wrapper {
-    gradleVersion = '6.7'
+    gradleVersion = '6.8.3'
 }
 
 compileJava {
@@ -116,7 +115,7 @@ javadoc {
     options.locale      = 'en'
     options.windowTitle = "$project.name"
     options.addBooleanOption('author', true)
-    options.addStringOption ('bottom', '<div class="copyright">&copy;2015 Masato Kokubo</div>')
+    options.addStringOption ('bottom', '<div class="copyright">&copy; 2015 Masato Kokubo</div>')
 }
 
 javadoc.doFirst {
@@ -165,40 +164,54 @@ artifacts {
     archives javadocJar
 }
 
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     publications {
-        mavenPublication(MavenPublication) {
-//            from components.java
-            groupId    group
-            artifactId archivesBaseName
-            version    version
+        mavenJava(MavenPublication) {
+            artifactId = archivesBaseName
+            from components.java
+            pom {
+                name = 'DebugTrace-java'
+                description = 'A library that outputs trace logs when debugging Java programs. It is available on Java 8 or later.'
+                url = 'https://github.com/MasatoKokubo/DebugTrace-java'
+                licenses {
+                    license {
+                        name = 'The MIT License (MIT)'
+                        url = 'https://github.com/MasatoKokubo/DebugTrace-java/blob/master/LICENSE.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'MasatoKokubo'
+                        name = 'Masato Kokubo'
+                        email = 'masatokokubo@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/MasatoKokubo/DebugTrace-java.git'
+                    developerConnection = 'https://github.com/MasatoKokubo/DebugTrace-java.git'
+                    url = 'https://github.com/MasatoKokubo/DebugTrace-java'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'OSSRH'
+            url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2'
+            credentials {
+                username = "$sonatypeUsername"
+                password = "$sonatypePassword"
+            }
         }
     }
 }
 
-bintray {
-    user = project.hasProperty('bintray_user') ? bintray_user : ''
-    key  = project.hasProperty('bintray_api_key') ? bintray_api_key : ''
-    configurations = ['archives']
-    publications   = ['mavenPublication']
-
-//    dryRun = true
-
-    pkg {
-        repo            = 'maven'
-        name            = 'DebugTrace-java'
-        websiteUrl      = 'https://github.com/MasatoKokubo/DebugTrace-java'
-        issueTrackerUrl = 'https://github.com/MasatoKokubo/DebugTrace-java/issues'
-        vcsUrl          = 'https://github.com/MasatoKokubo/DebugTrace-java.git'
-        licenses        = ['MIT']
-        version {
-            name           = project.version
-            released       = new Date()
-            vcsTag         = project.version
-            gpg {
-                sign       = true
-                passphrase = project.hasProperty('bintray_gpg_password') ? bintray_gpg_password : ''
-            }
-        }
-    }
+signing {
+    sign publishing.publications.mavenJava
 }

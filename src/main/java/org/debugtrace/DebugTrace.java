@@ -64,7 +64,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.0.5";
+    public static final String VERSION = "3.0.6";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -1541,7 +1541,10 @@ public class DebugTrace {
     private static boolean hasToString(Class<?> clazz) {
         boolean result = false;
 
-        while (clazz != Object.class) {
+    // 3.0.6
+    //  while (clazz != Object.class) {
+        while (clazz != null && clazz != Object.class) {
+    ////
             try {
                 clazz.getDeclaredMethod("toString");
                 result = true;
@@ -1566,7 +1569,10 @@ public class DebugTrace {
 
         Class<?> type = object.getClass();
         buff.append(getTypeName(type, object, false, false, 0));
-        boolean isExtended = type.getSuperclass() != Object.class;
+    // 3.0.6
+    //  boolean isExtended = type.getSuperclass() != Object.class;
+        boolean isExtended = type.getSuperclass() != null && type.getSuperclass() != Object.class;
+    ////
 
         LogBuffer bodyBuff = toStringReflectionBody(object, type, isExtended);
 
@@ -1596,7 +1602,10 @@ public class DebugTrace {
         LogBuffer buff = new LogBuffer();
 
         Class<?> baseType = type.getSuperclass();
-        if (baseType != Object.class) {
+    // 3.0.6
+    //  if (baseType != Object.class) {
+        if (baseType != null && baseType != Object.class) {
+    ////
             // Call for the base type
             LogBuffer baseBuff =  toStringReflectionBody(object, baseType, isExtended);
             buff.append(baseBuff);

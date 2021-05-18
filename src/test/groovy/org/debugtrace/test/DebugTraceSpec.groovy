@@ -162,6 +162,11 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (long)1(Calendar.YEAR)') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
+        // 3.0.6
+        when: DebugTrace.print('Object', 'v', new Object())
+        then: DebugTrace.lastLog.indexOf('v = (Object){}') >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
         cleanup: DebugTrace.leave()
     }
 

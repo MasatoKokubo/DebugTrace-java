@@ -706,6 +706,14 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英�
 
 === 9. [.small]#リリースノート#
 
+==== DebugTrace-java 3.0.6 [.small .gray]#- 2021/5/18#
+
+* 不具合修正: `Object` クラスのオブジェクトの出力で `NulPointerException` がスローされる。 +
+
+==== DebugTrace-java 3.0.5 [.small .gray]#- 2021/4/13#
+
+* リポジトリをMaven Centralに移行 +
+
 ==== DebugTrace-java 3.0.4 [.small .gray]#- 2020/11/1#
 
 * 負の``byte[]``要素を間違った文字列に変換する不具合を修正 +

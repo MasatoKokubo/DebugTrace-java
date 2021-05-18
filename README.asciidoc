@@ -705,6 +705,14 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specificati
 
 === 9. Release Notes
 
+==== DebugTrace-java 3.0.6 [.small .gray]#May 18, 2021#
+
+* Bug fix: A `NulPointerException` is thrown in the output of an object of the `Object` class.
+
+==== DebugTrace-java 3.0.5 [.small .gray]#April 13, 2021#
+
+* Migrate to Maven Central repository.
+
 ==== DebugTrace-java 3.0.4 [.small .gray]#November 1, 2020#
 
 * Fixed a bug that converted negative `byte[]` elements to the wrong string.

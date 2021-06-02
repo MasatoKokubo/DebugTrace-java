@@ -89,24 +89,26 @@ public class Example1 {
 
 .debugtrace.log
 ----
-2020-05-11 22:49:43.281+09:00 DebugTrace 3.0.0 uses org.debugtrace.logger.Std$Err
-2020-05-11 22:49:43.293+09:00 
-2020-05-11 22:49:43.295+09:00 ______________________________ main ______________________________
-2020-05-11 22:49:43.295+09:00 
-2020-05-11 22:49:43.296+09:00 Enter example.Example1.main (Example1.java:15)
-2020-05-11 22:49:43.301+09:00 | Enter example.Example1.newArray (Example1.java:25)
-2020-05-11 22:49:43.325+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
-2020-05-11 22:49:43.325+09:00 | | length = 2 (Example1.java:27)
-2020-05-11 22:49:43.326+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:30)
-2020-05-11 22:49:43.326+09:00 | | 
-2020-05-11 22:49:43.326+09:00 | | 2 array = (example.Example1.Point[2])[
-2020-05-11 22:49:43.326+09:00 | |   (example.Example1.Point)[x: 0, y: 0], 
-2020-05-11 22:49:43.326+09:00 | |   (example.Example1.Point)[x: 0, y: 0]
-2020-05-11 22:49:43.326+09:00 | | ] (Example1.java:37)
-2020-05-11 22:49:43.326+09:00 | | 
-2020-05-11 22:49:43.326+09:00 | Leave example.Example1.newArray (Example1.java:38) duration: 00:00:00.024000000
-2020-05-11 22:49:43.326+09:00 | 
-2020-05-11 22:49:43.326+09:00 Leave example.Example1.main (Example1.java:20) duration: 00:00:00.030000000
+2021-06-02 20:57:46.832+09:00 DebugTrace 3.0.7
+2021-06-02 20:57:46.833+09:00   resource base name: DebugTrace
+2021-06-02 20:57:46.833+09:00   logger: org.debugtrace.logger.Std$Out
+2021-06-02 20:57:46.837+09:00 
+2021-06-02 20:57:46.837+09:00 ______________________________ main ______________________________
+2021-06-02 20:57:46.837+09:00 
+2021-06-02 20:57:46.839+09:00 Enter example.Example1.main (Example1.java:15)
+2021-06-02 20:57:46.848+09:00 | Enter example.Example1.newArray (Example1.java:25)
+2021-06-02 20:57:46.859+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
+2021-06-02 20:57:46.859+09:00 | | length = 2 (Example1.java:27)
+2021-06-02 20:57:46.859+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:30)
+2021-06-02 20:57:46.862+09:00 | | 
+2021-06-02 20:57:46.862+09:00 | | 2 array = (example.Example1.Point[2])[
+2021-06-02 20:57:46.862+09:00 | |   (example.Example1.Point){x: 0, y: 0},
+2021-06-02 20:57:46.862+09:00 | |   (example.Example1.Point){x: 0, y: 0}
+2021-06-02 20:57:46.862+09:00 | | ] (Example1.java:37)
+2021-06-02 20:57:46.862+09:00 | | 
+2021-06-02 20:57:46.862+09:00 | Leave example.Example1.newArray (Example1.java:38) duration: 00:00:00.014
+2021-06-02 20:57:46.862+09:00 | 
+2021-06-02 20:57:46.863+09:00 Leave example.Example1.main (Example1.java:20) duration: 00:00:00.024
 ----
 
 === 3. Method List
@@ -704,6 +706,12 @@ link:LICENSE.txt[The MIT License (MIT)]
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specification]
 
 === 9. Release Notes
+
+==== DebugTrace-java 3.0.7 [.small .gray]#- 2021/6/2#
+
+* Improved: Single quotes in string and double quote of character no longer escape. +
+`"'Foo'"` <- `"\'Foo\'"` +
+`'"'` <- `'\"'` +
 
 ==== DebugTrace-java 3.0.6 [.small .gray]#May 18, 2021#
 

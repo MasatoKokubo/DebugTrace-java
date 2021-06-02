@@ -110,6 +110,10 @@ class DebugTraceSpec extends Specification {
     def printSpec() {
         setup: DebugTrace.enter()
 
+        when: DebugTrace.print('v', false)
+        then: DebugTrace.lastLog.indexOf('v = false') >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
         when: DebugTrace.print('v', true)
         then: DebugTrace.lastLog.indexOf('v = true') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
@@ -138,12 +142,71 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (double)999.0') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
+        when: DebugTrace.print('v', (char)'A')
+        then: DebugTrace.lastLog.indexOf("v = 'A'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\b')
+        then: DebugTrace.lastLog.indexOf("v = '\\b'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\t')
+        then: DebugTrace.lastLog.indexOf("v = '\\t'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\n')
+        then: DebugTrace.lastLog.indexOf("v = '\\n'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\r')
+        then: DebugTrace.lastLog.indexOf("v = '\\r'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\f')
+        then: DebugTrace.lastLog.indexOf("v = '\\f'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\'')
+        then: DebugTrace.lastLog.indexOf("v = '\\''") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\u0001')
+        then: DebugTrace.lastLog.indexOf("v = '\\u0001'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\u001F')
+        then: DebugTrace.lastLog.indexOf("v = '\\u001F'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', (char)'\u007F')
+        then: DebugTrace.lastLog.indexOf("v = '\\u007F'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        // 3.0.7
+        when: DebugTrace.print('v', (char)'"')
+        then: DebugTrace.lastLog.indexOf("v = '\"'") >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
         when: DebugTrace.print('v', "ABCD")
         then: DebugTrace.lastLog.indexOf('v = "ABCD"') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
         when: DebugTrace.print('v', "ABCDE")
         then: DebugTrace.lastLog.indexOf('v = (length:5)"ABCDE"') >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        // 3.0.7
+        when: DebugTrace.print('v', "'ABCDE'")
+        then: DebugTrace.lastLog.indexOf('v = (length:7)"\'ABCDE\'"') >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        // 3.0.7
+        when: DebugTrace.print('v', "ABCDE\b\t\n\r\f'\"\\")
+        then: DebugTrace.lastLog.indexOf('v = (length:13)"ABCDE\\b\\t\\n\\r\\f\'\\"\\\\"') >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+
+        when: DebugTrace.print('v', "\u0001\u001F\u007F")
+        then: DebugTrace.lastLog.indexOf('v = "\\u0001\\u001F\\u007F"') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
         when: DebugTrace.print('Calendar', 'v', (byte)1)

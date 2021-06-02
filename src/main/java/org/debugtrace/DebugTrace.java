@@ -64,7 +64,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.0.6";
+    public static final String VERSION = "3.0.7";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -959,7 +959,10 @@ public class DebugTrace {
             // Character
             buff.noBreakAppend(typeName);
             buff.noBreakAppend('\'');
-            appendChar(buff, ((Character)value).charValue());
+        // 3.0.7
+        //  appendChar(buff, ((Character)value).charValue());
+            appendChar(buff, ((Character)value).charValue(), false);
+        ////
             buff.noBreakAppend('\'');
 
         } else if (value instanceof Number) {
@@ -1239,20 +1242,26 @@ public class DebugTrace {
     /**
      * Appends a character representation for logging to the string buffer.
      *
-     * @param state indent state
-     * @param strings a string list
      * @param buff a string buffer
      * @param ch a character
+     * @param inString true if the character is included in the string, false otherwise
      */
-    private static void appendChar(LogBuffer buff, char ch) {
+// 3.0.7
+//    private static void appendChar(LogBuffer buff, char ch) {
+    private static void appendChar(LogBuffer buff, char ch, boolean inString) {
+////
         switch (ch) {
         case '\b': buff.noBreakAppend("\\b" ); break; // 08 BS
         case '\t': buff.noBreakAppend("\\t" ); break; // 09 HT
         case '\n': buff.noBreakAppend("\\n" ); break; // 0A LF
         case '\f': buff.noBreakAppend("\\f" ); break; // 0C FF
         case '\r': buff.noBreakAppend("\\r" ); break; // 0D CR
-        case '"' : buff.noBreakAppend("\\\""); break; // "
-        case '\'': buff.noBreakAppend("\\'" ); break; // '
+    // 3.0.7
+    //  case '"' : buff.noBreakAppend("\\\""); break; // "
+    //  case '\'': buff.noBreakAppend("\\'" ); break; // '
+        case '"' : buff.noBreakAppend(inString ? "\\\"" : "\""); break; // "
+        case '\'': buff.noBreakAppend(inString ? "'" : "\\'" ); break; // '
+    ////
         case '\\': buff.noBreakAppend("\\\\"); break; // \
         default:
             if (ch < ' ' || ch == '\u007F')
@@ -1278,7 +1287,10 @@ public class DebugTrace {
                 buff.noBreakAppend(limitString);
                 break;
             }
-            appendChar(buff, charSequence.charAt(index));
+        // 3.0.7
+        //  appendChar(buff, charSequence.charAt(index));
+            appendChar(buff, charSequence.charAt(index), true);
+        ////
         }
         buff.noBreakAppend('"');
     }

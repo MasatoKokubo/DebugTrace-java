@@ -1,11 +1,11 @@
 // LineBreakSpec.groovy
 // (C) 2015 Masato Kokubo
 
-package org.debugtrace.test;
+package org.debugtrace.test
 
-import java.sql.*;
+import java.sql.*
 import java.time.*
-import org.debugtrace.DebugTrace;
+import org.debugtrace.DebugTrace
 import org.debugtrace.helper.Tuple
 import spock.lang.*
 

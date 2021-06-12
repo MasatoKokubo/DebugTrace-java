@@ -20,7 +20,8 @@
 * `fieldNameValueSeparator` - integrated into `keyValueSeparator`
 * `mapLimit` - integrated into `collectionLimit`
 
-<font color="blue">*The following are Japanese.*</font>
+---
+*Japanese*
 
 #### データ出力の改行処理を改善
 

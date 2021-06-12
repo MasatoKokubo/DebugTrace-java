@@ -14,11 +14,12 @@ link:README.asciidoc[[English]]
 * `DebugTrace.properties` で、出力内容のカスタマイズが可能。
 * 実行時に依存するライブラリがない。(下記ロギング・ライブラリを使用する場合は必要)
 * 各種ロギング・ライブラリを使用可能。
-    ** JDKロガー
-    ** Log4j
-    ** Log4j2
-    ** SLF4J
-    ** コンソール(stdoutおよびstderr)
+    ** コンソール (stdoutおよびstderr)
+    ** https://github.com/google/flogger[Flogger] (3.1.0より)
+    ** https://docs.oracle.com/javase/jp/8/docs/api/java/util/logging/Logger.html[JDKロガー]
+    ** http://logging.apache.org/log4j/1.2/[Log4j]
+    ** https://logging.apache.org/log4j/2.x/[Log4j2]
+    ** http://www.slf4j.org/[SLF4J]
 
 === 2. [.small]#使用方法#
 
@@ -610,15 +611,18 @@ DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 
 ロギング・ライブラリを使用する際のDebugTraceのロガー名は、 `org.debugtrace.DebugTrace` です。
 
-==== 5-1. *logging.properties* (*JDK[.small]##標準##*)[.small]#の例#
+==== 5-1. *logging.properties* (*JDK[.small]##標準##*, *Flogger*)[.small]#の例#
 
 .logging.properties
 ----
 # logging.properties
-handlers = java.util.logging.ConsoleHandler
-java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
-java.util.logging.SimpleFormatter.format = [Jdk] %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %5$s%n
-java.util.logging.ConsoleHandler.level = FINEST
+handlers = java.util.logging.FileHandler
+java.util.logging.FileHandler.level = FINEST
+java.util.logging.FileHandler.formatter = java.util.logging.SimpleFormatter
+java.util.logging.SimpleFormatter.format = %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %5$s%n
+java.util.logging.FileHandler.encoding = UTF-8
+java.util.logging.FileHandler.pattern = /var/log/app/debugtrace.log
+java.util.logging.FileHandler.append = false
 org.debugtrace.DebugTrace.level = FINEST
 ----
 *Java起動時オプションとして `-Djava.util.logging.config.file=<パス>/logging.properties` が必要*
@@ -631,16 +635,19 @@ org.debugtrace.DebugTrace.level = FINEST
 <!-- log4j.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
-  <appender name="Console" class="org.apache.log4j.ConsoleAppender">
-    <param name="Target" value="System.out"/>
+  <appender name="traceAppender" class="org.apache.log4j.FileAppender">
+    <param name="File" value="/var/log/app/debugtrace.log"/>
+    <param name="Append" value="false" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[Log4j] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %m%n"/>
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %t %m%n"/>
     </layout>
   </appender>
+
   <logger name="org.debugtrace.DebugTrace">
     <level value ="trace"/>
-    <appender-ref ref="Console"/>
+    <appender-ref ref="traceAppender"/>
   </logger>
 </log4j:configuration>
 ----
@@ -652,17 +659,19 @@ org.debugtrace.DebugTrace.level = FINEST
 ----
 <!-- log4j2.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
-  <appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="[Log4j2] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %msg%n"/>
-    </Console>
-  </appenders>
-  <loggers>
-    <logger name="org.debugtrace.DebugTrace" level="trace"/>
-    <root level="error"><appender-ref ref="Console"/></root>
-  </loggers>
-</configuration>
+<Configuration status="WARN">
+  <Appenders>
+    <File name="traceAppender" append="false" fileName="/var/log/app/debugtrace.log">
+      <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %message%n"/>
+    </File>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="org.debugtrace.DebugTrace" level="trace" additivity="false">
+        <AppenderRef ref="traceAppender"/>
+    </Logger>
+  </Loggers>
+</Configuration>
 ----
 
 ==== 5-4. *logback.xml* (*SLF4J*/*Logback*)[.small]#の例#
@@ -671,14 +680,18 @@ org.debugtrace.DebugTrace.level = FINEST
 .logback.xml
 ----
 <!-- logback.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="traceAppender" class="ch.qos.logback.core.FileAppender">
+    <file>/var/log/app/debugtrace.log</file>
     <encoder>
-      <pattern>[SLF4J logback] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %msg%n</pattern>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %message%n</pattern>
     </encoder>
   </appender>
-  <logger name="org.debugtrace.DebugTrace" level="trace"/>
-  <root level="error"><appender-ref ref="Console"/></root>
+
+  <logger name="org.debugtrace.DebugTrace" level="trace">
+    <appender-ref ref="traceAppender"/>
+  </logger>
 </configuration>
 ----
 
@@ -707,6 +720,10 @@ _(C) 2015 Masato Kokubo_
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
 === 9. [.small]#リリースノート#
+
+==== DebugTrace-java 3.1.0 [.small .gray]#- 2021/6/12#
+
+* ロギングライブラリの https://github.com/google/flogger[Flogger] のサポートを追加。
 
 ==== DebugTrace-java 3.0.7 [.small .gray]#- 2021/6/2#
 

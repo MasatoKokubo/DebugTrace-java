@@ -14,11 +14,12 @@ By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end 
 * You can customize the output content in `DebugTrace.properties`.
 * There are no dependent libraries at run time. (Required if you use the following logging library)
 * You can use the following logging library.
-    ** JDK Logger
-    ** Log4j
-    ** Log4j2
-    ** SLF4J
     ** Console (stdout and stderr)
+    ** https://github.com/google/flogger[Flogger] (since 3.1.0)
+    ** https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[JDK Logger]
+    ** http://logging.apache.org/log4j/1.2/[Log4j]
+    ** https://logging.apache.org/log4j/2.x/[Log4j2]
+    ** http://www.slf4j.org/[SLF4J]
 
 === 2. How to use
 
@@ -227,7 +228,7 @@ You can specify following properties in the `DebugTrace.properties` file.
  +
 `enterString` +
 [.small .blue]#Deprecated since 3.0.0#
-|The format string of log output when entering methods +
+|The format string of logging when entering methods +
 [.small]#*Example:*# +
 &#xa0;&#xa0; `enterFormat = Enter %1$s.%2$s (%3$s:%4$d)` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
@@ -241,7 +242,7 @@ You can specify following properties in the `DebugTrace.properties` file.
  +
 `leaveString` +
 [.small .blue]#Deprecated since 3.0.0#
-|The format string of log output when leaving methods +
+|The format string of logging when leaving methods +
 [.small]#*Example:*# +
 &#xa0;&#xa0; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL` [.small .blue]#*[Default]*# +
 [.small]#*Parameters:*# +
@@ -256,7 +257,7 @@ You can specify following properties in the `DebugTrace.properties` file.
  +
 `threadBoundaryString` +
 [.small .blue]#Deprecated since 3.0.0#
-|The format string of log output at threads boundary +
+|The format string of logging at threads boundary +
 [.small]#*Example:*# +
 &#xa0;&#xa0; [.small]`threadBoundaryString = \____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____` +
 &#xa0;&#xa0; [.small .blue]#*[Default]*# +
@@ -268,7 +269,7 @@ You can specify following properties in the `DebugTrace.properties` file.
  +
 `classBoundaryString` +
 [.small .blue]#Deprecated since 3.0.0#
-|The format string of log output at classes boundary +
+|The format string of logging at classes boundary +
 [.small]#*Example:*# +
 &#xa0;&#xa0; `classBoundaryString = \\____ %1$s \____` [.small .blue]#*[Default]*# +
 [.small]#*Parameter:*# +
@@ -610,14 +611,18 @@ DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 
 The logger name of DebugTrace is `org.debugtrace.DebugTrace`.   
 
-==== 5.1. Example of *logging.properties* (*JDK*)
+==== 5.1. Example of *logging.properties* (*JDK* or *Flogger*)
 
 .logging.properties
 ----
-handlers = java.util.logging.ConsoleHandler
-java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
-java.util.logging.SimpleFormatter.format = [Jdk] %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %5$s%n
-java.util.logging.ConsoleHandler.level = FINEST
+# logging.properties
+handlers = java.util.logging.FileHandler
+java.util.logging.FileHandler.level = FINEST
+java.util.logging.FileHandler.formatter = java.util.logging.SimpleFormatter
+java.util.logging.SimpleFormatter.format = %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %5$s%n
+java.util.logging.FileHandler.encoding = UTF-8
+java.util.logging.FileHandler.pattern = /var/log/app/debugtrace.log
+java.util.logging.FileHandler.append = false
 org.debugtrace.DebugTrace.level = FINEST
 ----
 *`-Djava.util.logging.config.file=<path>/logging.properties` is required as Java startup option*
@@ -630,16 +635,19 @@ org.debugtrace.DebugTrace.level = FINEST
 <!-- log4j.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
-  <appender name="Console" class="org.apache.log4j.ConsoleAppender">
-    <param name="Target" value="System.out"/>
+  <appender name="traceAppender" class="org.apache.log4j.FileAppender">
+    <param name="File" value="/var/log/app/debugtrace.log"/>
+    <param name="Append" value="false" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[Log4j] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %m%n"/>
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %t %m%n"/>
     </layout>
   </appender>
+
   <logger name="org.debugtrace.DebugTrace">
     <level value ="trace"/>
-    <appender-ref ref="Console"/>
+    <appender-ref ref="traceAppender"/>
   </logger>
 </log4j:configuration>
 ----
@@ -651,17 +659,19 @@ org.debugtrace.DebugTrace.level = FINEST
 ----
 <!-- log4j2.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
-  <appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="[Log4j2] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %msg%n"/>
-    </Console>
-  </appenders>
-  <loggers>
-    <logger name="org.debugtrace.DebugTrace" level="trace"/>
-    <root level="error"><appender-ref ref="Console"/></root>
-  </loggers>
-</configuration>
+<Configuration status="WARN">
+  <Appenders>
+    <File name="traceAppender" append="false" fileName="/var/log/app/debugtrace.log">
+      <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %message%n"/>
+    </File>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="org.debugtrace.DebugTrace" level="trace" additivity="false">
+        <AppenderRef ref="traceAppender"/>
+    </Logger>
+  </Loggers>
+</Configuration>
 ----
 
 ==== 5.4. Example of *logback.xml* (*SLF4J* / *Logback*)
@@ -670,14 +680,18 @@ org.debugtrace.DebugTrace.level = FINEST
 .logback.xml
 ----
 <!-- logback.xml -->
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+  <appender name="traceAppender" class="ch.qos.logback.core.FileAppender">
+    <file>/var/log/app/debugtrace.log</file>
     <encoder>
-      <pattern>[SLF4J logback] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %msg%n</pattern>
+      <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %message%n</pattern>
     </encoder>
   </appender>
-  <logger name="org.debugtrace.DebugTrace" level="trace"/>
-  <root level="error"><appender-ref ref="Console"/></root>
+
+  <logger name="org.debugtrace.DebugTrace" level="trace">
+    <appender-ref ref="traceAppender"/>
+  </logger>
 </configuration>
 ----
 
@@ -707,7 +721,11 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specificati
 
 === 9. Release Notes
 
-==== DebugTrace-java 3.0.7 [.small .gray]#- 2021/6/2#
+==== DebugTrace-java 3.1.0 [.small .gray]#- June 12, 2021#
+
+* Added support for logging library https://github.com/google/flogger[Flogger].
+
+==== DebugTrace-java 3.0.7 [.small .gray]#- June 2, 2021#
 
 * Improved: Single quotes in string and double quote of character no longer escape. +
 `"'Foo'"` <- `"\'Foo\'"` +

@@ -1,11 +1,11 @@
 // PropertyV1Spec.groovy
 // (C) 2015 Masato Kokubo
 
-package org.debugtrace.test;
+package org.debugtrace.test
 
-import java.sql.Types;
-import java.util.Calendar;
-import org.debugtrace.DebugTrace;
+import java.sql.Types
+import java.util.Calendar
+import org.debugtrace.DebugTrace
 import spock.lang.*
 
 /**

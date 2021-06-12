@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
-    <appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="[Log4j2] %d{yyyy-MM-dd HH:mm:ss.SSS} %5p %msg%n"/>
-        </Console>
-    </appenders>
+<Configuration status="WARN">
+  <Appenders>
+    <File name="traceAppender" append="false" fileName="logs/Log4j2.log">
+      <PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %message%n"/>
+    </File>
+  </Appenders>
 
-    <loggers>
-        <logger name="org.debugtrace.DebugTrace" level="trace"/>
-        <root level="error">
-            <appender-ref ref="Console"/>
-        </root>
-    </loggers>
-</configuration>
+  <Loggers>
+    <Logger name="org.debugtrace.DebugTrace" level="trace" additivity="false">
+        <AppenderRef ref="traceAppender"/>
+    </Logger>
+  </Loggers>
+</Configuration>

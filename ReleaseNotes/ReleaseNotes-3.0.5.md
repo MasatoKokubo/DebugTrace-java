@@ -1,5 +1,6 @@
 Migrate to Maven Central repository.
 
-<font color="blue">*The following are Japanese.*</font>
+---
+*Japanese*
 
 Maven Centralリポジトリへ移行

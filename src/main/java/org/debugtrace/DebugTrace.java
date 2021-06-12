@@ -5,6 +5,7 @@ package org.debugtrace;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -52,6 +53,8 @@ import org.debugtrace.helper.Tuple;
 import org.debugtrace.logger.Logger;
 import org.debugtrace.logger.Std;
 
+import com.google.common.flogger.FluentLogger;
+
 /**
  * Contains the main static methods of DebugTrace.
  * 
@@ -64,7 +67,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.0.7";
+    public static final String VERSION = "3.1.0";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -328,6 +331,11 @@ public class DebugTrace {
         }
         catch (Exception e) {
             System.err.println("DebugTrace: " + e.toString() + "(" + loggerName + ")");
+            if (e instanceof InvocationTargetException) {
+                Throwable targetEx = ((InvocationTargetException)e).getTargetException();
+                if (targetEx != null)
+                    System.err.println("DebugTrace: " + targetEx.toString() + "(" + loggerName + ")");
+            }
         }
 
         if (logger == null)
@@ -343,12 +351,27 @@ public class DebugTrace {
 
     private DebugTrace() {}
 
+    private FluentLogger getFluentLogger_() {
+        return FluentLogger.forEnclosingClass();
+    }
+
+    /**
+     * Returns a FluentLogger.
+     *
+     * @return a FluentLogger
+     *
+     * @since 3.1.0
+     */
+    public static FluentLogger getFluentLogger() {
+        return new DebugTrace().getFluentLogger_();
+    }
+
     /**
      * Creates a DateTimeFormatter.
      * 
      * @param format a format
      * @return a DateTimeFormatter
-     * 
+     *
      * @since 2.5.0
      */
     private static DateTimeFormatter createDateTimeFormatter(String format) {

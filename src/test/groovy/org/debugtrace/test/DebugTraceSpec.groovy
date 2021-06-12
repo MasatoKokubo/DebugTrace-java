@@ -1,7 +1,7 @@
 // DebugTraceSpec.groovy
 // (C) 2015 Masato Kokubo
 
-package org.debugtrace.test;
+package org.debugtrace.test
 
 import java.sql.Time
 import java.sql.Date
@@ -14,7 +14,7 @@ import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
-import org.debugtrace.DebugTrace;
+import org.debugtrace.DebugTrace
 import spock.lang.*
 
 @Unroll

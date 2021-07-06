@@ -2,7 +2,7 @@
 
 link:README_ja.asciidoc[[Japanese]]
 
-*DebugTrace-java* is a library that outputs trace logs when debugging Java programs. It is available on Java 8 or later. +
+*DebugTrace-java 4.x.x* is a library that outputs trace logs when debugging Java programs. It is available on Java 17 or later. +
 By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end of methods, you can output the execution status of the Java program under development to the log.
 
 ==== 1. Features
@@ -129,32 +129,32 @@ public class Example1 {
 .debugtrace.log
 
 ----
-2023-03-21 17:01:32.388+09:00 DebugTrace 3.7.0 on Amazon.com Inc. OpenJDK Runtime Environment 1.8.0_362-b08
-2023-03-21 17:01:32.390+09:00   property name: DebugTrace.properties
-2023-03-21 17:01:32.390+09:00   logger: org.debugtrace.logger.Std$Err
-2023-03-21 17:01:32.409+09:00 
-2023-03-21 17:01:32.409+09:00 ______________________________ main ______________________________
-2023-03-21 17:01:32.409+09:00 
-2023-03-21 17:01:32.410+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
-2023-03-21 17:01:32.410+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
-2023-03-21 17:01:32.411+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-03-21 17:01:32.446+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2023-03-21 17:01:32.448+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.035
-2023-03-21 17:01:32.448+09:00 | | 
-2023-03-21 17:01:32.449+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-03-21 17:01:32.449+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-03-21 17:01:32.449+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
-2023-03-21 17:01:32.449+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2023-03-21 17:01:32.449+09:00 | | | 
-2023-03-21 17:01:32.449+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-03-21 17:01:32.449+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2023-03-21 17:01:32.449+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2023-03-21 17:01:32.449+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
-2023-03-21 17:01:32.449+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
-2023-03-21 17:01:32.451+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
-2023-03-21 17:01:32.451+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.039
+2023-04-16 08:03:10.363+09:00 DebugTrace 4.0.0 on Amazon.com Inc. OpenJDK Runtime Environment 17.0.6+10-LTS
+2023-04-16 08:03:10.363+09:00   property name: DebugTrace.properties
+2023-04-16 08:03:10.363+09:00   logger: org.debugtrace.logger.Std$Err
+2023-04-16 08:03:10.385+09:00 
+2023-04-16 08:03:10.388+09:00 ______________________________ main ______________________________
+2023-04-16 08:03:10.388+09:00 
+2023-04-16 08:03:10.388+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
+2023-04-16 08:03:10.389+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
+2023-04-16 08:03:10.389+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-04-16 08:03:10.432+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-04-16 08:03:10.434+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.044
+2023-04-16 08:03:10.434+09:00 | | 
+2023-04-16 08:03:10.434+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-04-16 08:03:10.434+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-04-16 08:03:10.434+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2023-04-16 08:03:10.436+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-04-16 08:03:10.436+09:00 | | | 
+2023-04-16 08:03:10.436+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-04-16 08:03:10.436+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-04-16 08:03:10.436+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-04-16 08:03:10.436+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2023-04-16 08:03:10.436+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
+2023-04-16 08:03:10.436+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2023-04-16 08:03:10.437+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.047
 fibonacci(3) = 2
-2023-03-21 17:01:32.451+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.039
+2023-04-16 08:03:10.437+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.048
 ----
 
 ==== 3. Method List
@@ -197,8 +197,7 @@ This library has the following methods. These are all static methods of `org.deb
 `byte`, `short`, `int`, `long`, +
 `float`, `double`, `T`
 
-|[.small red]#*new*# +
-`print`
+|`print`
 |`name`: the value name +
 `value`: the value +
 `logOptions`: http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/LogOptions.html[LogOptions] +
@@ -226,8 +225,7 @@ Or the following can be specified. +
 `IntSupplier`, `LongSupplier` +
 `Supplier<T>`
 
-|[.small red]#*new*# +
-`print`
+|`print`
 |`name`: the value name +
 `valueSupplier`: the supplier of the value +
 `logOptions`: http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/LogOptions.html[LogOptions] +
@@ -365,8 +363,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 
 |`minimumOutputSize`
 |The minimum value to output the number of elements of array, collection and map
-|[.small red]#*new*# +
-`Integer.MAX_VALUE` [.small]#(Same as no output)#
+|`Integer.MAX_VALUE` [.small]#(Same as no output)#
 
 |`lengthFormat`
 |The format string of the length of string +
@@ -377,8 +374,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 
 |`minimumOutputLength`
 |The minimum value to output the length of string
-|[.small red]#*new*# +
-`Integer.MAX_VALUE` [.small]#(Same as no output)#
+|`Integer.MAX_VALUE` [.small]#(Same as no output)#
 
 |`utilDateFormat`
 |The format string of `java.util.Date`
@@ -697,152 +693,4 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specificati
 
 ==== 9. Release Notes
 
-===== DebugTrace-java 3.7.0 [.small .gray]#- March 21, 2023#
-
-* Added http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/LogOptions.html[LogOptions] class.
-* Added the following methods to
-http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/DebugTrace.html[DebugTrace] class.
-** `public static boolean print(String name, boolean value, LogOptions logOptions)`
-** `public static char print(String name, char value, LogOptions logOptions)`
-** `public static byte print(String name, byte value, LogOptions logOptions)`
-** `public static short print(String name, short value, LogOptions logOptions)`
-** `public static int print(String name, int value, LogOptions logOptions)`
-** `public static long print(String name, long value, LogOptions logOptions)`
-** `public static float print(String name, float value, LogOptions logOptions)`
-** `public static double print(String name, double value, LogOptions logOptions)`
-** `public static <T> T print(String name, T value, LogOptions logOptions)`
-** `public static boolean print(String name, BooleanSupplier valueSupplier, LogOptions logOptions)`
-** `public static int print(String name, IntSupplier valueSupplier, LogOptions logOptions)`
-** `public static long print(String name, LongSupplier valueSupplier, LogOptions logOptions)`
-** `public static double print(String name, DoubleSupplier valueSupplier, LogOptions logOptions)`
-** `public static <T> T print(String name, Supplier<T> valueSupplier, LogOptions logOptions)`
-* Changed default values for the following properties.
-
-[cols="1,1,1", options="header", width="60%"]
-|===
-^|Property Name ^|New Default Value ^|Old Default Value
-|`minimumOutputSize`   ^|`Integer.MAX_VALUE` ^|16
-|`minimumOutputLength` ^|`Integer.MAX_VALUE` ^|16
-|===
-
-===== DebugTrace-java 3.6.0 [.small .gray]#- January 29, 2023#
-
-* Fixed a bug where the `print` method could throw a `java.lang.IndexOutOfBoundsException`.
-* Added calling source file name and line number to log output of `enter` method.
-* Removed deprecated method with `mapName` as an argument.
-* Removed deprecated properties in DebugTrace.properties.
-* Abolished `logLevel` setting in DebugTrace.properties and made it fixed (`Jdk`: `FINEST`, others: `TRACE`).
-
-===== DebugTrace-java 3.5.2 [.small .gray]#- November 20, 2022#
-
-* Fixed a bug that caused an exception to be thrown in the `print` method.
-
-===== DebugTrace-java 3.5.1 [.small .gray]#- September 18, 2022#
-
-* Changed log file output with `logger=File: <log file path>` to output **from the top** of the file. +
-  When outputting by **appending**, specify with `logger=File: +<log file path>`.
-* Fixed a bug that throw a `NullPointerException` on the output of an object of a class
-  which `<class>.getPackage()` returns `null`.
-
-===== DebugTrace-java 3.5.0 [.small .gray]#- June 19, 2022#
-
-* Improved the log output of `byte[]`.
-* Changed default values for the following properties.
-
-[cols="1,1,1", options="header", width="60%"]
-|===
-^|Property Name ^|New Default Value ^|Old Default Value
-|`minimumOutputSize`   ^|16  ^|5
-|`minimumOutputLength` ^|16  ^|5
-|`collectionLimit`     ^|128 ^|512
-|`byteArrayLimit`      ^|256 ^|8192
-|`stringLimit`         ^|256 ^|8192
-|===
-
-* Enabled to specify the package with the `reflectionClasses` property. +
-Example: `reflectionClasses = org.debugtrace.example.`
-
-===== DebugTrace-java 3.4.0 [.small .gray]#- June 5, 2022#
-
-* Added `File` logger to output directly to a file.
-* The following contents have been added to the log at the start.
-** `System.getProperty("java.vendor")`
-** `System.getProperty("java.runtime.name")`
-** `System.getProperty("java.runtime.version")`
-
-===== DebugTrace-java 3.3.1 [.small .gray]#- February 26, 2022#
-
-* `print` methods now returns the value or the message of the argument.
-
-===== DebugTrace-java 3.3.0 [.small .gray]#- February 6, 2022#
-
-* Supports exception throws in the `Supplier.get` method in `print` methods with `Supplier` (or `BooleanSupplier`, etc.) as an argument.
-* `print` methods with `mapNameMap` as an argument has been deprecated. Instead, define `mapNameMap` property in `DebugTrace.properties`. 
-
-===== DebugTrace-java 3.2.0 [.small .gray]#- November 20, 2021#
-
-* Logging library https://github.com/google/flogger[Flogger] is no longer supported.
-
-===== DebugTrace-java 3.1.1 [.small .gray]#- August 10, 2021#
-
-* Improved the line break handling of data output
-
-===== DebugTrace-java 3.1.0 [.small .gray]#- June 12, 2021#
-
-* Added support for logging library https://github.com/google/flogger[Flogger].
-
-===== DebugTrace-java 3.0.7 [.small .gray]#- June 2, 2021#
-
-* Improved: Single quotes in string and double quote of character no longer escape. +
-`"'Foo'"` <- `"\'Foo\'"` +
-`'"'` <- `'\"'`
-
-===== DebugTrace-java 3.0.6 [.small .gray]#- May 18, 2021#
-
-* Bug fix: A `NulPointerException` is thrown in the output of an object of the `Object` class.
-
-===== DebugTrace-java 3.0.5 [.small .gray]#- April 13, 2021#
-
-* Migrate to Maven Central repository.
-
-===== DebugTrace-java 3.0.4 [.small .gray]#- November 1, 2020#
-
-* Fixed a bug that converted negative `byte[]` elements to the wrong string.
-
-===== DebugTrace-java 3.0.3 [.small .gray]#- October 24, 2020#
-
-* Changed the default output format of `duration` of the `leave` method from nanoseconds to milliseconds.
-
-===== DebugTrace-java 3.0.2 [.small .gray]#- July 6, 2020#
-
-* Changed the output parentheses in reflection. (`{}` <- `[]`)
-* Improved the line break handling of data output.
-* Added `printStack` method.
-
-===== DebugTrace-java 3.0.1 [.small .gray]#- May 15, 2020#
-
-* Improved the line break handling of data output.
-
-===== DebugTrace-java 3.0.0 [.small .gray]#- May 12, 2020#
-
-* Improved the line break handling of data output.
-
-* Added the following properties specified in DebugTrace.properties.
-** `sizeFormat` - The format string of the size of collections and maps (default: `size:%1d`)
-** `minimumOutputSize` - The minimum value to output the number of elements of array, collection and map (default: `5`)
-** `lengthFormat` - The format string of the length of strings (default: `length:% 1d`)
-** `minimumOutputLength` - The minimum value to output the length of string length (default: `5`)
-** `maximumDataOutputWidth` - The maximum output width of data (default: `70`)
-
-* Changed the following property names specified in DebugTrace.properties. However, you can specify the previous names for compatibility.
-** `enterFormat` <- `enterString`
-** `leaveFormat` <- `leaveString`
-** `threadBoundaryFormat` <- `threadBoundaryString`
-** `classBoundaryFormat` <- `classBoundaryString`
-** `nonOutputString` <- `nonPrintString`
-** `collectionLimit` <- `arrayLimit`
-** `nonOutputProperties` <- `nonPrintProperties`
-
-* Delete the following properties specified in DebugTrace.properties.
-** `fieldNameValueSeparator` - integrated into `keyValueSeparator`
-** `mapLimit` - integrated into `collectionLimit`
+https://github.com/MasatoKokubo/DebugTrace-java/releases[Releases]

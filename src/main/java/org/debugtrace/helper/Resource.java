@@ -5,9 +5,7 @@ package org.debugtrace.helper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,9 +47,9 @@ public class Resource {
     private static final Function<String, String> stringConverter = string -> {
             if (string != null) {
                 StringBuilder buff = new StringBuilder(string.length());
-                boolean escape = false;
-                for (int index = 0; index < string.length(); ++index) {
-                    char ch = string.charAt(index);
+                var escape = false;
+                for (var index = 0; index < string.length(); ++index) {
+                    var ch = string.charAt(index);
                     if (escape) {
                         if      (ch == 't' ) buff.append('\t'); // 09 HT
                         else if (ch == 'n' ) buff.append('\n'); // 0A LF
@@ -77,12 +75,12 @@ public class Resource {
         @Override
         public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
                 throws IllegalAccessException, InstantiationException, IOException {
-            String bundleName = toBundleName(baseName, locale);
-            String resourceName = toResourceName(bundleName, "properties");
+            var bundleName = toBundleName(baseName, locale);
+            var resourceName = toResourceName(bundleName, "properties");
 
-            try (InputStream inStream = loader.getResourceAsStream(resourceName);
-                Reader streamReader = new InputStreamReader(inStream, "UTF-8");
-                Reader reader = new BufferedReader(streamReader)) {
+            try (var inStream = loader.getResourceAsStream(resourceName);
+                var streamReader = new InputStreamReader(inStream, "UTF-8");
+                var reader = new BufferedReader(streamReader)) {
                 return new PropertyResourceBundle(reader);
             }
         }
@@ -211,7 +209,7 @@ public class Resource {
     public <E> List<E> getList(String key, Function<String, E> valueConverter) {
         Objects.requireNonNull(valueConverter, "valueConverter is null");
 
-        String propertyValue = getString(key, "");
+        var propertyValue = getString(key, "");
         List<E> list = new ArrayList<>();
 
         Arrays.stream(propertyValue.split(","))
@@ -239,7 +237,7 @@ public class Resource {
     public <E> Set<E> getSet(String key, Function<String, E> valueConverter) {
         Objects.requireNonNull(valueConverter, "valueConverter is null");
 
-        String propertyValue = getString(key, "");
+        var propertyValue = getString(key, "");
         Set<E> set = new HashSet<>();
 
         Arrays.stream(propertyValue.split(","))
@@ -293,17 +291,17 @@ public class Resource {
         Objects.requireNonNull(keyConverter, "keyConverter is null");
         Objects.requireNonNull(valueConverter, "valueConverter is null");
 
-        String mapKeyValue = getString(key, "");
+        var mapKeyValue = getString(key, "");
 
-        Map<K, V> map = new HashMap<>();
+        var map = new HashMap<K, V>();
 
         Arrays.stream(mapKeyValue.split(","))
             .forEach(string -> {
                 string = string.trim();
                 if (!string.isEmpty()) {
-                    String[] keyValueStr = string.split(":");
-                    String keyStr   = keyValueStr.length == 2 ? keyValueStr[0].trim() : "";
-                    String valueStr = keyValueStr.length == 2 ? keyValueStr[1].trim() : "";
+                    var keyValueStr = string.split(":");
+                    var keyStr   = keyValueStr.length == 2 ? keyValueStr[0].trim() : "";
+                    var valueStr = keyValueStr.length == 2 ? keyValueStr[1].trim() : "";
                     if (!keyStr.isEmpty() && !valueStr.isEmpty())
                         map.put(keyConverter.apply(keyStr), valueConverter.apply(valueStr));
                 }

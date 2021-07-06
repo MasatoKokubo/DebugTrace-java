@@ -46,12 +46,12 @@ class LineBreakSpec extends Specification {
         DebugTrace.print('contacts', contacts)
 
         then:
-        DebugTrace.lastLog.contains('[\n|   (....Contact){')
+        DebugTrace.lastLog.contains('[\n|   (record ....Contact){')
         DebugTrace.lastLog.contains('  firstName:')
         DebugTrace.lastLog.contains(', lastName:')
         DebugTrace.lastLog.contains('  birthday:')
         DebugTrace.lastLog.contains('  phoneNumber:')
-        DebugTrace.lastLog.contains('},\n|   (....Contact){')
+        DebugTrace.lastLog.contains('},\n|   (record ....Contact){')
         DebugTrace.lastLog.contains('},\n|   null, null')
 
         cleanup:
@@ -72,12 +72,12 @@ class LineBreakSpec extends Specification {
         DebugTrace.print('contacts', contacts)
 
         then:
-        DebugTrace.lastLog.contains('[\n|   (....Contact){')
+        DebugTrace.lastLog.contains('[\n|   (record ....Contact){')
         DebugTrace.lastLog.contains('  firstName:')
         DebugTrace.lastLog.contains(', lastName:')
         DebugTrace.lastLog.contains('  birthday:')
         DebugTrace.lastLog.contains('  phoneNumber:')
-        DebugTrace.lastLog.contains('},\n|   (....Contact){')
+        DebugTrace.lastLog.contains('},\n|   (record ....Contact){')
         DebugTrace.lastLog.contains('},\n|   null, null')
 
         cleanup:
@@ -102,7 +102,7 @@ class LineBreakSpec extends Specification {
         DebugTrace.lastLog.contains('lastName: "')
         DebugTrace.lastLog.contains('birthday: (LocalDate)')
         DebugTrace.lastLog.contains('phoneNumber: "')
-        DebugTrace.lastLog.contains('},\n|   2: (....Contact){\n')
+        DebugTrace.lastLog.contains('},\n|   2: (record ....Contact){\n')
 
         DebugTrace.lastLog.contains('[\n|   1:')
         DebugTrace.lastLog.contains('  firstName:')
@@ -119,7 +119,7 @@ class LineBreakSpec extends Specification {
     def lineBreakOfReflectionSpec() {
         setup:
         DebugTrace.enter()
-        def contacts = Contacts.of(
+        def contacts = new Contacts(
             Contact.of('Akane' , 'Apple' , Tuple.of(2020, 1, 1), '080-1111-1111'),
             Contact.of('Yukari', 'Apple' , Tuple.of(2020, 2, 2), '080-2222-2222'),
             null,

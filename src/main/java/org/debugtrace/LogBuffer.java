@@ -58,8 +58,6 @@ class LogBuffer {
      * @return this object
      */
     public LogBuffer append(Object value, int nestLevel, boolean noBreak) {
-    // 3.5.2
-    //  String str = value.toString();
         String str = null;
         try {
             str = value.toString();
@@ -67,7 +65,6 @@ class LogBuffer {
         catch (Exception e) {
             str = e.toString();
         }
-    ////
         if (!noBreak && length() > 0 && length() + str.length() > DebugTrace.maximumDataOutputWidth)
             lineFeed();
         appendNestLevel = nestLevel;
@@ -117,8 +114,8 @@ class LogBuffer {
     public LogBuffer append(String separator, LogBuffer buff) {
         if (separator != null)
             append(separator, 0, true);
-        int index = 0;
-        for (Tuple._2<Integer, String> line : buff.lines()) {
+        var index = 0;
+        for (var line : buff.lines()) {
             if (index > 0)
                 lineFeed();
             append(line.value2(), line.value1(), index == 0 && separator != null);
@@ -151,7 +148,7 @@ class LogBuffer {
      * @return tuples of data indentation level and log string
      */
     public List<Tuple._2<Integer, String>> lines() {
-        List<Tuple._2<Integer, String>> lines = new ArrayList<>(this.lines);
+        var lines = new ArrayList<>(this.lines);
         if (lastLine.length() > 0)
             lines.add(Tuple.of(nestLevel, lastLine.toString()));
         return lines;

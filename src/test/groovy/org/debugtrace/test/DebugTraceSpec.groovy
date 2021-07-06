@@ -74,7 +74,7 @@ class DebugTraceSpec extends Specification {
 
         then:
         DebugTrace.print('p', p) == p
-        DebugTrace.lastLog.indexOf('....Point') >= 0
+        DebugTrace.lastLog.indexOf('....Point){') >= 0
 
         cleanup:
         DebugTrace.leave()
@@ -90,7 +90,8 @@ class DebugTraceSpec extends Specification {
 
         then:
         DebugTrace.print('p', p) == p
-        DebugTrace.lastLog.indexOf('Point){') >= 0
+    //  DebugTrace.lastLog.indexOf('(Point){') >= 0  // 4.0.0
+        DebugTrace.lastLog.indexOf('p = (record ....Point){x: 2, y: ') >= 0
 
         cleanup:
         DebugTrace.leave()
@@ -327,7 +328,7 @@ class DebugTraceSpec extends Specification {
         object = new Name('F', 'L')
         then:
         DebugTrace.print('v', object) == object
-        DebugTrace.lastLog.indexOf('v = (....Name){') >= 0
+        DebugTrace.lastLog.indexOf('v = (record ....Name){') >= 0
         DebugTrace.lastLog.indexOf('first: "F",') >= 0
         DebugTrace.lastLog.indexOf('last: "L"') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
@@ -827,19 +828,21 @@ class DebugTraceSpec extends Specification {
         DebugTrace.printStack(10)
     }
 
+    private class ThrowExceptiuon {
+        @Override
+        public String toString() {
+            throw new RuntimeException('Point');
+        }
+    }
+
     // 3.5.2
     def "toString method throws Exception"() {
         setup:
         DebugTrace.enter()
  
         when:
-        def point = new Point(1, 2) {
-            @Override
-            public String toString() {
-                throw new RuntimeException('Point');
-            }
-        }
-        DebugTrace.print('point', point)
+        def foo = new ThrowExceptiuon()
+        DebugTrace.print('foo', foo)
 
         then:
         DebugTrace.lastLog.contains('java.lang.RuntimeException: Point')

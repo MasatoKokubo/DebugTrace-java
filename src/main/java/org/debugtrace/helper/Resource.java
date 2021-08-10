@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -262,7 +264,6 @@ public class Resource {
         return getValue(key1, key2, Integer::parseInt, defaultValue);
     }
 
-
     /**
      * Returns a list created from the resource property value if it is found,
      * an empty list otherwise.
@@ -293,6 +294,37 @@ public class Resource {
         return list;
     }
 
+
+    /**
+     * Returns a set created from the resource property value if it is found,
+     * an empty set otherwise.
+     *
+     * @param <E> the type of elements of the list
+     * @param key1 the key 1 of resource property
+     * @param key2 the key 2 of resource property
+     * @param valueConverter the function to convert string to element type
+     * @return a created set (or an empty set)
+     *
+     * @throws NullPointerException if <b>key</b> or <b>valueConverter</b> is null
+     *
+     * @since 3.1.1
+     */
+    public <E> Set<E> getSet(String key1, String key2, Function<String, E> valueConverter) {
+        Objects.requireNonNull(valueConverter, "valueConverter is null");
+
+        String propertyValue = getString(key1, key2, "");
+        Set<E> set = new HashSet<>();
+
+        Arrays.stream(propertyValue.split(","))
+            .forEach(string -> {
+                string = string.trim();
+                if (!string.isEmpty())
+                    set.add(valueConverter.apply(string));
+            });
+
+        return set;
+    }
+
     /**
      * Returns a string list created from the resource property value if it is found,
      * an empty list otherwise.
@@ -318,6 +350,19 @@ public class Resource {
      */
     public List<String> getStrings(String key1, String key2) {
         return getList(key1, key2, stringConverter);
+    }
+
+    /**
+     * Returns a string set created from the resource property value if it is found,
+     * an empty set otherwise.
+     *
+     * @param key the key of resource property
+     * @return a created string set (or an empty set)
+     *
+     * @since 3.1.1
+     */
+    public Set<String> getStringSet(String key) {
+        return getSet(key, null, stringConverter);
     }
 
     /**

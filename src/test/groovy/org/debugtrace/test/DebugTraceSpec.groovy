@@ -19,25 +19,6 @@ import spock.lang.*
 
 @Unroll
 class DebugTraceSpec extends Specification {
-    static class Point {
-        int x
-        int y
-        Point(int x, int y)  {
-            this.x = x
-            this.y = y
-        }
-        def String toString() {return "(x: ${x}, y: ${y})"}
-    }
-
-    static class Name {
-        String first
-        String last
-        Name(String first, String last)  {
-            this.first = first
-            this.last = last
-        }
-    }
-
     enum Fruits {APPLE, ORANGE, MELON, GRAPE, PINEAPPLE}
 
     static commonSuffix = ' (' + DebugTraceSpec.class.simpleName + '.groovy:'
@@ -66,12 +47,11 @@ class DebugTraceSpec extends Specification {
         setup: DebugTrace.enter()
 
         when:
-            def p = new Point(2, 3);
-            DebugTrace.print('p', p)
+        def p = new Point(2, 3);
+        DebugTrace.print('p', p)
 
         then:
-            DebugTrace.lastLog.indexOf('y: ***') >= 0
-            DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
+        DebugTrace.lastLog.indexOf('y: ***') >= 0
 
         cleanup: DebugTrace.leave()
     }
@@ -81,12 +61,11 @@ class DebugTraceSpec extends Specification {
         setup: DebugTrace.enter()
 
         when:
-            def p = new Point(2, 3);
-            DebugTrace.print('p', p)
+        def p = new Point(2, 3);
+        DebugTrace.print('p', p)
 
         then:
-            DebugTrace.lastLog.indexOf('....DebugTraceSpec.Point') >= 0
-            DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
+        DebugTrace.lastLog.indexOf('....Point') >= 0
 
         cleanup: DebugTrace.leave()
     }
@@ -96,12 +75,11 @@ class DebugTraceSpec extends Specification {
         setup: DebugTrace.enter()
 
         when:
-            def p = new Point(2, 3);
-            DebugTrace.print('p', p)
+        def p = new Point(2, 3);
+        DebugTrace.print('p', p)
 
         then:
-            DebugTrace.lastLog.indexOf('Point){') >= 0
-            DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
+        DebugTrace.lastLog.indexOf('Point){') >= 0
 
         cleanup: DebugTrace.leave()
     }
@@ -297,13 +275,11 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = 1970-01-01 09:00:01.234') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when:DebugTrace.print('v', new Name('F', 'L'))
-        then:
-            DebugTrace.lastLog.indexOf('v = (....DebugTraceSpec.Name){') >= 0
-            DebugTrace.lastLog.indexOf('first: "F",') >= 0
-            DebugTrace.lastLog.indexOf('last: "L",') >= 0
-            DebugTrace.lastLog.indexOf('metaClass: ***') >= 0
-            DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+        when: DebugTrace.print('v', new Name('F', 'L'))
+        then: DebugTrace.lastLog.indexOf('v = (....Name){') >= 0
+              DebugTrace.lastLog.indexOf('first: "F",') >= 0
+              DebugTrace.lastLog.indexOf('last: "L"') >= 0
+              DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
         when: DebugTrace.print('v', Fruits.APPLE)
         then: DebugTrace.lastLog.indexOf('v = (....DebugTraceSpec.Fruits)APPLE') >= 0
@@ -655,9 +631,9 @@ class DebugTraceSpec extends Specification {
  
         when: func1()
         then:
-            DebugTrace.lastLog.contains('func3')
-            DebugTrace.lastLog.contains('func2')
-            DebugTrace.lastLog.contains('func1')
+        DebugTrace.lastLog.contains('func3')
+        DebugTrace.lastLog.contains('func2')
+        DebugTrace.lastLog.contains('func1')
 
         cleanup: DebugTrace.leave()
     }

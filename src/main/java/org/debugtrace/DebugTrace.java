@@ -67,7 +67,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.1.0";
+    public static final String VERSION = "3.1.1";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -195,7 +195,10 @@ public class DebugTrace {
     protected static List<String> nonOutputProperties; // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
     protected static String defaultPackage           ; // since 2.3.0
     protected static String defaultPackageString     ; // since 2.3.0
-    protected static List<String> reflectionClasses  ; // since 2.4.0
+// 3.1.1
+//  protected static List<String> reflectionClasses  ; // since 2.4.0
+    protected static Set<String> reflectionClasses  ; // since 2.4.0
+////
     protected static Map<String, String> mapNameMap  ; // since 2.4.0
 
     // @since 2.5.0
@@ -258,10 +261,7 @@ public class DebugTrace {
 
         logLevel                = resource.getString("logLevel"                                    , "default");
         enterFormat             = resource.getString("enterFormat"         , "enterString"         , "Enter %1$s.%2$s (%3$s:%4$d)"); // since 3.0.0 enterFormat <- enterString
-    // 3.0.3
-    //  leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN"); // since 3.0.0 leaveFormat <- leaveString
         leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL"); // since 3.0.0 leaveFormat <- leaveString
-    ////
         threadBoundaryFormat    = resource.getString("threadBoundaryFormat", "threadBoundaryString",    "______________________________ %1$s ______________________________");
         classBoundaryFormat     = resource.getString("classBoundaryFormat" , "classBoundaryString" , "____ %1$s ____");
         indentString            = resource.getString("indentString"                                , "| ");
@@ -296,7 +296,10 @@ public class DebugTrace {
         nonOutputProperties     = resource.getStrings("nonOutputProperties", "nonPrintProperties"  ); // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
         defaultPackage          = resource.getString("defaultPackage", ""                      , ""); // since 2.3.0
         defaultPackageString    = resource.getString("defaultPackageString"                 , "..."); // since 2.3.0
-        reflectionClasses       = resource.getStrings("reflectionClasses"                          ); // since 2.4.0
+    // 3.1.1
+    //  reflectionClasses       = resource.getStrings("reflectionClasses"                          ); // since 2.4.0
+        reflectionClasses       = resource.getStringSet("reflectionClasses"                        ); // since 2.4.0
+    ////
         mapNameMap              = resource.getStringKeyMap("mapNameMap"                            ); // since 2.4.0
 
         utilDateFormatter       = createDateTimeFormatter(utilDateFormat      );
@@ -492,10 +495,7 @@ public class DebugTrace {
             if (state.previousLineCount() > 1)
                 logger.log(getIndentString(state.nestLevel(), 0)); // Empty Line
 
-        // 3.0.3
-        //  long timeSpan = System.currentTimeMillis() - state.downNest();
             long timeSpan = System.nanoTime() - state.downNest();
-        ////
 
             lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(leaveFormat, timeSpan);
             logger.log(lastLog);
@@ -507,10 +507,7 @@ public class DebugTrace {
      */
     private static String getCallerInfo(String baseString, long timeSpan) {
         StackTraceElement element = getStackTraceElement();
-    // 3.0.3
-    //  Instant instant = Instant.ofEpochSecond(timeSpan / 1000, (timeSpan % 1000) * 1000_000);
         Instant instant = Instant.ofEpochSecond(timeSpan / 1000_000_000, timeSpan % 1000_000_000);
-    ////
         OffsetDateTime dateTime = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
         return String.format(baseString,
             replaceTypeName(element.getClassName()),
@@ -581,14 +578,20 @@ public class DebugTrace {
 
             LogBuffer buff = new LogBuffer();
 
-            buff.append(name).noBreakAppend(varNameValueSeparator);
+        // 3.1.1
+        //  buff.append(name).noBreakAppend(varNameValueSeparator);
+            buff.append(name);
+        ////
             if (mapName == null) {
                 String normalizedName = name.substring(name.lastIndexOf('.') + 1).trim();
                 normalizedName = normalizedName.substring(normalizedName.lastIndexOf(' ') + 1);
                 mapName = mapNameMap.get(normalizedName);
             }
             LogBuffer valueBuff = toString(mapName, value, isPrimitive, false, false);
-            buff.append(valueBuff);
+        // 3.1.1
+        //  buff.append(valueBuff);
+            buff.append(varNameValueSeparator, valueBuff);
+        ////
 
             StackTraceElement element = getStackTraceElement();
             String suffix = String.format(printSuffixFormat,
@@ -966,11 +969,17 @@ public class DebugTrace {
             } else if (type == byte[].class) {
                 // byte Array
                 LogBuffer valueBuff = toStringBytes((byte[])value);
-                buff.append(valueBuff);
+            // 3.1.1
+            //  buff.append(valueBuff);
+                buff.append(null, valueBuff);
+            ////
             } else {
                 // Other Array
                 LogBuffer valueBuff = toStringArray(mapName, value);
-                buff.append(valueBuff);
+            // 3.1.1
+            //  buff.append(valueBuff);
+                buff.append(null, valueBuff);
+            ////
             }
 
         } else if (value instanceof Boolean) {
@@ -982,10 +991,7 @@ public class DebugTrace {
             // Character
             buff.noBreakAppend(typeName);
             buff.noBreakAppend('\'');
-        // 3.0.7
-        //  appendChar(buff, ((Character)value).charValue());
             appendChar(buff, ((Character)value).charValue(), false);
-        ////
             buff.noBreakAppend('\'');
 
         } else if (value instanceof Number) {
@@ -1050,19 +1056,28 @@ public class DebugTrace {
             buff.noBreakAppend(typeName);
             if (((Optional<?>)value).isPresent()) {
                 LogBuffer valueBuff = toString(mapName, ((Optional<?>)value).get(), false, false, true);
-                buff.append(valueBuff);
+            // 3.1.1
+            //  buff.append(valueBuff);
+                buff.append(null, valueBuff);
+            ////
             }else
                 buff.noBreakAppend("empty");
 
         } else if (value instanceof Collection) {
             // Collection
             LogBuffer valueBuff = toStringCollection(mapName, (Collection<?>)value);
-            buff.append(valueBuff);
+        // 3.1.1
+        //  buff.append(valueBuff);
+            buff.append(null, valueBuff);
+        ////
 
         } else if (value instanceof Map) {
             // Map
             LogBuffer valueBuff = toStringMap(mapName, (Map<?,?>)value);
-            buff.append(valueBuff);
+        // 3.1.1
+        //  buff.append(valueBuff);
+            buff.append(null, valueBuff);
+        ////
 
         } else if (value instanceof Clob) {
             // Clob
@@ -1084,8 +1099,11 @@ public class DebugTrace {
                 if (length > (long)byteArrayLimit)
                     length = (long)(byteArrayLimit + 1);
                 LogBuffer valueBuff = toStringBytes(((Blob)value).getBytes(1L, (int)length));
-                buff.noBreakAppend(typeName);
-                buff.append(valueBuff);
+            // 3.1.1
+            //  buff.noBreakAppend(typeName);
+            //  buff.append(valueBuff);
+                buff.append(typeName, valueBuff);
+            ////
             }
             catch (SQLException e) {
                 buff.append(e);
@@ -1113,7 +1131,10 @@ public class DebugTrace {
                     // Use Reflection
                     reflectedObjects.add(value);
                     LogBuffer valueBuff = toStringReflection(value);
-                    buff.append(valueBuff);
+                // 3.1.1
+                //  buff.append(valueBuff);
+                    buff.append(null, valueBuff);
+                ////
                     reflectedObjects.remove(reflectedObjects.size() - 1);
                     return buff;
                 }
@@ -1269,22 +1290,15 @@ public class DebugTrace {
      * @param ch a character
      * @param inString true if the character is included in the string, false otherwise
      */
-// 3.0.7
-//    private static void appendChar(LogBuffer buff, char ch) {
     private static void appendChar(LogBuffer buff, char ch, boolean inString) {
-////
         switch (ch) {
         case '\b': buff.noBreakAppend("\\b" ); break; // 08 BS
         case '\t': buff.noBreakAppend("\\t" ); break; // 09 HT
         case '\n': buff.noBreakAppend("\\n" ); break; // 0A LF
         case '\f': buff.noBreakAppend("\\f" ); break; // 0C FF
         case '\r': buff.noBreakAppend("\\r" ); break; // 0D CR
-    // 3.0.7
-    //  case '"' : buff.noBreakAppend("\\\""); break; // "
-    //  case '\'': buff.noBreakAppend("\\'" ); break; // '
         case '"' : buff.noBreakAppend(inString ? "\\\"" : "\""); break; // "
         case '\'': buff.noBreakAppend(inString ? "'" : "\\'" ); break; // '
-    ////
         case '\\': buff.noBreakAppend("\\\\"); break; // \
         default:
             if (ch < ' ' || ch == '\u007F')
@@ -1310,10 +1324,7 @@ public class DebugTrace {
                 buff.noBreakAppend(limitString);
                 break;
             }
-        // 3.0.7
-        //  appendChar(buff, charSequence.charAt(index));
             appendChar(buff, charSequence.charAt(index), true);
-        ////
         }
         buff.noBreakAppend('"');
     }
@@ -1346,10 +1357,7 @@ public class DebugTrace {
                 break;
             }
 
-        // 3.0.4
-        //  byte value = bytes[index];
             int value = bytes[index];
-        ////
             if (value < 0) value += 256;
             char ch = (char)(value / 16 + '0');
             if (ch > '9') ch += 'A' - '9' - 1;
@@ -1397,7 +1405,10 @@ public class DebugTrace {
             buff.upNest();
         }
 
-        buff.append(bodyBuff);
+    // 3.1.1
+    //  buff.append(bodyBuff);
+        buff.append(null, bodyBuff);
+    ////
 
         if (isMultiLines) {
             buff.lineFeed();
@@ -1431,7 +1442,10 @@ public class DebugTrace {
             LogBuffer elementBuff = toString(mapName, component, componentType.isPrimitive(), true, false);
             if (index > 0 && (wasMultiLines || elementBuff.isMultiLines()))
                 buff.lineFeed();
-            buff.append(elementBuff);
+        // 3.1.1
+        //  buff.append(elementBuff);
+            buff.append(null, elementBuff);
+        ////
 
             wasMultiLines = elementBuff.isMultiLines();
         }
@@ -1461,7 +1475,10 @@ public class DebugTrace {
             buff.upNest();
         }
 
-        buff.append(bodyBuff);
+    // 3.1.1
+    //  buff.append(bodyBuff);
+        buff.append(null, bodyBuff);
+    ////
 
         if (isMultiLines) {
             buff.lineFeed();
@@ -1493,7 +1510,10 @@ public class DebugTrace {
             LogBuffer elementBuff = toString(mapName, element, false, false, true);
             if (index > 0 && (wasMultiLines || elementBuff.isMultiLines()))
                 buff.lineFeed();
-            buff.append(elementBuff);
+        // 3.1.1
+        //  buff.append(elementBuff);
+            buff.append(null, elementBuff);
+        ////
 
             wasMultiLines = elementBuff.isMultiLines();
         }
@@ -1523,7 +1543,10 @@ public class DebugTrace {
             buff.upNest();
         }
 
-        buff.append(bodyBuff);
+    // 3.1.1
+    //  buff.append(bodyBuff);
+        buff.append(null, bodyBuff);
+    ////
 
         if (isMultiLines) {
             buff.lineFeed();
@@ -1555,11 +1578,17 @@ public class DebugTrace {
             LogBuffer entryBuff = new LogBuffer();
             LogBuffer keyBuff = toString(mapName, keyValue.getKey(), false, false, true);
             LogBuffer valueBuff = toString(mapName, keyValue.getValue(), false, false, true);
-            entryBuff.append(keyBuff).noBreakAppend(keyValueSeparator).append(valueBuff);
+        // 3.1.1
+        //  entryBuff.append(keyBuff).noBreakAppend(keyValueSeparator).append(valueBuff);
+            entryBuff.append(null, keyBuff).append(keyValueSeparator, valueBuff);
+        ////
 
             if (index > 0 && (wasMultiLines || entryBuff.isMultiLines()))
                 buff.lineFeed();
-            buff.append(entryBuff);
+        // 3.1.1
+        //  buff.append(entryBuff);
+            buff.append(null, entryBuff);
+        ////
 
             wasMultiLines = entryBuff.isMultiLines();
         }
@@ -1576,10 +1605,7 @@ public class DebugTrace {
     private static boolean hasToString(Class<?> clazz) {
         boolean result = false;
 
-    // 3.0.6
-    //  while (clazz != Object.class) {
         while (clazz != null && clazz != Object.class) {
-    ////
             try {
                 clazz.getDeclaredMethod("toString");
                 result = true;
@@ -1604,30 +1630,28 @@ public class DebugTrace {
 
         Class<?> type = object.getClass();
         buff.append(getTypeName(type, object, false, false, 0));
-    // 3.0.6
-    //  boolean isExtended = type.getSuperclass() != Object.class;
         boolean isExtended = type.getSuperclass() != null && type.getSuperclass() != Object.class;
-    ////
 
         LogBuffer bodyBuff = toStringReflectionBody(object, type, isExtended);
 
         boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
 
-    //  buff.noBreakAppend('['); // 3.0.2
         buff.noBreakAppend('{');
         if (isMultiLines) {
             buff.lineFeed();
             buff.upNest();
         }
 
-        buff.append(bodyBuff);
+    // 3.1.1
+    //  buff.append(bodyBuff);
+        buff.append(null, bodyBuff);
+    ////
 
         if (isMultiLines) {
             if (buff.length() > 0)
                 buff.lineFeed();
             buff.downNest();
         }
-    //  buff.noBreakAppend(']'); // 3.0.2
         buff.noBreakAppend('}');
 
         return buff;
@@ -1637,13 +1661,13 @@ public class DebugTrace {
         LogBuffer buff = new LogBuffer();
 
         Class<?> baseType = type.getSuperclass();
-    // 3.0.6
-    //  if (baseType != Object.class) {
         if (baseType != null && baseType != Object.class) {
-    ////
             // Call for the base type
             LogBuffer baseBuff =  toStringReflectionBody(object, baseType, isExtended);
-            buff.append(baseBuff);
+        // 3.1.1
+        //  buff.append(baseBuff);
+            buff.append(null, baseBuff);
+        ////
         }
 
         String typeNamePrefix = type.getName() + "#";
@@ -1711,20 +1735,32 @@ public class DebugTrace {
                 buff.noBreakAppend(", ");
 
             LogBuffer fieldBuff = new LogBuffer();
-            fieldBuff.append(fieldName).noBreakAppend(keyValueSeparator);
+        // 3.1.1
+        //  fieldBuff.append(fieldName).noBreakAppend(keyValueSeparator);
+            fieldBuff.append(fieldName);
+        ////
 
             if (value != null && nonOutputProperties.contains(typeNamePrefix + fieldName) || fieldName.equals("metaClass"))
                 // the property is non-printing and the value is not null or Groovy's metaClass
-                fieldBuff.noBreakAppend(nonOutputString);
+            // 3.1.1
+            //  fieldBuff.noBreakAppend(nonOutputString);
+                fieldBuff.noBreakAppend(keyValueSeparator).noBreakAppend(nonOutputString);
+            ////
             else {
                 String mapName = mapNameMap.get(fieldName);
                 LogBuffer valueBuff = toString(mapName, value, field.getType().isPrimitive(), false, false);
-                fieldBuff.append(valueBuff);
+            // 3.1.1
+            //  fieldBuff.append(valueBuff);
+                fieldBuff.append(keyValueSeparator, valueBuff);
+            ////
             }
 
             if (!first && (wasMultiLines || fieldBuff.isMultiLines()))
                 buff.lineFeed();
-            buff.append(fieldBuff);
+        // 3.1.1
+        //  buff.append(fieldBuff);
+            buff.append(null, fieldBuff);
+        ////
 
             first = false;
             wasMultiLines = fieldBuff.isMultiLines();

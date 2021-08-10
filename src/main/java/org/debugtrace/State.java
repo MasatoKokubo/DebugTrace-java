@@ -106,10 +106,7 @@ class State {
     public void upNest() {
         previousNestLevel = nestLevel;
         if (nestLevel >= 0)
-        // 3.0.3
-        //  times.push(System.currentTimeMillis());
             times.push(System.nanoTime());
-        ////
         ++nestLevel;
     }
 
@@ -121,9 +118,6 @@ class State {
     public long downNest() {
         previousNestLevel = nestLevel;
         --nestLevel;
-    // 3.0.3
-    //  return times.size() > 0 ? times.pop() : System.currentTimeMillis();
         return times.size() > 0 ? times.pop() : System.nanoTime();
-    ////
     }
 }

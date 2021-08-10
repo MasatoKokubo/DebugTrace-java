@@ -16,66 +16,57 @@ import spock.lang.*
  */
 @Unroll
 class IndentSpec extends Specification {
-    static class Point {
-        int x
-        int y
-        Point(int x, int y) {
-            this.x = x
-            this.y = y
-        }
-    }
-
     def "indent [byte] array"() {
         setup:
-            def dataNestLevel = DebugTrace.currentState.nestLevel()
+        def dataNestLevel = DebugTrace.currentState.nestLevel()
 
         when:
-            DebugTrace.print('[byte] array', (0..<20).inject([]) {
-                list, index -> list << (byte)index
-            } as byte[])
+        DebugTrace.print('[byte] array', (0..<20).inject([]) {
+            list, index -> list << (byte)index
+        } as byte[])
 
         then:
-            DebugTrace.currentState.nestLevel() == dataNestLevel
+        DebugTrace.currentState.nestLevel() == dataNestLevel
     }
 
     def "indent [Point] array"() {
         setup:
-            def dataNestLevel = DebugTrace.currentState.nestLevel()
+        def dataNestLevel = DebugTrace.currentState.nestLevel()
 
         when:
-            DebugTrace.print('[Point] array', (0..<10).inject([]) {
-                list, index -> list << new Point(index, index * index)
-            } as Point[])
+        DebugTrace.print('[Point] array', (0..<10).inject([]) {
+            list, index -> list << new Point(index, index * index)
+        } as Point[])
 
         then:
-            DebugTrace.currentState.nestLevel() == dataNestLevel
+        DebugTrace.currentState.nestLevel() == dataNestLevel
     }
 
     def "indent [Point] list"() {
         setup:
-            def dataNestLevel = DebugTrace.currentState.nestLevel()
+        def dataNestLevel = DebugTrace.currentState.nestLevel()
 
         when:
-            DebugTrace.print('[Point] list', (0..<10).inject([]) {
-                list, index -> list << new Point(index, index * index)
-            })
+        DebugTrace.print('[Point] list', (0..<10).inject([]) {
+            list, index -> list << new Point(index, index * index)
+        })
 
         then:
-            DebugTrace.currentState.nestLevel() == dataNestLevel
+        DebugTrace.currentState.nestLevel() == dataNestLevel
     }
 
     def "indent [Integer: Point] map"() {
         setup:
-            def dataNestLevel = DebugTrace.currentState.nestLevel()
+        def dataNestLevel = DebugTrace.currentState.nestLevel()
 
         when:
-            DebugTrace.print('[Integer: Point]', (0..<10).inject([:]) {
-                map, index ->
-                map[index] = new Point(index, index * index)
-                return map
-            })
+        DebugTrace.print('[Integer: Point]', (0..<10).inject([:]) {
+            map, index ->
+            map[index] = new Point(index, index * index)
+            return map
+        })
 
         then:
-            DebugTrace.currentState.nestLevel() == dataNestLevel
+        DebugTrace.currentState.nestLevel() == dataNestLevel
     }
 }

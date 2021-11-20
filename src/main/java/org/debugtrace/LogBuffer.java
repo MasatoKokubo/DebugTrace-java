@@ -105,20 +105,14 @@ class LogBuffer {
      * @param buff another LogBuffer
      * @return this object
      */
-// 3.1.1
-//  public LogBuffer append(LogBuffer buff) {
     public LogBuffer append(String separator, LogBuffer buff) {
         if (separator != null)
             append(separator, 0, true);
-////
         int index = 0;
         for (Tuple._2<Integer, String> line : buff.lines()) {
             if (index > 0)
                 lineFeed();
-        // 3.1.1
-        //  append(line.value2(), line.value1());
             append(line.value2(), line.value1(), index == 0 && separator != null);
-        ////
             ++index;
         }
         return this;

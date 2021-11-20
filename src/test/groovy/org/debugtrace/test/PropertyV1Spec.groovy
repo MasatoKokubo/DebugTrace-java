@@ -64,9 +64,6 @@ class PropertyV1Spec extends Specification {
         DebugTrace.nonOutputProperties    == ['org.debugtrace.test.PropertySpec$Point#y']
         DebugTrace.defaultPackage         == 'org.debugtrace.test'
         DebugTrace.defaultPackageString   == '~~~'
-    // 3.1.1
-    //  DebugTrace.reflectionClasses      == ['org.debugtrace.test.PropertySpec$Point3']
         DebugTrace.reflectionClasses      == ['org.debugtrace.test.PropertySpec$Point3'] as Set
-    ////
     }
 }

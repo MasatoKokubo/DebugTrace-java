@@ -26,7 +26,7 @@ class LoggersSpec extends Specification {
     // enterStringSpec
     def "loggersSpec #loggerName"(String loggerName) {
         setup:
-        if (loggerName == 'Flogger' || loggerName == 'Jdk') {
+        if (loggerName == 'Jdk') {
             def propertyPath = "src/test/resources/logging_${loggerName}.properties"
             System.setProperty('java.util.logging.config.file', propertyPath)
             LogManager.getLogManager().readConfiguration()
@@ -49,7 +49,6 @@ class LoggersSpec extends Specification {
 
         where:
         loggerName|_
-        'Flogger'|_
         'Jdk'    |_
         'Log4j'  |_
         'Log4j2' |_

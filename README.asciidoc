@@ -15,7 +15,6 @@ By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end 
 * There are no dependent libraries at run time. (Required if you use the following logging library)
 * You can use the following logging library.
     ** Console (stdout and stderr)
-    ** https://github.com/google/flogger[Flogger] (since 3.1.0)
     ** https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[JDK Logger]
     ** http://logging.apache.org/log4j/1.2/[Log4j]
     ** https://logging.apache.org/log4j/2.x/[Log4j2]
@@ -45,30 +44,30 @@ import org.debugtrace.DebugTrace;
 public class Example1 {
     // main
     public static void main(String[] args) {
-        DebugTrace.enter(); // ToDo: Remove after debugging
+        DebugTrace.enter(); // TODO: Remove after debugging
 
         @SuppressWarnings("unused")
         Point[] points = newArray(Point.class, 2);
 
-        DebugTrace.leave(); // ToDo: Remove after debugging
+        DebugTrace.leave(); // TODO: Remove after debugging
     }
 
     // newArray
     public static <E> E[] newArray(Class<E> elementType, int length) {
-        DebugTrace.enter(); // ToDo: Remove after debugging
-        DebugTrace.print("elementType", elementType); // ToDo: Remove after debugging
-        DebugTrace.print("length", length); // ToDo: Remove after debugging
+        DebugTrace.enter(); // TODO: Remove after debugging
+        DebugTrace.print("elementType", elementType); // TODO: Remove after debugging
+        DebugTrace.print("length", length); // TODO: Remove after debugging
         @SuppressWarnings("unchecked")
         E[] array = (E[])Array.newInstance(elementType, length);
-        DebugTrace.print("1 array", array); // ToDo: Remove after debugging
+        DebugTrace.print("1 array", array); // TODO: Remove after debugging
         try {
             for (int index = 0; index < length; ++index)
                 array[index] = elementType.getConstructor().newInstance();
         }
         catch (RuntimeException e) {throw e;}
         catch (Exception e) {throw new RuntimeException(e);}
-        DebugTrace.print("2 array", array); // ToDo: Remove after debugging
-        DebugTrace.leave(); // ToDo: Remove after debugging
+        DebugTrace.print("2 array", array); // TODO: Remove after debugging
+        DebugTrace.leave(); // TODO: Remove after debugging
         return array;
     }
 
@@ -90,26 +89,26 @@ public class Example1 {
 
 .debugtrace.log
 ----
-2021-08-10 14:02:48.308+09:00 DebugTrace 3.1.1
-2021-08-10 14:02:48.309+09:00   resource base name: DebugTrace
-2021-08-10 14:02:48.309+09:00   logger: org.debugtrace.logger.Std$Out
-2021-08-10 14:02:48.311+09:00 
-2021-08-10 14:02:48.311+09:00 ______________________________ main ______________________________
-2021-08-10 14:02:48.311+09:00 
-2021-08-10 14:02:48.311+09:00 Enter example.Example1.main (Example1.java:15)
-2021-08-10 14:02:48.315+09:00 | Enter example.Example1.newArray (Example1.java:25)
-2021-08-10 14:02:48.329+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
-2021-08-10 14:02:48.329+09:00 | | length = 2 (Example1.java:27)
-2021-08-10 14:02:48.329+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:30)
-2021-08-10 14:02:48.331+09:00 | | 
-2021-08-10 14:02:48.331+09:00 | | 2 array = (example.Example1.Point[2])[
-2021-08-10 14:02:48.331+09:00 | |   (example.Example1.Point){x: 0, y: 0},
-2021-08-10 14:02:48.331+09:00 | |   (example.Example1.Point){x: 0, y: 0}
-2021-08-10 14:02:48.331+09:00 | | ] (Example1.java:37)
-2021-08-10 14:02:48.331+09:00 | | 
-2021-08-10 14:02:48.332+09:00 | Leave example.Example1.newArray (Example1.java:38) duration: 00:00:00.016
-2021-08-10 14:02:48.332+09:00 | 
-2021-08-10 14:02:48.332+09:00 Leave example.Example1.main (Example1.java:20) duration: 00:00:00.019
+2021-11-20 16:44:58.927+09:00 DebugTrace 3.2.0
+2021-11-20 16:44:58.928+09:00   resource base name: DebugTrace
+2021-11-20 16:44:58.928+09:00   logger: org.debugtrace.logger.Std$Out
+2021-11-20 16:44:58.933+09:00 
+2021-11-20 16:44:58.933+09:00 ______________________________ main ______________________________
+2021-11-20 16:44:58.933+09:00 
+2021-11-20 16:44:58.934+09:00 Enter example.Example1.main (Example1.java:15)
+2021-11-20 16:44:58.937+09:00 | Enter example.Example1.newArray (Example1.java:25)
+2021-11-20 16:44:58.954+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:26)
+2021-11-20 16:44:58.954+09:00 | | length = 2 (Example1.java:27)
+2021-11-20 16:44:58.954+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:30)
+2021-11-20 16:44:58.956+09:00 | | 
+2021-11-20 16:44:58.957+09:00 | | 2 array = (example.Example1.Point[2])[
+2021-11-20 16:44:58.957+09:00 | |   (example.Example1.Point){x: 0, y: 0},
+2021-11-20 16:44:58.957+09:00 | |   (example.Example1.Point){x: 0, y: 0}
+2021-11-20 16:44:58.957+09:00 | | ] (Example1.java:37)
+2021-11-20 16:44:58.957+09:00 | | 
+2021-11-20 16:44:58.958+09:00 | Leave example.Example1.newArray (Example1.java:38) duration: 00:00:00.019
+2021-11-20 16:44:58.958+09:00 | 
+2021-11-20 16:44:58.958+09:00 Leave example.Example1.main (Example1.java:20) duration: 00:00:00.024
 ----
 
 === 3. Method List
@@ -611,7 +610,7 @@ DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 
 The logger name of DebugTrace is `org.debugtrace.DebugTrace`.   
 
-==== 5.1. Example of *logging.properties* (*JDK* or *Flogger*)
+==== 5.1. Example of *logging.properties* (*JDK*)
 
 .logging.properties
 ----
@@ -720,6 +719,10 @@ link:LICENSE.txt[The MIT License (MIT)]
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specification]
 
 === 9. Release Notes
+
+==== DebugTrace-java 3.2.0 [.small .gray]#- November 20, 2021#
+
+* Logging library https://github.com/google/flogger[Flogger] is no longer supported.
 
 ==== DebugTrace-java 3.1.1 [.small .gray]#- August 10, 2021#
 

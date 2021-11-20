@@ -29,8 +29,8 @@ import org.debugtrace.DebugTrace;
  */
 public class Example2 {
     public static void main(String[] args) {
-        DebugTrace.enter(); // ToDo: Remove after debugging
-        DebugTrace.print("args", args); // ToDo: Remove after debugging
+        DebugTrace.enter(); // TODO: Remove after debugging
+        DebugTrace.print("args", args); // TODO: Remove after debugging
 
     Example2 example = new Example2();
         try {
@@ -42,23 +42,23 @@ public class Example2 {
             e.printStackTrace();
         }
 
-        DebugTrace.leave(); // ToDo: Remove after debugging
+        DebugTrace.leave(); // TODO: Remove after debugging
     }
 
     private void example1() {
-        DebugTrace.enter(); // ToDo: Remove after debugging
+        DebugTrace.enter(); // TODO: Remove after debugging
 
         Thread[] thread = new Thread[5];
         for (int index = 0; index < thread.length; ++index) {
             thread[index] = new Thread(() -> {
-                DebugTrace.enter(); // ToDo: Remove after debugging
+                DebugTrace.enter(); // TODO: Remove after debugging
                 try {
                     Thread.sleep(200);
                 }
                 catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                DebugTrace.leave(); // ToDo: Remove after debugging
+                DebugTrace.leave(); // TODO: Remove after debugging
             });
         }
 
@@ -72,62 +72,62 @@ public class Example2 {
             }
         }
 
-        DebugTrace.leave(); // ToDo: Remove after debugging
+        DebugTrace.leave(); // TODO: Remove after debugging
     }
 
     private void example2() {
-        DebugTrace.enter(); // ToDo: Remove after debugging
+        DebugTrace.enter(); // TODO: Remove after debugging
 
         Values values = new Values();
     //  values.valuesOpt = Optional.of(new Values());
         values.valuesOpt = Optional.of(values);
 
-        DebugTrace.print("values", values); // ToDo: Remove after debugging
+        DebugTrace.print("values", values); // TODO: Remove after debugging
 
         List<Values> valueList = new ArrayList<>();
         valueList.add(values);
         valueList.add(values);
-        DebugTrace.print("valueList", valueList); // ToDo: Remove after debugging
+        DebugTrace.print("valueList", valueList); // TODO: Remove after debugging
 
         Map<Integer, List<Values>> valueListMap = new LinkedHashMap<>();
         valueListMap.put(1, valueList);
 //      valueListMap.put(2, valueList);
-        DebugTrace.print("valueListMap", valueListMap); // ToDo: Remove after debugging
+        DebugTrace.print("valueListMap", valueListMap); // TODO: Remove after debugging
 
         Point[] points = IntStream.range(0, 51)
             .mapToObj((index) -> new Point(index, index + 1, index + 2))
             .toArray(Point[]::new);
-        DebugTrace.print("points", points); // ToDo: Remove after debugging
+        DebugTrace.print("points", points); // TODO: Remove after debugging
 
         Point[] points2 = IntStream.range(0, 10)
             .mapToObj((index) -> new Point(index, index + 1, index + 2))
             .toArray(Point[]::new);
-        DebugTrace.print("points2", points2); // ToDo: Remove after debugging
+        DebugTrace.print("points2", points2); // TODO: Remove after debugging
 
         int[] ints = new int[points.length];
         IntStream.range(0, points.length)
             .forEach((index) -> ints[index] = points[index].x() * points[index].y() * (int)points[index].z());
-        DebugTrace.print("ints", ints); // ToDo: Remove after debugging
+        DebugTrace.print("ints", ints); // TODO: Remove after debugging
 
         int[][][][] intss = new int[2][3][4][5];
-        DebugTrace.print("intss", intss); // ToDo: Remove after debugging
+        DebugTrace.print("intss", intss); // TODO: Remove after debugging
 
         Point p = new Point(10, 11, 12) {};
-        DebugTrace.print("p", p); // ToDo: Remove after debugging
+        DebugTrace.print("p", p); // TODO: Remove after debugging
 
         List<Object> objects = Arrays.asList(true, 'A', (byte)1, (short)2, 3, 4L, new BigDecimal(5), 6.6F, 7.7D);
-        DebugTrace.print("objects", objects); // ToDo: Remove after debugging
+        DebugTrace.print("objects", objects); // TODO: Remove after debugging
 
-        DebugTrace.leave(); // ToDo: Remove after debugging
+        DebugTrace.leave(); // TODO: Remove after debugging
     }
 
     private void example3() throws Exception {
-        DebugTrace.enter(); // ToDo: Remove after debugging
+        DebugTrace.enter(); // TODO: Remove after debugging
 
         DataSource dataSource = BasicDataSourceFactory.createDataSource(new Properties());
-        DebugTrace.print("dataSource", dataSource); // ToDo: Remove after debugging
+        DebugTrace.print("dataSource", dataSource); // TODO: Remove after debugging
 
-        DebugTrace.leave(); // ToDo: Remove after debugging
+        DebugTrace.leave(); // TODO: Remove after debugging
     }
 
     public static class ValuesBase1 {

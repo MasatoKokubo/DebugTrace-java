@@ -12,10 +12,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly        'com.google.flogger:flogger:0.+'
-    testCompileOnly    'com.google.flogger:flogger:0.+'
-    testRuntimeOnly    'com.google.flogger:flogger-system-backend:0.+'
-
     compileOnly        'log4j:log4j:1.+'
     testRuntimeOnly    'log4j:log4j:1.+'
 
@@ -38,7 +34,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.1.1'
+version             = '3.2.0'
 
 sourceSets {
     main {
@@ -75,7 +71,7 @@ sourceSets {
 }
 
 wrapper {
-    gradleVersion = '6.9'
+    gradleVersion = '6.9.1'
 }
 
 compileJava {

@@ -71,7 +71,7 @@ sourceSets {
 }
 
 wrapper {
-    gradleVersion = '6.9.1'
+    gradleVersion = '7.3.1'
 }
 
 compileJava {
@@ -97,6 +97,14 @@ task compileJava_ja(type:JavaCompile) {
     classpath      = compileJava.classpath
     source         = files('src/main_ja/java')
     destinationDir = file('build/classes/main_ja')
+}
+
+processResources {
+    duplicatesStrategy 'exclude'
+}
+
+processTestResources {
+    duplicatesStrategy 'exclude'
 }
 
 jar {

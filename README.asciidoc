@@ -151,7 +151,8 @@ The type of value is `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`,
 The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `Supplier<T>`.
 
 |`print` +
-[.small .blue]#since 2.4.0#
+[.small .blue]#since 2.4.0# +
+[.small .blue]#deprecated since 3.3.0#
 |`mapName`: the name of map to get constant name corresponding to number +
 `name`: the value name +
 `value`: the value
@@ -160,13 +161,14 @@ The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `S
 The type of value is `byte`, `short`, `int`, `long` or `Object`.
 
 |`print` +
-[.small .blue]#since 2.4.0#
+[.small .blue]#since 2.4.0# +
+[.small .blue]#deprecated since 3.3.0#
 |`mapName`: the name of map to get constant name corresponding to number +
 `name`: the value name +
 `valueSupplier`: the supplier of the value
 |Gets a value from the supplier and outputs to the log in the form of +
 `<value name> = <value>(<constant name>)` +
-The valueSupplier type is `IntSupplier`, `LongSupplier` or `Supplier<T>`.
+The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `Supplier<T>`.
 
 |`printStack` +
 [.small .blue]#since 3.0.2#
@@ -719,6 +721,11 @@ link:LICENSE.txt[The MIT License (MIT)]
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specification]
 
 === 9. Release Notes
+
+==== DebugTrace-java 3.3.0 [.small .gray]#- February 6, 2022#
+
+* Supports exception throws in the `Supplier.get` method in `print` methods with `Supplier` (or `BooleanSupplier`, etc.) as an argument.
+* `print` methods with `mapNameMap` as an argument has been deprecated. Instead, define `mapNameMap` property in `DebugTrace.properties`. 
 
 ==== DebugTrace-java 3.2.0 [.small .gray]#- November 20, 2021#
 

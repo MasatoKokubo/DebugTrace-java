@@ -18,7 +18,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -211,13 +211,22 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
+<td class="colFirst"><code>&lt;E&gt;&nbsp;java.util.Set&lt;E&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getSet-java.lang.String-java.lang.String-java.util.function.Function-">getSet</a></span>(java.lang.String&nbsp;key1,
+      java.lang.String&nbsp;key2,
+      java.util.function.Function&lt;java.lang.String,E&gt;&nbsp;valueConverter)</code>
+<div class="block">Returns a set created from the resource property value if it is found,
+ an empty set otherwise.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getString-java.lang.String-java.lang.String-">getString</a></span>(java.lang.String&nbsp;key,
          java.lang.String&nbsp;defaultValue)</code>
 <div class="block">Returns the string of resource property.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getString-java.lang.String-java.lang.String-java.lang.String-">getString</a></span>(java.lang.String&nbsp;key1,
          java.lang.String&nbsp;key2,
@@ -225,14 +234,14 @@ extends java.lang.Object</pre>
 <div class="block">Returns the string of resource property.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getStringKeyMap-java.lang.String-">getStringKeyMap</a></span>(java.lang.String&nbsp;key)</code>
 <div class="block">Returns a map (key: String, value: String) created from the resource property value if it is found,
  an empty map otherwise.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getStringKeyMap-java.lang.String-java.lang.String-">getStringKeyMap</a></span>(java.lang.String&nbsp;key1,
                java.lang.String&nbsp;key2)</code>
@@ -240,14 +249,14 @@ extends java.lang.Object</pre>
  an empty map otherwise.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getStrings-java.lang.String-">getStrings</a></span>(java.lang.String&nbsp;key)</code>
 <div class="block">Returns a string list created from the resource property value if it is found,
  an empty list otherwise.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>java.util.List&lt;java.lang.String&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getStrings-java.lang.String-java.lang.String-">getStrings</a></span>(java.lang.String&nbsp;key1,
           java.lang.String&nbsp;key2)</code>
@@ -255,7 +264,14 @@ extends java.lang.Object</pre>
  an empty list otherwise.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getStringSet-java.lang.String-">getStringSet</a></span>(java.lang.String&nbsp;key)</code>
+<div class="block">Returns a string set created from the resource property value if it is found,
+ an empty set otherwise.</div>
+</td>
+</tr>
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>&lt;V&gt;&nbsp;V</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#getValue-java.lang.String-java.lang.String-java.util.function.Function-V-">getValue</a></span>(java.lang.String&nbsp;key1,
         java.lang.String&nbsp;key2,
@@ -264,7 +280,7 @@ extends java.lang.Object</pre>
 <div class="block">Returns the value of resource property.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>java.util.ResourceBundle</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../org/debugtrace/helper/Resource.html#userResourceBundle--">userResourceBundle</a></span>()</code>
 <div class="block">Returns the user defined ResourceBundle.</div>
@@ -495,6 +511,33 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a name="getSet-java.lang.String-java.lang.String-java.util.function.Function-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSet</h4>
+<pre>public&nbsp;&lt;E&gt;&nbsp;java.util.Set&lt;E&gt;&nbsp;getSet(java.lang.String&nbsp;key1,
+                                   java.lang.String&nbsp;key2,
+                                   java.util.function.Function&lt;java.lang.String,E&gt;&nbsp;valueConverter)</pre>
+<div class="block">Returns a set created from the resource property value if it is found,
+ an empty set otherwise.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>E</code> - the type of elements of the list</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key1</code> - the key 1 of resource property</dd>
+<dd><code>key2</code> - the key 2 of resource property</dd>
+<dd><code>valueConverter</code> - the function to convert string to element type</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a created set (or an empty set)</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.NullPointerException</code> - if <b>key</b> or <b>valueConverter</b> is null</dd>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>3.1.1</dd>
+</dl>
+</li>
+</ul>
 <a name="getStrings-java.lang.String-">
 <!--   -->
 </a>
@@ -532,6 +575,25 @@ extends java.lang.Object</pre>
 <dd>a created string list (or an empty list)</dd>
 <dt><span class="simpleTagLabel">Since:</span></dt>
 <dd>3.0.0</dd>
+</dl>
+</li>
+</ul>
+<a name="getStringSet-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getStringSet</h4>
+<pre>public&nbsp;java.util.Set&lt;java.lang.String&gt;&nbsp;getStringSet(java.lang.String&nbsp;key)</pre>
+<div class="block">Returns a string set created from the resource property value if it is found,
+ an empty set otherwise.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the key of resource property</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a created string set (or an empty set)</dd>
+<dt><span class="simpleTagLabel">Since:</span></dt>
+<dd>3.1.1</dd>
 </dl>
 </li>
 </ul>
@@ -723,6 +785,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a></div>
 <!-- ======== END OF BOTTOM NAVBAR ======= -->
-<p class="legalCopy"><small><div class="copyright">&copy;2015 Masato Kokubo</div></small></p>
+<p class="legalCopy"><small><div class="copyright">&copy; 2015 Masato Kokubo</div></small></p>
 </body>
 </html>

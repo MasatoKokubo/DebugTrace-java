@@ -151,7 +151,8 @@ value のタイプは `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`
 valueSupplier のタイプは `BooleanSupplier`, `IntSupplier`, `LongSupplier` または `Supplier<T>`
 
 |`print` +
-[.small .blue]#ver. 2.4.0より#
+[.small .blue]#ver. 2.4.0より# +
+[.small .blue]#ver. 3.4.0より非推奨#
 |`mapName`: 数値に対応する定数名を得るためのマップの名前 +
 `name`: 値の名前 +
 `value`: 出力値
@@ -160,14 +161,15 @@ valueSupplier のタイプは `BooleanSupplier`, `IntSupplier`, `LongSupplier` �
 valueのタイプは `byte`, `short`, `int`, `long` または `Object`
 
 |`print` +
-[.small .blue]#ver. 2.4.0より#
+[.small .blue]#ver. 2.4.0より# +
+[.small .blue]#ver. 3.4.0より非推奨#
 |`mapName`: 数値に対応する定数名を得るためのマップの名前 +
 `name`: 値の名前 +
 `valueSupplier`: 値のサプライヤー
 |サプライヤーから値を取得して +
 `<値の名前> = <値>(<定数名>)` +
 の形式でログに出力する +
-valueSupplierのタイプは `IntSupplier`, `LongSupplier` または `Supplier<T>`
+valueSupplierのタイプは `BooleanSupplier`, `IntSupplier`, `LongSupplier` または `Supplier<T>`
 
 |`printStack` +
 [.small .blue]#ver. 3.0.2より#
@@ -719,6 +721,11 @@ _(C) 2015 Masato Kokubo_
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
 === 9. [.small]#リリースノート#
+
+==== DebugTrace-java 3.3.0 [.small .gray]#- 2022/2/6#
+
+* `Supplier` (または `BooleanSupplier` など) を引数に持つ `print` メソッドで、`Supplier.get` メソッドでの例外スローに対応。
+* `mapNameMap` を引数に持つ `print` メソッドが非推奨になりました。代わりに `DebugTrace.properties` で `mapNameMap` プロパティを定義ください。
 
 ==== DebugTrace-java 3.2.0 [.small .gray]#- 2021/11/20#
 

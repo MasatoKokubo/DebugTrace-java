@@ -39,16 +39,16 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
-import java.util.function.LongSupplier;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import org.debugtrace.helper.BooleanSupplier;
+import org.debugtrace.helper.DoubleSupplier;
+import org.debugtrace.helper.IntSupplier;
+import org.debugtrace.helper.LongSupplier;
 import org.debugtrace.helper.MapUtils;
 import org.debugtrace.helper.Resource;
 import org.debugtrace.helper.SetUtils;
+import org.debugtrace.helper.Supplier;
 import org.debugtrace.helper.Tuple;
 import org.debugtrace.logger.Logger;
 import org.debugtrace.logger.Std;
@@ -65,7 +65,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.2.0";
+    public static final String VERSION = "3.3.0";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -388,6 +388,7 @@ public class DebugTrace {
             stateMap.put(threadId, state);
         }
 
+
         return state;
     }
 
@@ -510,7 +511,15 @@ public class DebugTrace {
      */
     public static void print(Supplier<String> messageSupplier) {
         if (!isEnabled()) return;
-        printSub(messageSupplier.get());
+    // 3.3.0
+    //  printSub(messageSupplier.get());
+        try {
+            printSub(messageSupplier.get());
+        }
+        catch (Exception e) { 
+            printSub(e.toString());
+        }
+    ////
     }
 
     /**
@@ -662,6 +671,7 @@ public class DebugTrace {
 
     /**
      * Outputs the name and the byte value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
@@ -669,6 +679,7 @@ public class DebugTrace {
      *
      * @since 2.4.0
      */
+    @Deprecated
     public static void print(String mapName, String name, byte value) {
         if (!isEnabled()) return;
         printSub(mapName, name, value, true);
@@ -687,6 +698,7 @@ public class DebugTrace {
 
     /**
      * Outputs the name and the short value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
@@ -694,6 +706,7 @@ public class DebugTrace {
      *
      * @since 2.4.0
      */
+    @Deprecated
     public static void print(String mapName, String name, short value) {
         if (!isEnabled()) return;
         printSub(mapName, name, value, true);
@@ -712,6 +725,7 @@ public class DebugTrace {
 
     /**
      * Outputs the name and the int value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
@@ -719,13 +733,14 @@ public class DebugTrace {
      *
      * @since 2.4.0
      */
+    @Deprecated
     public static void print(String mapName, String name, int value) {
         if (!isEnabled()) return;
         printSub(mapName, name, value, true);
     }
 
     /**
-     * Outputs the name and value to the log.
+     * Outputs the name and the long value to the log.
      *
      * @param name the name of the value
      * @param value the long value to output
@@ -737,6 +752,7 @@ public class DebugTrace {
 
     /**
      * Outputs the name and the long value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
@@ -744,13 +760,14 @@ public class DebugTrace {
      *
      * @since 2.4.0
      */
+    @Deprecated
     public static void print(String mapName, String name, long value) {
         if (!isEnabled()) return;
         printSub(mapName, name, value, true);
     }
 
     /**
-     * Outputs the name and value to the log.
+     * Outputs the name and the value to the log.
      *
      * @param name the name of the value
      * @param value the float value to output
@@ -761,7 +778,7 @@ public class DebugTrace {
     }
 
     /**
-     * Outputs the name and value to the log.
+     * Outputs the name and the value to the log.
      *
      * @param name the name of the value
      * @param value the double value to output
@@ -772,7 +789,7 @@ public class DebugTrace {
     }
 
     /**
-     * Outputs the name and value to the log.
+     * Outputs the name and the value to the log.
      *
      * @param name the name of the value
      * @param value the value to output (accept null)
@@ -783,7 +800,8 @@ public class DebugTrace {
     }
 
     /**
-     * Outputs the name and value to the log.
+     * Outputs the name and the value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
@@ -791,35 +809,53 @@ public class DebugTrace {
      *
      * @since 2.4.0
      */
+    @Deprecated
     public static void print(String mapName, String name, Object value) {
         if (!isEnabled()) return;
         printSub(mapName, name, value, false);
     }
 
     /**
-     * Outputs the name and boolean value to the log.
+     * Outputs the name and the boolean value to the log.
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of boolean value to output
      */
     public static void print(String name, BooleanSupplier valueSupplier) {
         if (!isEnabled()) return;
-        printSub(null, name, valueSupplier.getAsBoolean(), true);
+    // 3.3.0
+    //  printSub(null, name, valueSupplier.getAsBoolean(), true);
+        try {
+            printSub(null, name, valueSupplier.getAsBoolean(), true);
+        }
+        catch (Exception e) { 
+            printSub(null, name, e.toString(), false);
+        }
+    ////
     }
 
     /**
-     * Outputs a int value to the log.
+     * Outputs the name and the  int value to the log.
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of int value to output
      */
     public static void print(String name, IntSupplier valueSupplier) {
         if (!isEnabled()) return;
-        printSub(null, name, valueSupplier.getAsInt(), true);
+    // 3.3.0
+    //  printSub(null, name, valueSupplier.getAsInt(), true);
+        try {
+            printSub(null, name, valueSupplier.getAsInt(), true);
+        }
+        catch (Exception e) { 
+            printSub(null, name, e.toString(), false);
+        }
+    ////
     }
 
     /**
-     * Outputs a int value to the log.
+     * Outputs the name and the  int value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
@@ -827,24 +863,42 @@ public class DebugTrace {
      *
      * @since 2.4.0
      */
+    @Deprecated
     public static void print(String mapName, String name, IntSupplier valueSupplier) {
         if (!isEnabled()) return;
-        printSub(mapName, name, valueSupplier.getAsInt(), true);
+    // 3.3.0
+    //  printSub(mapName, name, valueSupplier.getAsInt(), true);
+        try {
+            printSub(mapName, name, valueSupplier.getAsInt(), true);
+        }
+        catch (Exception e) { 
+            printSub(mapName, name, e.toString(), false);
+        }
+    ////
     }
 
     /**
-     * Outputs a long value to the log.
+     * Outputs the name and the  long value to the log.
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of long value to output
      */
     public static void print(String name, LongSupplier valueSupplier) {
         if (!isEnabled()) return;
-        printSub(null, name, valueSupplier.getAsLong(), true);
+    // 3.3.0
+    //  printSub(null, name, valueSupplier.getAsLong(), true);
+        try {
+            printSub(null, name, valueSupplier.getAsLong(), true);
+        }
+        catch (Exception e) { 
+            printSub(null, name, e.toString(), false);
+        }
+    ////
     }
 
     /**
-     * Outputs a long value to the log.
+     * Outputs the name and the  long value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
@@ -852,24 +906,62 @@ public class DebugTrace {
      *
      * @since 2.4.0
      */
+    @Deprecated
     public static void print(String mapName, String name, LongSupplier valueSupplier) {
         if (!isEnabled()) return;
-        printSub(mapName, name, valueSupplier.getAsLong(), true);
+    // 3.3.0
+    //  printSub(mapName, name, valueSupplier.getAsLong(), true);
+        try {
+            printSub(mapName, name, valueSupplier.getAsLong(), true);
+        }
+        catch (Exception e) { 
+            printSub(mapName, name, e.toString(), false);
+        }
+    ////
     }
 
     /**
-     * Outputs a double value to the log.
+     * Outputs the name and the  double value to the log.
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of double value to output
      */
     public static void print(String name, DoubleSupplier valueSupplier) {
         if (!isEnabled()) return;
-        printSub(null, name, valueSupplier.getAsDouble(), true);
+    // 3.3.0
+    //  printSub(null, name, valueSupplier.getAsDouble(), true);
+        try {
+            printSub(null, name, valueSupplier.getAsDouble(), true);
+        }
+        catch (Exception e) { 
+            printSub(null, name, e.toString(), false);
+        }
+    ////
     }
 
+
     /**
-     * Outputs the name and value to the log.
+     * Outputs the name and the  double value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
+     *
+     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
+     * @param name the name of the value
+     * @param valueSupplier the supplier of double value to output
+     *
+     * @since 3.3.0
+     */
+    @Deprecated
+    public static void print(String mapName, String name, DoubleSupplier valueSupplier) {
+        if (!isEnabled()) return;
+        try {
+            printSub(mapName, name, valueSupplier.getAsDouble(), true);
+        }
+        catch (Exception e) { 
+            printSub(mapName, name, e.toString(), false);
+        }
+    }
+    /**
+     * Outputs the name and the value to the log.
      *
      * @param <T> type of the value
      * @param name the name of the value
@@ -877,20 +969,38 @@ public class DebugTrace {
      */
     public static <T> void print(String name, Supplier<T> valueSupplier) {
         if (!isEnabled()) return;
-        printSub(null, name, valueSupplier.get(), false);
+    // 3.3.0
+    //  printSub(null, name, valueSupplier.get(), false);
+        try {
+            printSub(null, name, valueSupplier.get(), false);
+        }
+        catch (Exception e) { 
+            printSub(null, name, e.toString(), false);
+        }
+    ////
     }
 
     /**
-     * Outputs the name and value to the log.
+     * Outputs the name and the value to the log.
+     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
      * @param <T> type of the value
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param valueSupplier the supplier of value to output
      */
+    @Deprecated
     public static <T> void print(String mapName, String name, Supplier<T> valueSupplier) {
         if (!isEnabled()) return;
-        printSub(mapName, name, valueSupplier.get(), false);
+    // 3.3.0
+    //  printSub(mapName, name, valueSupplier.get(), false);
+        try {
+            printSub(mapName, name, valueSupplier.get(), false);
+        }
+        catch (Exception e) { 
+            printSub(mapName, name, e.toString(), false);
+        }
+    ////
     }
 
     /**

@@ -13,10 +13,8 @@ public class Example1 {
     // main
     public static void main(String[] args) {
         DebugTrace.enter(); // TODO: Remove after debugging
-
         @SuppressWarnings("unused")
         Point[] points = newArray(Point.class, 2);
-
         DebugTrace.leave(); // TODO: Remove after debugging
     }
 

@@ -65,7 +65,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.3.0";
+    public static final String VERSION = "3.3.1";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -439,22 +439,22 @@ public class DebugTrace {
      * Call this method at entrance of your methods.
      */
     public static void enter() {
-        if (!isEnabled()) return;
-
-        synchronized(stateMap) {
-            State state = getCurrentState();
-
-            printStart(); // Common start processing of output
-
-            if (state.previousNestLevel() > state.nestLevel())
-                logger.log(getIndentString(state.nestLevel(), 0)); // Line break
-
-            lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(enterFormat, 0);
-            logger.log(lastLog);
-
-            state.setPreviousLineCount(1);
-
-            state.upNest();
+        if (isEnabled()) {
+            synchronized(stateMap) {
+                State state = getCurrentState();
+    
+                printStart(); // Common start processing of output
+    
+                if (state.previousNestLevel() > state.nestLevel())
+                    logger.log(getIndentString(state.nestLevel(), 0)); // Line break
+    
+                lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(enterFormat, 0);
+                logger.log(lastLog);
+    
+                state.setPreviousLineCount(1);
+    
+                state.upNest();
+            }
         }
     }
 
@@ -462,20 +462,20 @@ public class DebugTrace {
      * Call this method at exit of your methods.
      */
     public static void leave() {
-        if (!isEnabled()) return;
-
-        synchronized(stateMap) {
-            State state = getCurrentState();
-
-            printStart(); // Common start processing of output
-
-            if (state.previousLineCount() > 1)
-                logger.log(getIndentString(state.nestLevel(), 0)); // Empty Line
-
-            long timeSpan = System.nanoTime() - state.downNest();
-
-            lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(leaveFormat, timeSpan);
-            logger.log(lastLog);
+        if (isEnabled()) {
+            synchronized(stateMap) {
+                State state = getCurrentState();
+    
+                printStart(); // Common start processing of output
+    
+                if (state.previousLineCount() > 1)
+                    logger.log(getIndentString(state.nestLevel(), 0)); // Empty Line
+    
+                long timeSpan = System.nanoTime() - state.downNest();
+    
+                lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(leaveFormat, timeSpan);
+                logger.log(lastLog);
+            }
         }
     }
 
@@ -498,28 +498,32 @@ public class DebugTrace {
      * Outputs the message to the log.
      *
      * @param message a message
+     * @return the message
      */
-    public static void print(String message) {
-        if (!isEnabled()) return;
-        printSub(message);
+    public static String print(String message) {
+        if (isEnabled())
+            printSub(message);
+        return message;
     }
 
     /**
      * Outputs a message to the log.
      *
      * @param messageSupplier a message supplier
+     * @return the message if isEnabled(), otherwise null
      */
-    public static void print(Supplier<String> messageSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(messageSupplier.get());
-        try {
-            printSub(messageSupplier.get());
+    public static String print(Supplier<String> messageSupplier) {
+        if (isEnabled()) {
+            try {
+                String message = messageSupplier.get();
+                printSub(messageSupplier.get());
+                return message;
+            }
+            catch (Exception e) { 
+                printSub(e.toString());
+            }
         }
-        catch (Exception e) { 
-            printSub(e.toString());
-        }
-    ////
+        return null;
     }
 
     /**
@@ -641,10 +645,12 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the boolean value to output
+     * @return the value
      */
-    public static void print(String name, boolean value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static boolean print(String name, boolean value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
@@ -652,10 +658,12 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the char value to output
+     * @return the value
      */
-    public static void print(String name, char value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static char print(String name, char value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
@@ -663,10 +671,12 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the byte value to output
+     * @return the value
      */
-    public static void print(String name, byte value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static byte print(String name, byte value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
@@ -676,13 +686,15 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param value the byte value to output
+     * @return the value
      *
      * @since 2.4.0
      */
     @Deprecated
-    public static void print(String mapName, String name, byte value) {
-        if (!isEnabled()) return;
-        printSub(mapName, name, value, true);
+    public static byte print(String mapName, String name, byte value) {
+        if (isEnabled())
+            printSub(mapName, name, value, true);
+        return value;
     }
 
     /**
@@ -690,10 +702,12 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the short value to output
+     * @return the value
      */
-    public static void print(String name, short value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static short print(String name, short value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
@@ -703,13 +717,15 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param value the short value to output
+     * @return the value
      *
      * @since 2.4.0
      */
     @Deprecated
-    public static void print(String mapName, String name, short value) {
-        if (!isEnabled()) return;
-        printSub(mapName, name, value, true);
+    public static short print(String mapName, String name, short value) {
+        if (isEnabled())
+            printSub(mapName, name, value, true);
+        return value;
     }
 
     /**
@@ -717,10 +733,12 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the int value to output
+     * @return the value
      */
-    public static void print(String name, int value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static int print(String name, int value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
@@ -730,13 +748,15 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param value the int value to output
+     * @return the value
      *
      * @since 2.4.0
      */
     @Deprecated
-    public static void print(String mapName, String name, int value) {
-        if (!isEnabled()) return;
-        printSub(mapName, name, value, true);
+    public static int print(String mapName, String name, int value) {
+        if (isEnabled())
+            printSub(mapName, name, value, true);
+        return value;
     }
 
     /**
@@ -744,10 +764,12 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the long value to output
+     * @return the value
      */
-    public static void print(String name, long value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static long print(String name, long value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
@@ -757,13 +779,15 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param value the long value to output
+     * @return the value
      *
      * @since 2.4.0
      */
     @Deprecated
-    public static void print(String mapName, String name, long value) {
-        if (!isEnabled()) return;
-        printSub(mapName, name, value, true);
+    public static long print(String mapName, String name, long value) {
+        if (isEnabled())
+            printSub(mapName, name, value, true);
+        return value;
     }
 
     /**
@@ -771,10 +795,12 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the float value to output
+     * @return the value
      */
-    public static void print(String name, float value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static float print(String name, float value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
@@ -782,37 +808,45 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the double value to output
+     * @return the value
      */
-    public static void print(String name, double value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, true);
+    public static double print(String name, double value) {
+        if (isEnabled())
+            printSub(null, name, value, true);
+        return value;
     }
 
     /**
      * Outputs the name and the value to the log.
      *
+     * @param <T> the type of the value
      * @param name the name of the value
      * @param value the value to output (accept null)
+     * @return the value
      */
-    public static void print(String name, Object value) {
-        if (!isEnabled()) return;
-        printSub(null, name, value, false);
+    public static <T> T print(String name, T value) {
+        if (isEnabled())
+            printSub(null, name, value, false);
+        return value;
     }
 
     /**
      * Outputs the name and the value to the log.
      * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
+     * @param <T> the type of the value
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param value the value to output (accept null)
+     * @return the value
      *
      * @since 2.4.0
      */
     @Deprecated
-    public static void print(String mapName, String name, Object value) {
-        if (!isEnabled()) return;
-        printSub(mapName, name, value, false);
+    public static <T> T print(String mapName, String name, T value) {
+        if (isEnabled())
+            printSub(mapName, name, value, false);
+        return value;
     }
 
     /**
@@ -820,18 +854,20 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of boolean value to output
+     * @return the value if isEnabled(), otherwise false
      */
-    public static void print(String name, BooleanSupplier valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(null, name, valueSupplier.getAsBoolean(), true);
-        try {
-            printSub(null, name, valueSupplier.getAsBoolean(), true);
+    public static boolean print(String name, BooleanSupplier valueSupplier) {
+        if (isEnabled()) {
+            try {
+                boolean value = valueSupplier.getAsBoolean();
+                printSub(null, name, value, true);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(null, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(null, name, e.toString(), false);
-        }
-    ////
+        return false;
     }
 
     /**
@@ -839,18 +875,20 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of int value to output
+     * @return the value if isEnabled(), otherwise 0
      */
-    public static void print(String name, IntSupplier valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(null, name, valueSupplier.getAsInt(), true);
-        try {
-            printSub(null, name, valueSupplier.getAsInt(), true);
+    public static int print(String name, IntSupplier valueSupplier) {
+        if (isEnabled()) {
+            try {
+                int value = valueSupplier.getAsInt();
+                printSub(null, name, value, true);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(null, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(null, name, e.toString(), false);
-        }
-    ////
+        return 0;
     }
 
     /**
@@ -860,21 +898,23 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param valueSupplier the supplier of int value to output
+     * @return the value if isEnabled(), otherwise 0
      *
      * @since 2.4.0
      */
     @Deprecated
-    public static void print(String mapName, String name, IntSupplier valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(mapName, name, valueSupplier.getAsInt(), true);
-        try {
-            printSub(mapName, name, valueSupplier.getAsInt(), true);
+    public static int print(String mapName, String name, IntSupplier valueSupplier) {
+        if (isEnabled()) {
+            try {
+                int value = valueSupplier.getAsInt();
+                printSub(mapName, name, value, true);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(mapName, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(mapName, name, e.toString(), false);
-        }
-    ////
+        return 0;
     }
 
     /**
@@ -882,18 +922,20 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of long value to output
+     * @return the value if isEnabled(), otherwise 0L
      */
-    public static void print(String name, LongSupplier valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(null, name, valueSupplier.getAsLong(), true);
-        try {
-            printSub(null, name, valueSupplier.getAsLong(), true);
+    public static long print(String name, LongSupplier valueSupplier) {
+        if (isEnabled()) {
+            try {
+                long value = valueSupplier.getAsLong();
+                printSub(null, name, value, true);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(null, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(null, name, e.toString(), false);
-        }
-    ////
+        return 0L;
     }
 
     /**
@@ -903,21 +945,23 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param valueSupplier the supplier of long value to output
+     * @return the value if isEnabled(), otherwise 0L
      *
      * @since 2.4.0
      */
     @Deprecated
-    public static void print(String mapName, String name, LongSupplier valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(mapName, name, valueSupplier.getAsLong(), true);
-        try {
-            printSub(mapName, name, valueSupplier.getAsLong(), true);
+    public static long print(String mapName, String name, LongSupplier valueSupplier) {
+        if (isEnabled()) {
+            try {
+                long value = valueSupplier.getAsLong();
+                printSub(mapName, name, value, true);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(mapName, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(mapName, name, e.toString(), false);
-        }
-    ////
+        return 0L;
     }
 
     /**
@@ -925,18 +969,20 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param valueSupplier the supplier of double value to output
+     * @return the value if isEnabled(), otherwise 0.0
      */
-    public static void print(String name, DoubleSupplier valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(null, name, valueSupplier.getAsDouble(), true);
-        try {
-            printSub(null, name, valueSupplier.getAsDouble(), true);
+    public static double print(String name, DoubleSupplier valueSupplier) {
+        if (isEnabled()) {
+            try {
+                double value = valueSupplier.getAsDouble();
+                printSub(null, name, value, true);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(null, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(null, name, e.toString(), false);
-        }
-    ////
+        return 0.0;
     }
 
 
@@ -947,61 +993,70 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param valueSupplier the supplier of double value to output
+     * @return the value if isEnabled(), otherwise 0.0
      *
      * @since 3.3.0
      */
     @Deprecated
-    public static void print(String mapName, String name, DoubleSupplier valueSupplier) {
-        if (!isEnabled()) return;
-        try {
-            printSub(mapName, name, valueSupplier.getAsDouble(), true);
+    public static double print(String mapName, String name, DoubleSupplier valueSupplier) {
+        if (isEnabled()) {
+            try {
+                double value = valueSupplier.getAsDouble();
+                printSub(mapName, name, value, true);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(mapName, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(mapName, name, e.toString(), false);
-        }
+        return 0.0;
     }
     /**
      * Outputs the name and the value to the log.
      *
-     * @param <T> type of the value
+     * @param <T> the type of the value
      * @param name the name of the value
      * @param valueSupplier the supplier of value to output
+     * @return the value if isEnabled(), otherwise null
      */
-    public static <T> void print(String name, Supplier<T> valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(null, name, valueSupplier.get(), false);
-        try {
-            printSub(null, name, valueSupplier.get(), false);
+    public static <T> T print(String name, Supplier<T> valueSupplier) {
+        if (isEnabled()) {
+            try {
+                T value = valueSupplier.get();
+                printSub(null, name, value, false);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(null, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(null, name, e.toString(), false);
-        }
-    ////
+        return null;
     }
 
     /**
      * Outputs the name and the value to the log.
      * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
      *
-     * @param <T> type of the value
+     * @param <T> the type of the value
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param valueSupplier the supplier of value to output
+     * @return the value if isEnabled(), otherwise null
      */
     @Deprecated
-    public static <T> void print(String mapName, String name, Supplier<T> valueSupplier) {
-        if (!isEnabled()) return;
-    // 3.3.0
-    //  printSub(mapName, name, valueSupplier.get(), false);
-        try {
-            printSub(mapName, name, valueSupplier.get(), false);
+    public static <T> T print(String mapName, String name, Supplier<T> valueSupplier) {
+        if (isEnabled()) {
+            try {
+                T value = valueSupplier.get();
+                printSub(mapName, name, value, false);
+                return value;
+            }
+            catch (Exception e) { 
+                printSub(mapName, name, e.toString(), false);
+            }
         }
-        catch (Exception e) { 
-            printSub(mapName, name, e.toString(), false);
-        }
-    ////
-    }
+        return null;
+     }
 
     /**
      * Outputs a list of StackTraceElements to the log.
@@ -1009,8 +1064,8 @@ public class DebugTrace {
      * @param maxCount maximum number of stack trace elements to output
      */
     public static void printStack(int maxCount) {
-        if (!isEnabled()) return;
-        print("stack",  getStackTraceElements(maxCount));
+        if (isEnabled())
+            print("stack",  getStackTraceElements(maxCount));
     }
 
     /**

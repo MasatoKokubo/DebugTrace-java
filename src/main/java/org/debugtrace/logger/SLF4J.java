@@ -83,4 +83,13 @@ public class SLF4J implements Logger {
     public void log(String message) {
         logConsumer.accept(message);
     }
+
+    /**
+     * {@inheritDoc}
+     * @since 3.4.0
+     */
+    @Override
+    public String toString() {
+        return getClass().getName() + " (level: " + level + ")";
+    }
 }

@@ -87,26 +87,26 @@ public class Example1 {
 
 .debugtrace.log
 ----
-2022-02-26 14:27:30.721+09:00 DebugTrace 3.3.1
-2022-02-26 14:27:30.723+09:00   resource base name: DebugTrace
-2022-02-26 14:27:30.723+09:00   logger: org.debugtrace.logger.Std$Out
-2022-02-26 14:27:30.724+09:00 
-2022-02-26 14:27:30.726+09:00 ______________________________ main ______________________________
-2022-02-26 14:27:30.726+09:00 
-2022-02-26 14:27:30.727+09:00 Enter example.Example1.main (Example1.java:15)
-2022-02-26 14:27:30.728+09:00 | Enter example.Example1.newArray (Example1.java:23)
-2022-02-26 14:27:30.733+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:24)
-2022-02-26 14:27:30.733+09:00 | | length = 2 (Example1.java:25)
-2022-02-26 14:27:30.733+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:28)
-2022-02-26 14:27:30.735+09:00 | | 
-2022-02-26 14:27:30.735+09:00 | | 2 array = (example.Example1.Point[2])[
-2022-02-26 14:27:30.735+09:00 | |   (example.Example1.Point){x: 0, y: 0},
-2022-02-26 14:27:30.735+09:00 | |   (example.Example1.Point){x: 0, y: 0}
-2022-02-26 14:27:30.735+09:00 | | ] (Example1.java:35)
-2022-02-26 14:27:30.735+09:00 | | 
-2022-02-26 14:27:30.735+09:00 | Leave example.Example1.newArray (Example1.java:36) duration: 00:00:00.006
-2022-02-26 14:27:30.736+09:00 | 
-2022-02-26 14:27:30.736+09:00 Leave example.Example1.main (Example1.java:18) duration: 00:00:00.008
+2022-06-05 00:04:25.246+09:00 DebugTrace 3.4.0 on Temurin OpenJDK Runtime Environment 1.8.0_332-b09
+2022-06-05 00:04:25.247+09:00   property name: DebugTrace.properties
+2022-06-05 00:04:25.247+09:00   logger: org.debugtrace.logger.Std$Out
+2022-06-05 00:04:25.252+09:00 
+2022-06-05 00:04:25.253+09:00 ______________________________ main ______________________________
+2022-06-05 00:04:25.253+09:00 
+2022-06-05 00:04:25.253+09:00 Enter example.Example1.main (Example1.java:15)
+2022-06-05 00:04:25.255+09:00 | Enter example.Example1.newArray (Example1.java:23)
+2022-06-05 00:04:25.264+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:24)
+2022-06-05 00:04:25.265+09:00 | | length = 2 (Example1.java:25)
+2022-06-05 00:04:25.265+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:28)
+2022-06-05 00:04:25.267+09:00 | | 
+2022-06-05 00:04:25.267+09:00 | | 2 array = (example.Example1.Point[2])[
+2022-06-05 00:04:25.267+09:00 | |   (example.Example1.Point){x: 0, y: 0},
+2022-06-05 00:04:25.268+09:00 | |   (example.Example1.Point){x: 0, y: 0}
+2022-06-05 00:04:25.268+09:00 | | ] (Example1.java:35)
+2022-06-05 00:04:25.268+09:00 | | 
+2022-06-05 00:04:25.268+09:00 | Leave example.Example1.newArray (Example1.java:36) duration: 00:00:00.012
+2022-06-05 00:04:25.269+09:00 | 
+2022-06-05 00:04:25.269+09:00 Leave example.Example1.main (Example1.java:18) duration: 00:00:00.015
 ----
 
 === 3. [.small]#メソッド一覧#
@@ -730,6 +730,14 @@ _(C) 2015 Masato Kokubo_
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
 === 9. [.small]#リリースノート#
+
+==== DebugTrace-java 3.4.0 [.small .gray]#- 2022/6/5#
+
+* ファイルに直接出力する `File` ロガーを追加しました。
+* 開始時のログに以下の内容を追加しました。
+** `System.getProperty("java.vendor")`
+** `System.getProperty("java.runtime.name")`
+** `System.getProperty("java.runtime.version")`
 
 ==== DebugTrace-java 3.3.1 [.small .gray]#- 2022/2/26#
 

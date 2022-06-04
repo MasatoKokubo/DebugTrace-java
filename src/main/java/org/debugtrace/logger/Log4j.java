@@ -67,4 +67,13 @@ public class Log4j implements Logger {
     public void log(String message) {
         logger.log(level, message);
     }
+
+    /**
+     * {@inheritDoc}
+     * @since 3.4.0
+     */
+    @Override
+    public String toString() {
+        return getClass().getName() + " (level: " + level + ")";
+    }
 }

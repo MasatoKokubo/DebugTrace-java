@@ -26,17 +26,26 @@ class LoggersSpec extends Specification {
     // enterStringSpec
     def "loggersSpec #loggerName"(String loggerName) {
         setup:
+        def filePath = "logs/${loggerName}.log"
         if (loggerName == 'Jdk') {
             def propertyPath = "src/test/resources/logging_${loggerName}.properties"
             System.setProperty('java.util.logging.config.file', propertyPath)
             LogManager.getLogManager().readConfiguration()
+        } else if (loggerName == 'File') { // since 3.4.0
+            try {
+                def file = new File(filePath)
+                if (file.isFile())
+                    file.delete()
+            }
+            catch (Exception e) {
+                System.err.println(e.toString())
+            }
         }
         DebugTrace.initClass("DebugTrace_${loggerName}")
 
         when:
         def logMessage = "This is a ${loggerName} log."
         DebugTrace.print(logMessage);
-        def filePath = "logs/${loggerName}.log"
         def log = ""
         Files.lines(Paths.get(filePath), Charset.forName('UTF-8')) each {
             log += it
@@ -53,6 +62,7 @@ class LoggersSpec extends Specification {
         'Log4j'  |_
         'Log4j2' |_
         'SLF4J'  |_ // and Logback
+        'File'   |_ // since 3.4.0
     }
 
 }

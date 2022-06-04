@@ -2,6 +2,7 @@
 <configuration>
   <appender name="traceAppender" class="ch.qos.logback.core.FileAppender">
     <file>logs/SLF4J.log</file>
+    <append>false</append>
     <encoder>
       <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level %thread %message%n</pattern>
     </encoder>

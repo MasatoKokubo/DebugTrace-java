@@ -3,6 +3,7 @@
 
 package org.debugtrace;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -65,7 +66,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.3.1";
+    public static final String VERSION = "3.4.0";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -230,6 +231,9 @@ public class DebugTrace {
     private static final Map<String, Map<Integer, String>> convertMapMap = new HashMap<>();
     private static String lastLog = "";
 
+    // FileLogger keyword since 3.4.0
+    private static final String FILE_LOGGER_KEYWORD = "File:";
+
     static {
         initClass();
     }
@@ -314,13 +318,28 @@ public class DebugTrace {
         IntStream.iterate(1, index -> index + 1).limit(dataIndentStrings.length - 1)
             .forEach(index -> dataIndentStrings[index] = dataIndentStrings[index - 1] + dataIndentString);
 
+        logger = null;
         String loggerName = null;
         try {
             loggerName = resource.getString("logger", null);
             if (loggerName != null) {
-                if (loggerName.indexOf('.') == -1)
-                    loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
-                logger = (Logger)Class.forName(loggerName).getConstructor().newInstance();
+                // FileLogger detection
+                if (loggerName.startsWith(FILE_LOGGER_KEYWORD)) {
+                    // FileLogger
+                    String path = loggerName.substring(FILE_LOGGER_KEYWORD.length()).trim();
+                    File file = new File(path).getAbsoluteFile();
+                    File parentFile = file.getParentFile();
+                    if (!parentFile.exists())
+                        throw new RuntimeException(parentFile.getPath() + " dose not exist.");
+                    if (file.exists() && !file.isFile())
+                        throw new RuntimeException(file.getPath() + " is not a file.");
+                    logger = new org.debugtrace.logger.File(file);
+                } else {
+                    // not FileLogger
+                    if (loggerName.indexOf('.') == -1)
+                        loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
+                    logger = (Logger)Class.forName(loggerName).getConstructor().newInstance();
+                }
             }
         }
         catch (Exception e) {
@@ -328,7 +347,7 @@ public class DebugTrace {
             if (e instanceof InvocationTargetException) {
                 Throwable targetEx = ((InvocationTargetException)e).getTargetException();
                 if (targetEx != null)
-                    System.err.println("DebugTrace: " + targetEx.toString() + "(" + loggerName + ")");
+                    System.err.println("DebugTrace: " + targetEx.toString() + " (" + loggerName + ")");
             }
         }
 
@@ -338,9 +357,15 @@ public class DebugTrace {
         // Set a logging level
         logger.setLevel(logLevel);
 
-        logger.log("DebugTrace " + VERSION);
-        logger.log("  resource base name: " + baseName);
-        logger.log("  logger: " + logger.getClass().getName());
+        // Get the Java vendor and runtime version
+        String javaVendor = System.getProperty("java.vendor");
+        String javaRuntimeName = System.getProperty("java.runtime.name");
+        String javaRuntimeVersion = System.getProperty("java.runtime.version");
+
+        logger.log("DebugTrace " + VERSION + " on " +
+            javaVendor + " " + javaRuntimeName + " " + javaRuntimeVersion);
+        logger.log("  property name: " + baseName + ".properties");
+        logger.log("  logger: " + logger.toString());
     }
 
     private DebugTrace() {}

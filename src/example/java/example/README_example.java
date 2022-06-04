@@ -26,7 +26,7 @@ public class README_example {
         DebugTrace.enter();
 
         int appleBrand = Apple.AKANE;
-        DebugTrace.print("AppleBrand", "appleBrand", appleBrand);
+        DebugTrace.print("appleBrand", appleBrand);
 
         DebugTrace.leave();
     }

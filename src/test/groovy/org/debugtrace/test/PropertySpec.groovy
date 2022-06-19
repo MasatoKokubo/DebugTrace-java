@@ -6,6 +6,8 @@ package org.debugtrace.test
 import java.sql.*
 import java.time.*
 import org.debugtrace.DebugTrace
+import org.debugtrace.test.foo.*
+import org.debugtrace.test.foo.bar.Bar1
 import spock.lang.*
 
 /**
@@ -116,7 +118,7 @@ class PropertySpec extends Specification {
         DebugTrace.limitString            == '<Limit>'
         DebugTrace.nonOutputString        == '<NonOutput>'
         DebugTrace.cyclicReferenceString  == '<CyclicReference>'
-        DebugTrace.varNameValueSeparator  == ' <= '
+        DebugTrace.varNameValueSeparator  == ' <- '
         DebugTrace.keyValueSeparator      == ':: '
         DebugTrace.printSuffixFormat      == ' (%3$s::%4$d)'
         DebugTrace.sizeFormat             == '_size_:%1d'
@@ -143,7 +145,7 @@ class PropertySpec extends Specification {
         DebugTrace.nonOutputProperties    == ['org.debugtrace.test.PropertySpec$Point#y']
         DebugTrace.defaultPackage         == 'org.debugtrace.test'
         DebugTrace.defaultPackageString   == '~~~'
-        DebugTrace.reflectionClasses      == ['org.debugtrace.test.PropertySpec$Point3'] as Set
+        DebugTrace.reflectionClassPaths   == ['org.debugtrace.test.PropertySpec$Point3', 'org.debugtrace.test.foo.'] as Set
     }
 
     def "propertiesSpec #testProperties"(String testProperties, Object value, String output) {
@@ -167,7 +169,7 @@ class PropertySpec extends Specification {
 
         where:
         testProperties                                           |value                       |output
-        'indentString, varNameValueSeparator, printSuffixFormat' |1                           |'|value <= 1 (PropertySpec.groovy::'
+        'indentString, varNameValueSeparator, printSuffixFormat' |1                           |'|value <- 1 (PropertySpec.groovy::'
         'dataIndentString, lengthFormat'                         |['A'*10, 'B'*10, 'C'*10]    |'(_length_:10)'
         'collectionLimit(1)'                                     |[1, 2, 3, 4, 5, 6, 7, 8]    |'[1, 2, 3, 4, 5, 6, 7, 8]'
         'collectionLimit(2), limitString'                        |[1, 2, 3, 4, 5, 6, 7, 8, 9] |'[1, 2, 3, 4, 5, 6, 7, 8, <Limit>]'
@@ -175,8 +177,8 @@ class PropertySpec extends Specification {
         'cyclicReferenceString'                                  |cyclicNode                  |'next:: <CyclicReference>'
         'minimumOutputSize(1)'                                   |[1, 2]                      |'(ArrayList)[1, 2]'
         'minimumOutputSize(2), sizeFormat'                       |[1, 2, 3]                   |'(ArrayList _size_:3)[1, 2, 3]'
-        'minimumOutputLength(1)'                                 |"ABC"                       |'= "ABC"'
-        'minimumOutputLength(2), lengthFormat'                   |"ABCD"                      |'= (_length_:4)"ABCD"'
+        'minimumOutputLength(1)'                                 |"ABC"                       |'<- "ABC"'
+        'minimumOutputLength(2), lengthFormat'                   |"ABCD"                      |'<- (_length_:4)"ABCD"'
         'utilDateFormat'                                         |utilDate                    |' (java.util.Date)2020/05/10 00;00;00.000+09:00 '
         'sqlDateFormat'                                          |sqlDate                     |'2020/05/10+09:00 '
         'timeFormat'                                             |time                        |'23;58;59.000+09:00 '
@@ -188,13 +190,17 @@ class PropertySpec extends Specification {
         'offsetDateTimeFormat'                                   |offsetDateTime              |'(OffsetDateTime)2020/05/10 23;58;59.987654321+06:00 '
         'zonedDateTimeFormat'                                    |zonedDateTime               |'(ZonedDateTime)2020/05/10 23;58;59.987654321+09:00 Asia/Tokyo '
         'instantFormat'                                          |instant                     |'(Instant)+52327/04/19 07;19;47.000000000Z'
-        'byteArrayLimit(1)'                                      |[1, 2, 3, 4, 5] as byte[]   |'(byte[5])[01 02 03 04 05]'
-        'byteArrayLimit(2)'                                      |[1, 2, 3, 4, 5, 6] as byte[]|'(byte[6])[01 02 03 04 05 <Limit>]'
+        'byteArrayLimit(1)'                                      |[1, 2, 3, 4, 5] as byte[]   |'(byte[5])[01 02 03 04 05  .....]'
+        'byteArrayLimit(2)'                                      |[1, 2, 3, 4, 5, 6] as byte[]|'(byte[6])[01 02 03 04 05 <Limit>  .....]'
         'stringLimit(1)'                                         |'ABCDEFGHIJ'                |'(_length_:10)"ABCDEFGHIJ"'
         'stringLimit(2)'                                         |'ABCDEFGHIJK'               |'(_length_:11)"ABCDEFGHIJ<Limit>"'
         'reflectionNestLimit(1)'                                 |node2                       |'next:: null'
         'reflectionNestLimit(2)'                                 |node3                       |'next:: <Limit>'
         'reflectionClasses(1)'                                   |new Point3_(1, 2, 3)        |'(1, 2, 3)'
         'reflectionClasses(2)'                                   |new Point3(1, 2, 3)         |'x:: 1, y:: 2, z:: 3'
+        'reflectionClasses(3-1)'                                 |new Foo1(31)                |'value:: 31'
+        'reflectionClasses(3-2)'                                 |new Foo2(32)                |'value:: 32'
+        'reflectionClasses(3-3)'                                 |new Foo3(33)                |'value:: 33'
+        'reflectionClasses(4)'                                   |new Bar1(4)                 |'value is 4'
     }
 }

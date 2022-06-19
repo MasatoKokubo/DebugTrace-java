@@ -19,6 +19,9 @@ hs_err_pid*
 .classpath
 .project
 
+# Groovy
+.groovy
+
 /bin/
 /build/
 src/test/resources_err/

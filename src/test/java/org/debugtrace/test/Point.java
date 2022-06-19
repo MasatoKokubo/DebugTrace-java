@@ -11,9 +11,8 @@ public class Point {
         this.x = x;
         this.y = y;
     }
- 
+
     public static Point of(int x, int y) {
         return new Point(x, y);
     }
 }
- 

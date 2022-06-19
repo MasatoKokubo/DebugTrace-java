@@ -26,15 +26,15 @@ dependencies {
 
     testCompileOnly    'org.junit.jupiter:junit-jupiter-api:5.8.+'
     testRuntimeOnly    'org.junit.vintage:junit-vintage-engine:5.8.+'
-    testCompileOnly    'org.codehaus.groovy:groovy:3.0.+'
-    testCompileOnly    'org.spockframework:spock-core:2.1-groovy-3.0'
+    testImplementation 'org.codehaus.groovy:groovy:3.0.+'
+    testImplementation 'org.spockframework:spock-core:2.1-groovy-3.0'
 }
 
 sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.4.0'
+version             = '3.5.0'
 
 sourceSets {
     main {
@@ -105,6 +105,10 @@ processResources {
 
 processTestResources {
     duplicatesStrategy 'exclude'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jar {

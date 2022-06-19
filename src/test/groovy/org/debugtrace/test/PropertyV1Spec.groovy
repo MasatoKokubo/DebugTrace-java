@@ -38,13 +38,13 @@ class PropertyV1Spec extends Specification {
         DebugTrace.limitString            == '<Limit>'
         DebugTrace.nonOutputString        == '<NonPrint>'
         DebugTrace.cyclicReferenceString  == '<CyclicReference>'
-        DebugTrace.varNameValueSeparator  == ' <= '
+        DebugTrace.varNameValueSeparator  == ' <- '
         DebugTrace.keyValueSeparator      == ':: '
         DebugTrace.printSuffixFormat      == ' (%3$s:%4$d)'
         DebugTrace.sizeFormat             == 'size:%1d'   // default
-        DebugTrace.minimumOutputSize      == 5            // default
+        DebugTrace.minimumOutputSize      == 16 // <- 5   // default
         DebugTrace.lengthFormat           == 'length:%1d' // default
-        DebugTrace.minimumOutputLength    == 5            // default
+        DebugTrace.minimumOutputLength    == 16 // <- 5   // default
         DebugTrace.utilDateFormat         == 'yyyy/MM/dd HH;mm;ss.SSSxxx'
         DebugTrace.sqlDateFormat          == 'yyyy/MM/ddxxx'
         DebugTrace.timeFormat             == 'HH;mm;ss.SSSxxx'
@@ -64,6 +64,6 @@ class PropertyV1Spec extends Specification {
         DebugTrace.nonOutputProperties    == ['org.debugtrace.test.PropertySpec$Point#y']
         DebugTrace.defaultPackage         == 'org.debugtrace.test'
         DebugTrace.defaultPackageString   == '~~~'
-        DebugTrace.reflectionClasses      == ['org.debugtrace.test.PropertySpec$Point3'] as Set
+        DebugTrace.reflectionClassPaths   == ['org.debugtrace.test.PropertySpec$Point3', 'org.debugtrace.test.foo.'] as Set
     }
 }

@@ -16,4 +16,3 @@ public class Name {
         return new Name(first, last);
     }
 }
- 

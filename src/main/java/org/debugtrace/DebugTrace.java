@@ -31,6 +31,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -66,7 +67,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.4.0";
+    public static final String VERSION = "3.5.0";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -193,7 +194,9 @@ public class DebugTrace {
     protected static List<String> nonOutputProperties; // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
     protected static String defaultPackage           ; // since 2.3.0
     protected static String defaultPackageString     ; // since 2.3.0
-    protected static Set<String> reflectionClasses   ; // since 2.4.0
+    protected static Set<String> reflectionClassPaths; // since 3.5.0
+    protected static Set<Class<?>> reflectionClasses    = new HashSet<>(); // since 2.4.0
+    protected static Set<Class<?>> nonReflectionClasses = new HashSet<>();; // since 3.5.0
     protected static Map<String, String> mapNameMap  ; // since 2.4.0
 
     // @since 2.5.0
@@ -271,9 +274,9 @@ public class DebugTrace {
         keyValueSeparator       = resource.getString("keyValueSeparator"                           , ": ");
         printSuffixFormat       = resource.getString("printSuffixFormat"                           , " (%3$s:%4$d)");
         sizeFormat              = resource.getString("sizeFormat"                                  , "size:%1d"); // since 3.0.0
-        minimumOutputSize       = resource.getInt   ("minimumOutputSize"                           , 5); // since 3.0.0
+        minimumOutputSize       = resource.getInt   ("minimumOutputSize"                           , 16); // 16 <- 5 since 3.5.0, since 3.0.0
         lengthFormat            = resource.getString("lengthFormat"                                , "length:%1d"); // since 3.0.0
-        minimumOutputLength     = resource.getInt   ("minimumOutputLength"                         , 5); // since 3.0.0
+        minimumOutputLength     = resource.getInt   ("minimumOutputLength"                         , 16); // 16 <- 5 since 3.5.0, since 3.0.0
         utilDateFormat          = resource.getString("utilDateFormat"                              , "yyyy-MM-dd HH:mm:ss.SSSxxx");
         sqlDateFormat           = resource.getString("sqlDateFormat"                               , "yyyy-MM-ddxxx");
         timeFormat              = resource.getString("timeFormat"                                  , "HH:mm:ss.SSSxxx");
@@ -287,14 +290,17 @@ public class DebugTrace {
         instantFormat           = resource.getString("instantFormat"                               , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
         logDateTimeFormat       = resource.getString("logDateTimeFormat"                           , "yyyy-MM-dd HH:mm:ss.SSSxxx"); // since 2.5.0
         maximumDataOutputWidth  = resource.getInt   ("maximumDataOutputWidth"                      , 70); // since 3.0.0
-        collectionLimit         = resource.getInt   ("collectionLimit", "arrayLimit"               , 512);
-        byteArrayLimit          = resource.getInt   ("byteArrayLimit"                              , 8192);
-        stringLimit             = resource.getInt   ("stringLimit"                                 , 8192);
+        collectionLimit         = resource.getInt   ("collectionLimit", "arrayLimit"               , 128); // 128 <- 512 since 3.5.0
+        byteArrayLimit          = resource.getInt   ("byteArrayLimit"                              , 256); // 256 <- 8192 since 3.5.0
+        stringLimit             = resource.getInt   ("stringLimit"                                 , 256); // 256 <- 8192 since 3.5.0
         reflectionNestLimit     = resource.getInt   ("reflectionNestLimit"                         , 4); // since 3.0.0
         nonOutputProperties     = resource.getStrings("nonOutputProperties", "nonPrintProperties"  ); // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
         defaultPackage          = resource.getString("defaultPackage", ""                      , ""); // since 2.3.0
         defaultPackageString    = resource.getString("defaultPackageString"                 , "..."); // since 2.3.0
-        reflectionClasses       = resource.getStringSet("reflectionClasses"                        ); // since 2.4.0
+    // 3.5.0
+    //  reflectionClasses       = resource.getStringSet("reflectionClasses"                        ); // since 2.4.0
+        reflectionClassPaths    = resource.getStringSet("reflectionClasses"                        ); // since 3.5.0, 2.4.0
+    ////
         mapNameMap              = resource.getStringKeyMap("mapNameMap"                            ); // since 2.4.0
 
         utilDateFormatter       = createDateTimeFormatter(utilDateFormat      );
@@ -1252,11 +1258,31 @@ public class DebugTrace {
 
         } else {
             // Other
-            boolean isReflection = reflectionClasses.contains(type.getName());
-            if (!isReflection && !hasToString(type)) {
-                isReflection = true;
-                reflectionClasses.add(type.getName());
+        // 3.5.0
+        //  boolean isReflection = reflectionClasses.contains(type.getName());
+        //  if (!isReflection && !hasToString(type)) {
+        //      isReflection = true;
+        //      reflectionClasses.add(type.getName());
+        //  }
+            String className = type.getName();
+            String packageName = type.getPackage().getName() + '.';
+            boolean isReflection = reflectionClasses.contains(type);
+            if (!isReflection) {
+                // not reflection class
+                if (!nonReflectionClasses.contains(type)) {
+                    // unknown
+                    isReflection = reflectionClassPaths.stream()
+                        .anyMatch(classPath ->
+                            classPath.endsWith(".")
+                                ? classPath.equals(packageName) // Specifies the package
+                                : classPath.equals(className) // Specifies the class
+                        );
+                    if (!isReflection && !hasToString(type))
+                        isReflection = true; // Dose not have a toString method
+                    (isReflection ? reflectionClasses : nonReflectionClasses).add(type);
+                }
             }
+        //
 
             if (isReflection) {
                 // Use Reflection
@@ -1475,6 +1501,7 @@ public class DebugTrace {
      */
     private static LogBuffer toStringBytes(byte[] bytes) {
         LogBuffer buff = new LogBuffer();
+        StringBuilder charBuff = new StringBuilder();
 
         boolean isMultiLines = bytes.length > 16 && byteArrayLimit > 16;
 
@@ -1488,13 +1515,19 @@ public class DebugTrace {
 
         int offset = 0;
         for (int index = 0; index < bytes.length; ++index) {
-            if (offset > 0) buff.append(" ");
+            if (isMultiLines && offset == 0)
+                // outputs hexadecimal address
+                buff.append(String.format("%04X ", index));
+
+            if (offset > 0)
+                buff.append(" ");
 
             if (index >= byteArrayLimit) {
                 buff.noBreakAppend(limitString);
                 break;
             }
 
+            // outputs hexadecimal byte
             int value = bytes[index];
             if (value < 0) value += 256;
             char ch = (char)(value / 16 + '0');
@@ -1503,18 +1536,31 @@ public class DebugTrace {
             ch = (char)(value % 16 + '0');
             if (ch > '9') ch += 'A' - '9' - 1;
             buff.noBreakAppend(ch);
+
+            // outputs as character
+            charBuff.append((char)(value >= 0x20 && value <= 0x7E ? value : '.'));
+
             ++offset;
 
             if (isMultiLines && offset == 16) {
+                buff.noBreakAppend("  ").noBreakAppend(charBuff);
                 buff.lineFeed();
                 offset = 0;
+                charBuff.setLength(0);
             }
         }
 
         if (isMultiLines) {
-            if (buff.length() > 0)
+            if (buff.length() > 0) {
+                for (; offset < 16; ++offset)
+                    buff.noBreakAppend("   "); // padding
+                buff.noBreakAppend("  ").noBreakAppend(charBuff);
                 buff.lineFeed();
+            }
             buff.downNest();
+        } else {
+            if (offset > 0)
+                buff.noBreakAppend("  ").noBreakAppend(charBuff);
         }
         buff.noBreakAppend(']');
 

@@ -18,13 +18,17 @@ import spock.lang.*
 @Unroll
 class LineBreakSpec extends Specification {
     @Shared int maximumDataOutputWidth
+    @Shared minimumOutputLength
 
     def setupSpec() {
         maximumDataOutputWidth = DebugTrace.maximumDataOutputWidth
+        minimumOutputLength = DebugTrace.minimumOutputLength
         DebugTrace.maximumDataOutputWidth = 60
+        DebugTrace.minimumOutputLength = 5
     }
 
     def cleanupSpec() {
+        DebugTrace.minimumOutputLength = minimumOutputLength
         DebugTrace.maximumDataOutputWidth = maximumDataOutputWidth
     }
 

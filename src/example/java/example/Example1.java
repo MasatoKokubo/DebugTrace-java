@@ -1,53 +1,49 @@
 // Example1.java
 // (C) 2015 Masato Kokubo
-
 package example;
 
-import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.debugtrace.DebugTrace;
 
-/**
- * Example1
- */
 public class Example1 {
-    // main
+    private static final Map<Long, Long> fibonacciMap = new HashMap<>();
+    static {
+        fibonacciMap.put(0L, 0L);
+        fibonacciMap.put(1L, 1L);
+    }
+
     public static void main(String[] args) {
         DebugTrace.enter(); // TODO: Remove after debugging
-        @SuppressWarnings("unused")
-        Point[] points = newArray(Point.class, 2);
-        DebugTrace.leave(); // TODO: Remove after debugging
-    }
-
-    // newArray
-    public static <E> E[] newArray(Class<E> elementType, int length) {
-        DebugTrace.enter(); // TODO: Remove after debugging
-        DebugTrace.print("elementType", elementType); // TODO: Remove after debugging
-        DebugTrace.print("length", length); // TODO: Remove after debugging
-        @SuppressWarnings("unchecked")
-        E[] array = (E[])Array.newInstance(elementType, length);
-        DebugTrace.print("1 array", array); // TODO: Remove after debugging
         try {
-            for (int index = 0; index < length; ++index)
-                array[index] = elementType.getConstructor().newInstance();
+            if (args.length <= 0)
+                throw new IllegalArgumentException("args.length = " + args.length);
+            long n = Long.parseLong(args[0]);
+            long fibonacci = fibonacci(n);
+            System.out.println("fibonacci(" + n + ") = " + fibonacci);
+        } catch (Exception e) {
+            DebugTrace.print("e", e); // TODO: Remove after debugging
         }
-        catch (RuntimeException e) {throw e;}
-        catch (Exception e) {throw new RuntimeException(e);}
-        DebugTrace.print("2 array", array); // TODO: Remove after debugging
         DebugTrace.leave(); // TODO: Remove after debugging
-        return array;
     }
 
-    // Point class
-    public static class Point {
-        private int x;
-        private int y;
-        public Point() {
+    public static long fibonacci(long n) {
+        DebugTrace.enter(); // TODO: Remove after debugging
+        if (n < 0)
+            throw new IllegalArgumentException("n (" + n + ") is negative.");
+        long fibonacci = 0;
+        if (fibonacciMap.containsKey(n)) {
+            fibonacci = fibonacciMap.get(n);
+            DebugTrace.print("mapped fibonacci(" + n + ")", fibonacci); // TODO: Remove after debugging
+        } else {
+            fibonacci = fibonacci(n - 2) + fibonacci(n - 1);
+            DebugTrace.print("fibonacci(" + n + ")", fibonacci); // TODO: Remove after debugging
+            if (fibonacci < 0)
+                throw new RuntimeException("Overflow occurred in fibonacci(" + n + ") calculation.");
+            fibonacciMap.put(n, fibonacci);
         }
-        public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-        public int getX() {return x;}
-        public int getY() {return y;}
+        DebugTrace.leave(); // TODO: Remove after debugging
+        return fibonacci;
     }
 }

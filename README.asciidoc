@@ -5,7 +5,7 @@ link:README_ja.asciidoc[[Japanese]]
 *DebugTrace-java* is a library that outputs trace logs when debugging Java programs. It is available on Java 8 or later. +
 By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end of methods, you can output the execution status of the Java program under development to the log.
 
-=== 1. Features
+==== 1. Features
 
 * Automatically outputs invoker's class name, method name, source file and line number.
 * Automatically indents the log with nesting methods and objects.
@@ -14,19 +14,63 @@ By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end 
 * You can customize the output content in `DebugTrace.properties`.
 * There are no dependent libraries at run time. (Required if you use the following logging library)
 * You can use the following logging library.
-    ** Console (stdout and stderr)
-    ** https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[JDK Logger]
-    ** http://logging.apache.org/log4j/1.2/[Log4j]
-    ** https://logging.apache.org/log4j/2.x/[Log4j2]
-    ** http://www.slf4j.org/[SLF4J]
+** Console (stdout and stderr)
+** https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html[JDK Logger]
+** http://logging.apache.org/log4j/1.2/[Log4j]
+** https://logging.apache.org/log4j/2.x/[Log4j2]
+** http://www.slf4j.org/[SLF4J]
+** Direct file output [.small]#(since 3.4.0)#
 
-=== 2. How to use
+==== 2. How to use
 
-Do the following for debug target and related methods.
+Insert the following for the debuggee and related methods.
 
-. Insert `DebugTrace.enter()` at the beginning of methods.
-. Insert `DebugTrace.leave()` at the end of methods or just before the `return` statement.
-. Insert `DebugTrace.print("foo", foo)` to output arguments, local variables and return value to the log if necessary.
+* `DebugTrace.enter();`
+* `DebugTrace.leave();`
+* `DebugTrace.print("value", value);`
+
+===== (1) If the method does not throw an exception and does not return in the middle.
+
+----
+public void foo() {
+    DebugTrace.enter(); // TODO: Remove after debugging
+    ...
+    DebugTrace.print("value", value); // TODO: Remove after debugging
+    ...
+    DebugTrace.leave(); // TODO: Remove after debugging
+}
+----
+
+===== (2) If the method does not throw an exception, but there are returns in the middle.
+
+----
+public void foo() {
+    try {DebugTrace.enter(); // TODO: Remove after debugging
+    ...
+    DebugTrace.print("value", value); // TODO: Remove after debugging
+    ...
+    if (...)
+        return;
+    ...
+    } finally {DebugTrace.leave();} // TODO: Remove after debugging
+}
+----
+
+===== (3) If the method throws an exception.
+
+----
+public void foo() throws Exception {
+    try {DebugTrace.enter(); // TODO: Remove after debugging
+    ...
+    DebugTrace.print("value", value); // TODO: Remove after debugging
+    ...
+    if (...)
+        throw new Exception();
+    ...
+    } catch (Exception e) {DebugTrace.print("e", e); throw e; // TODO: Remove after debugging
+    } finally {DebugTrace.leave();} // TODO: Remove after debugging
+}
+----
 
 The following is an example of Java source used DebugTrace-java methods and the log of when it has been executed.
 
@@ -35,81 +79,84 @@ The following is an example of Java source used DebugTrace-java methods and the 
 ----
 package example;
 
-import java.lang.reflect.Array;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.debugtrace.DebugTrace;
 
-/**
- * Example1
- */
 public class Example1 {
-    // main
+    private static final Map<Long, Long> fibonacciMap = new HashMap<>();
+    static {
+        fibonacciMap.put(0L, 0L);
+        fibonacciMap.put(1L, 1L);
+    }
+
     public static void main(String[] args) {
         DebugTrace.enter(); // TODO: Remove after debugging
-        @SuppressWarnings("unused")
-        Point[] points = newArray(Point.class, 2);
-        DebugTrace.leave(); // TODO: Remove after debugging
-    }
-
-    // newArray
-    public static <E> E[] newArray(Class<E> elementType, int length) {
-        DebugTrace.enter(); // TODO: Remove after debugging
-        DebugTrace.print("elementType", elementType); // TODO: Remove after debugging
-        DebugTrace.print("length", length); // TODO: Remove after debugging
-        @SuppressWarnings("unchecked")
-        E[] array = (E[])Array.newInstance(elementType, length);
-        DebugTrace.print("1 array", array); // TODO: Remove after debugging
         try {
-            for (int index = 0; index < length; ++index)
-                array[index] = elementType.getConstructor().newInstance();
+            if (args.length <= 0)
+                throw new IllegalArgumentException("args.length = " + args.length);
+            long n = Long.parseLong(args[0]);
+            long fibonacci = fibonacci(n);
+            System.out.println("fibonacci(" + n + ") = " + fibonacci);
+        } catch (Exception e) {
+            DebugTrace.print("e", e); // TODO: Remove after debugging
         }
-        catch (RuntimeException e) {throw e;}
-        catch (Exception e) {throw new RuntimeException(e);}
-        DebugTrace.print("2 array", array); // TODO: Remove after debugging
         DebugTrace.leave(); // TODO: Remove after debugging
-        return array;
     }
 
-    // Point class
-    public static class Point {
-        private int x;
-        private int y;
-        public Point() {
+    public static long fibonacci(long n) {
+        DebugTrace.enter(); // TODO: Remove after debugging
+        if (n < 0)
+            throw new IllegalArgumentException("n (" + n + ") is negative.");
+        long fibonacci = 0;
+        if (fibonacciMap.containsKey(n)) {
+            fibonacci = fibonacciMap.get(n);
+            DebugTrace.print("mapped fibonacci(" + n + ")", fibonacci); // TODO: Remove after debugging
+        } else {
+            fibonacci = fibonacci(n - 2) + fibonacci(n - 1);
+            DebugTrace.print("fibonacci(" + n + ")", fibonacci); // TODO: Remove after debugging
+            if (fibonacci < 0)
+                throw new RuntimeException("Overflow occurred in fibonacci(" + n + ") calculation.");
+            fibonacciMap.put(n, fibonacci);
         }
-        public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-        public int getX() {return x;}
-        public int getY() {return y;}
+        DebugTrace.leave(); // TODO: Remove after debugging
+        return fibonacci;
     }
 }
 ----
 
 .debugtrace.log
 ----
-2022-06-05 00:04:25.246+09:00 DebugTrace 3.4.0 on Temurin OpenJDK Runtime Environment 1.8.0_332-b09
-2022-06-05 00:04:25.247+09:00   property name: DebugTrace.properties
-2022-06-05 00:04:25.247+09:00   logger: org.debugtrace.logger.Std$Out
-2022-06-05 00:04:25.252+09:00 
-2022-06-05 00:04:25.253+09:00 ______________________________ main ______________________________
-2022-06-05 00:04:25.253+09:00 
-2022-06-05 00:04:25.253+09:00 Enter example.Example1.main (Example1.java:15)
-2022-06-05 00:04:25.255+09:00 | Enter example.Example1.newArray (Example1.java:23)
-2022-06-05 00:04:25.264+09:00 | | elementType = (Class)class example.Example1$Point (Example1.java:24)
-2022-06-05 00:04:25.265+09:00 | | length = 2 (Example1.java:25)
-2022-06-05 00:04:25.265+09:00 | | 1 array = (example.Example1.Point[2])[null, null] (Example1.java:28)
-2022-06-05 00:04:25.267+09:00 | | 
-2022-06-05 00:04:25.267+09:00 | | 2 array = (example.Example1.Point[2])[
-2022-06-05 00:04:25.267+09:00 | |   (example.Example1.Point){x: 0, y: 0},
-2022-06-05 00:04:25.268+09:00 | |   (example.Example1.Point){x: 0, y: 0}
-2022-06-05 00:04:25.268+09:00 | | ] (Example1.java:35)
-2022-06-05 00:04:25.268+09:00 | | 
-2022-06-05 00:04:25.268+09:00 | Leave example.Example1.newArray (Example1.java:36) duration: 00:00:00.012
-2022-06-05 00:04:25.269+09:00 | 
-2022-06-05 00:04:25.269+09:00 Leave example.Example1.main (Example1.java:18) duration: 00:00:00.015
+2022-06-12 22:09:29.161+09:00 DebugTrace 3.5.0 on Temurin OpenJDK Runtime Environment 1.8.0_332-b09
+2022-06-12 22:09:29.162+09:00   property name: DebugTrace.properties
+2022-06-12 22:09:29.162+09:00   logger: org.debugtrace.logger.Std$Out
+2022-06-12 22:09:29.166+09:00 
+2022-06-12 22:09:29.166+09:00 ______________________________ main ______________________________
+2022-06-12 22:09:29.166+09:00 
+2022-06-12 22:09:29.166+09:00 Enter example.Example1.main (Example1.java:18)
+2022-06-12 22:09:29.167+09:00 | Enter example.Example1.fibonacci (Example1.java:32)
+2022-06-12 22:09:29.167+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-06-12 22:09:29.175+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2022-06-12 22:09:29.175+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.008
+2022-06-12 22:09:29.176+09:00 | | 
+2022-06-12 22:09:29.176+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-06-12 22:09:29.176+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-06-12 22:09:29.176+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2022-06-12 22:09:29.176+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2022-06-12 22:09:29.177+09:00 | | | 
+2022-06-12 22:09:29.177+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-06-12 22:09:29.177+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2022-06-12 22:09:29.177+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2022-06-12 22:09:29.177+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2022-06-12 22:09:29.178+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
+2022-06-12 22:09:29.178+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2022-06-12 22:09:29.178+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.011
+fibonacci(3) = 2
+2022-06-12 22:09:29.178+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.011
 ----
 
-=== 3. Method List
+==== 3. Method List
 
 This library has the following methods. These are all static methods of org.debugtrace.DebugTrace class with no return value.
 
@@ -155,7 +202,6 @@ The type of value is `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`,
 The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `Supplier<T>`.
 
 |`print` +
-[.small]#(since 2.4.0)# +
 [.small]#(deprecated since 3.3.0)#
 |`mapName`: the name of map to get constant name corresponding to number +
 `name`: the value name +
@@ -166,7 +212,6 @@ The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `S
 The type of value is `byte`, `short`, `int`, `long` or `Object`.
 
 |`print` +
-[.small]#(since 2.4.0)# +
 [.small]#(deprecated since 3.3.0)#
 |`mapName`: the name of map to get constant name corresponding to number +
 `name`: the value name +
@@ -184,54 +229,59 @@ The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `S
 
 |===
 
-=== 4. Properties of *DebugTrace.properties* file
+==== 4. Properties of *DebugTrace.properties* file
 
 DebugTrace read `DebugTrace.properties` file in the classpath on startup.  
 You can specify following properties in the `DebugTrace.properties` file.  
 
-[options="header", cols="2,8"]
+[options="header", cols="2,3,4"]
 .Property List
 |===
-|Property Name|Description
+|Property Name|Description|Default Value (Value Examples)
 
 |`logger`
 | Logger used by DebugTrace +
-[.small]#*Examples:*# +
-&#xa0;&#xa0; `logger = Std$Out` [.small]#- outputs to stdout# +
-&#xa0;&#xa0; `logger = Std$Err` [.small]#- outputs to stderr *[Default]*# +
-&#xa0;&#xa0; `logger = Jdk` [.small]#- outputs using the JDK logger# +
-&#xa0;&#xa0; `logger = Log4j` [.small]#- outputs using the Log4j 1 logger# +
-&#xa0;&#xa0; `logger = Log4j2` [.small]#- outputs using the Log4j 2 logger# +
-&#xa0;&#xa0; `logger = SLF4J` [.small]#- outputs using the SLF4J logger# +
-&#xa0;&#xa0; `logger = File: /var/log/app/debugtrace.log` [.small]#- outputs directly to the file# +
-&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0; [.small]#(since 3.4.0)# +
+ +
+[.small]#*Specifiable Values:*# +
+`Std$Out` [.small]#- outputs to stdout# +
+`Std$Err` [.small]#- outputs to stderr# +
+`Jdk` [.small]#- outputs using the JDK logger# +
+`Log4j` [.small]#- outputs using the Log4j 1 logger# +
+`Log4j2` [.small]#- outputs using the Log4j 2 logger# +
+`SLF4J` [.small]#- outputs using the SLF4J logger# +
+[.small]#`File: /var/log/debugtrace.log` - outputs directly to the file (since 3.4.0)# +
+|`Std$Err`
 
 |`logLevel`
 |Log level to use when outputting +
-[.small]#*Examples when use JDK:*# +
-&#xa0;&#xa0; `logLevel = default` [.small]#- same as finest *[Default]*# +
-&#xa0;&#xa0; `logLevel = finest` +
-&#xa0;&#xa0; `logLevel = finer` +
-&#xa0;&#xa0; `logLevel = fine` +
-&#xa0;&#xa0; `logLevel = config` +
-&#xa0;&#xa0; `logLevel = info` +
-&#xa0;&#xa0; `logLevel = warning` +
-&#xa0;&#xa0; `logLevel = severe` +
-[.small]#*Examples when use Log4j or Lo4j2:*# +
-&#xa0;&#xa0; `logLevel = default` [.small]#- same as trace *[Default]*# +
-&#xa0;&#xa0; `logLevel = trace` +
-&#xa0;&#xa0; `logLevel = debug` +
-&#xa0;&#xa0; `logLevel = info` +
-&#xa0;&#xa0; `logLevel = warn` +
-&#xa0;&#xa0; `logLevel = error` +
-&#xa0;&#xa0; `logLevel = fatal` +
-[.small]#*Examples when use SLF4J:*# +
-&#xa0;&#xa0; `logLevel = default` [.small]#- same as trace *[Default]*# +
-&#xa0;&#xa0; `logLevel = trace` +
-&#xa0;&#xa0; `logLevel = debug` +
-&#xa0;&#xa0; `logLevel = info` +
-&#xa0;&#xa0; `logLevel = warn` +
-&#xa0;&#xa0; `logLevel = error`
+ +
+[.small]#*Specifiable Values (logger = JDK):*# +
+`default` [.small]#- same as finest# +
+`finest` +
+`finer` +
+`fine` +
+`config` +
+`info` +
+`warning` +
+`severe` +
+ +
+[.small]#*Specifiable Values (logger = Log4j and logger = Lo4j2):*# +
+`default` [.small]#- same as trace# +
+`trace` +
+`debug` +
+`info` +
+`warn` +
+`error` +
+`fatal` +
+ +
+[.small]#*Specifiable Values (logger = SLF4J):*# +
+`default` [.small]#- same as trace# +
+`trace` +
+`debug` +
+`info` +
+`warn` +
+`error`
+|`default`
 
 |`enterFormat` +
 [.small]#(Renamed (since 3.0.0))# +
@@ -239,13 +289,13 @@ You can specify following properties in the `DebugTrace.properties` file.
 `enterString` +
 [.small]#(Deprecated (since 3.0.0))#
 |The format string of logging when entering methods +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `enterFormat = Enter %1$s.%2$s (%3$s:%4$d)` [.small]#*[Default]*# +
+ +
 [.small]#*Parameters:*# +
-&#xa0;&#xa0; `%1`: The class name +
-&#xa0;&#xa0; `%2`: The method name +
-&#xa0;&#xa0; `%3`: The file name +
-&#xa0;&#xa0; `%4`: The line number
+`%1`: The class name +
+`%2`: The method name +
+`%3`: The file name +
+`%4`: The line number
+|`Enter %1$s.%2$s (%3$s:%4$d)` +
 
 |`leaveFormat` +
 [.small]#(Renamed (since 3.0.0))# +
@@ -253,198 +303,175 @@ You can specify following properties in the `DebugTrace.properties` file.
 `leaveString` +
 [.small]#(Deprecated (since 3.0.0))#
 |The format string of logging when leaving methods +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `leaveFormat = Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL` [.small]#*[Default]*# +
+ +
 [.small]#*Parameters:*# +
-&#xa0;&#xa0; `%1`: The class name +
-&#xa0;&#xa0; `%2`: The method name +
-&#xa0;&#xa0; `%3`: The file name +
-&#xa0;&#xa0; `%4`: The line number +
-&#xa0;&#xa0; `%5`: The duration since invoking the corresponding `enter` method
+`%1`: The class name +
+`%2`: The method name +
+`%3`: The file name +
+`%4`: The line number +
+`%5`: The duration since invoking the corresponding `enter` method
+|`Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL` +
 
 |`threadBoundaryFormat` +
-[.small]#(Renamed (since 3.0.0))# +
+[.small]#(Renamed since 3.0.0)# +
  +
 `threadBoundaryString` +
 [.small]#(Deprecated (since 3.0.0))#
 |The format string of logging at threads boundary +
-[.small]#*Example:*# +
-&#xa0;&#xa0; [.small]`threadBoundaryString = \____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____` +
-&#xa0;&#xa0; [.small]#*[Default]*# +
+ +
 [.small]#*Parameter:*# +
-&#xa0;&#xa0; `%1`: The thread name
+`%1`: The thread name
+|[.small]#`\____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____`#
 
 |`classBoundaryFormat` +
-[.small]#(Renamed (since 3.0.0))# +
+[.small]#(Renamed since 3.0.0)# +
  +
 `classBoundaryString` +
-[.small]#(Deprecated (since 3.0.0))#
+[.small]#(Deprecated since 3.0.0)#
 |The format string of logging at classes boundary +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `classBoundaryString = \\____ %1$s \____` [.small]#*[Default]*# +
+ +
 [.small]#*Parameter:*# +
-&#xa0;&#xa0; `%1`: The class name
+`%1`: The class name
+|`\\____ %1$s \____` +
 
 |`indentString`
 |The indentation string for code +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `indentString = \s\s` [.small]#*[Default]*# +
-&#xa0;&#xa0; [.small]#`\\s` is change to a space character#
+|`&#x7c;`\s` +
+ +
+`\\s` _is change to a space character_
 
 |`dataIndentString`
 |The indentation string for data +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `dataIndentString = \\s\\s` [.small]#*[Default]*# +
-&#xa0;&#xa0; [.small]#`\\s` is change to a space character#
+|`\\s\\s` +
+ +
+`\\s` _is change to a space character_
 
 |`limitString`
 |The string to represent that it has exceeded the limit +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `limitString = \...` [.small]#*[Default]*#
+|`\...`
 
 |`nonOutputString` +
-[.small]#(Renamed (since 3.0.0))# +
+[.small]#(Renamed since 3.0.0)# +
  +
 `nonPrintString` +
-[.small]#(since 1.5.0)# +
-[.small]#(Deprecated (since 3.0.0))#
+[.small]#(Deprecated since 3.0.0)#
 |The string to be output instead of not outputting value +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `nonOutputString = \***` [.small]#*[Default]*#
+|`\***`
 
 |`cyclicReferenceString`
 |The string to represent that the cyclic reference occurs +
-[.small]#*Example:*# +
-`cyclicReferenceString = \\s\*\** cyclic reference \***\\s` [.small]#*[Default]*# +
-&#xa0;&#xa0; [.small]#`\\s` is change to a space character#
+|`\\s\*\** cyclic reference \***\\s` +
+ +
+`\\s` _is change to a space character_
 
 |`varNameValueSeparator`
 |The separator string between the variable name and value +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `varNameValueSeparator = \\s=\\s` [.small]#*[Default]*# +
-&#xa0;&#xa0; [.small]#`\\s` is change to a space character#
+|`\\s=\\s` +
+ +
+`\\s` _is change to a space character_
 
 |`keyValueSeparator` +
  +
 [.small]#`fieldNameValueSeparator`# +
-[.small]#(Deleted (since 3.0.0))#
+[.small]#(Deleted since 3.0.0)#
 |The separator string between the key and value of Map object +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `keyValueSeparator = :\\s` [.small]#*[Default]*# +
-&#xa0;&#xa0; [.small]#`\\s` is change to a space character#
+|`:\\s` +
+ +
+`\\s` _is change to a space character_
 
 |`printSuffixFormat`
 |The format string of `print` method suffix +
 [.small]#*Example:*# +
-&#xa0;&#xa0; `printSuffixFormat = \\s(%3$s:%4$d)` [.small]#*[Default]*# +
-&#xa0;&#xa0; [.small]#`\\s` is change to a space character# +
+ +
 [.small]#*Parameters:*# +
-&#xa0;&#xa0; `%1`: The class name +
-&#xa0;&#xa0; `%2`: The method name +
-&#xa0;&#xa0; `%3`: The file name +
-&#xa0;&#xa0; `%4`: The line number
+`%1`: The class name +
+`%2`: The method name +
+`%3`: The file name +
+`%4`: The line number
+|`\\s(%3$s:%4$d)` +
+ +
+`\\s` _is change to a space character_ +
 
 |`sizeFormat` +
 [.small]#(since 3.0.0)#
 |The format string of the size of collection and map +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `sizeFormat = size:%1d` [.small]#*[Default]*# +
+ +
 [.small]#*Parameters:*# +
-&#xa0;&#xa0; `%1`: The size
+`%1`: The size
+|`\\s(%3$s:%4$d)` +
+ +
+`\\s` _is change to a space character_ +
 
 |`minimumOutputSize` +
 [.small]#(since 3.0.0)#
-|The minimum value to output the number of elements of array, collection and map +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `minimumOutputSize = 5` [.small]#*[Default]*#
+|The minimum value to output the number of elements of array, collection and map
+|5
 
 |`lengthFormat` +
 [.small]#(since 3.0.0)#
 |The format string of the length of string +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `sizeFormat = length:%1d` [.small]#*[Default]*# +
+ +
 [.small]#*Parameters:*# +
-&#xa0;&#xa0; `%1`: The string length
+`%1`: The string length
+|`length:%1d` +
 
 |`minimumOutputLength` +
 [.small]#(since 3.0.0)#
-|The minimum value to output the length of string +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `minimumOutputSize = 5` [.small]#*[Default]*#
+|The minimum value to output the length of string
+|5
 
 |`utilDateFormat`
-|The format string of `java.util.Date` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `utilDateFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small]#*[Default]*#
+|The format string of `java.util.Date`
+|`yyyy-MM-dd HH:mm:ss.SSSxxx`
 
 |`sqlDateFormat`
-|The format string of `java.sql.Date` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `sqlDateFormat = yyyy-MM-ddxxx` [.small]#*[Default]*#
+|The format string of `java.sql.Date`
+|`yyyy-MM-ddxxx`
 
 |`timeFormat`
-|The format string of `java.sql.Time` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `timeFormat = HH:mm:ss.SSSxxx` [.small]#*[Default]*#
+|The format string of `java.sql.Time`
+|`HH:mm:ss.SSSxxx`
 
 |`timestampFormat`
-|The format string of `java.sql.Timestamp` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `timestampFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small]#*[Default]*#
+|The format string of `java.sql.Timestamp`
+|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx`
 
-|`localDateFormat` +
-[.small]#(since 2.5.0)#
-|The format string of `java.time.LocalDate` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `localDateFormat = yyyy-MM-dd` [.small]#*[Default]*#
+|`localDateFormat`
+|The format string of `java.time.LocalDate`
+|`yyyy-MM-dd`
 
-|`localTimeFormat` +
-[.small]#(since 2.5.0)#
-|The format string of `java.time.LocalTime` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `localTimeFormat = HH:mm:ss.SSSSSSSSS` [.small]#*[Default]*#
+|`localTimeFormat`
+|The format string of `java.time.LocalTime`
+|`HH:mm:ss.SSSSSSSSS`
 
-|`offsetTimeFormat` +
-[.small]#(since 2.5.0)#
-|The format string of `java.time.OffsetTime` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `offsetTimeFormat = HH:mm:ss.SSSSSSSSSxxx` [.small]#*[Default]*#
+|`offsetTimeFormat`
+|The format string of `java.time.OffsetTime`
+|`HH:mm:ss.SSSSSSSSSxxx`
 
-|`localDateTimeFormat` +
-[.small]#(since 2.5.0)#
-|The format string of `java.time.LocalDateTime` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `localDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSS` [.small]#*[Default]*#
+|`localDateTimeFormat`
+|The format string of `java.time.LocalDateTime`
+|`yyyy-MM-dd HH:mm:ss.SSSSSSSSS`
 
-|`offsetDateTimeFormat` +
-[.small]#(since 2.5.0)#
-|The format string of `java.time.OffsetDateTime` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `offsetDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx` [.small]#*[Default]*#
+|`offsetDateTimeFormat`
+|The format string of `java.time.OffsetDateTime`
+|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx`
 
-|`zonedDateTimeFormat` +
-[.small]#(since 2.5.0)#
-|The format string of `java.time.ZonedDateTime` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `zonedDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV` [.small]#*[Default]*#
+|`zonedDateTimeFormat`
+|The format string of `java.time.ZonedDateTime`
+|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV`
 
-|`instantFormat` +
-[.small]#(since 2.5.0)#
-|The format string of `java.time.Instant` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `instantFormat = yyyy-MM-dd HH:mm:ss.SSSSSSSSSX` [.small]#*[Default]*#
+|`instantFormat`
+|The format string of `java.time.Instant`
+|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSX`
 
-|`logDateTimeFormat` +
-[.small]#(since 2.5.0)#
-|The format string of the date and time of the log when the logger is `Std$Out` or `Std$Err` +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `logDateTimeFormat = yyyy-MM-dd HH:mm:ss.SSSxxx` [.small]#*[Default]*#
+|`logDateTimeFormat`
+|The format string of the date and time of the log when the logger is `Std$Out` or `Std$Err`
+|`yyyy-MM-dd HH:mm:ss.SSSxxx`
 
 |`maximumDataOutputWidth` +
 [.small]#(since 3.0.0)#
-|The maximum output width of data +
-[.small]#*Example:*# +
-`maximumDataOutputWidth = 70` [.small]#*[Default]*#
+|The maximum output width of data
+|70
 
 |`collectionLimit` +
 [.small]#(Renamed (since 3.0.0))# +
@@ -452,100 +479,105 @@ You can specify following properties in the `DebugTrace.properties` file.
 [.small]#`arrayLimit`# +
 [.small]#(Deprecated (since 3.0.0))# +
 [.small]#`mapLimit`# +
-[.small]#Removed (since 3.0.0)#
-|The limit value of elements for collection and map to output +
-[.small]#*Example:*# +
-`collectionLimit = 512` [.small]#*[Default]*#
+[.small]#(Removed since 3.0.0)#
+|The limit value of elements for collection and map to output
+|128&#xa0; [.small]#(since 3.5.0)# +
+512&#xa0; [.small]#(up to 3.4.0)#
 
 |`byteArrayLimit`
 |The limit value of elements for byte array (`byte[]`) to output +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `byteArrayLimit = 8192` [.small]#*[Default]*#
+|256 &#xa0; [.small]#(since 3.5.0)# +
+8192 &#xa0; [.small]#(up to 3.4.0)#
 
 |`stringLimit`
-|The limit value of characters for string to output +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `stringLimit = 8192` [.small]#*[Default]*#
+|The limit value of characters for string to output
+|256 &#xa0; [.small]#(since 3.5.0)# +
+8192 &#xa0; [.small]#(up to 3.4.0)#
 
 |`reflectionNestLimit` +
 [.small]#(since 3.0.0)#
-|The The limit value for reflection nesting +
-[.small]#*Example:*# +
-`reflectionNestLimit = 4` [.small]#*[Default]*#
+|The The limit value for reflection nesting
+|4
 
 |`nonOutputProperties` +
 [.small]#(Renamed (since 3.0.0))# +
  +
 [.small]#`nonPrintProperties`# +
-[.small]#(Deprecated (since 3.0.0))# +
-[.small]#since 2.2.0#
+[.small]#(Deprecated (since 3.0.0))#
 |Properties not to be output +
-[.small]#*Example (1 value):*# +
-&#xa0;&#xa0; `nonOutputProperties = org.lightsleep.helper.EntityInfo#columnInfos` +
-[.small]#*Example (multi values):*# +
-&#xa0;&#xa0; `nonOutputProperties = \` +
-&#xa0;&#xa0;&#xa0;&#xa0; `org.lightsleep.helper.EntityInfo#columnInfos,\` +
-&#xa0;&#xa0;&#xa0;&#xa0; `org.lightsleep.helper.EntityInfo#keyColumnInfos,\` +
-&#xa0;&#xa0;&#xa0;&#xa0; `org.lightsleep.helper.ColumnInfo#entityInfo` +
-&#xa0;&#xa0; [.small]#No default value# +
+ +
 [.small]#*Format of a value:*# +
-&#xa0;&#xa0; `<Full class name>#<Property name>`
+`<Full class name>#<Property name>`
+|_Nome_ +
+ +
+[.small]#*Example (1 value):*# +
+[.small]#`org.lightsleep.helper.EntityInfo#columnInfos`# +
+ +
+[.small]#*Example (multi values):*# +
+[.small]#`org.lightsleep.helper.EntityInfo#columnInfos,\`# +
+[.small]#`org.lightsleep.helper.EntityInfo#keyColumnInfos,\`# +
+[.small]#`org.lightsleep.helper.ColumnInfo#entityInfo`# +
 
-|`defaultPackage` +
-[.small]#(since 2.3.0)#
-|The default package of your java source +
+|`defaultPackage`
+|The default package of your java source
+|_Nome_ +
+ +
 [.small]#*Example:*# +
-&#xa0;&#xa0; `defaultPackage = org.debugtrace.DebugTraceExample` +
-&#xa0;&#xa0; [.small]#No default value#
+`org.debugtrace.DebugTraceExample` +
 
-|`defaultPackageString` +
-[.small]#(since 2.3.0)#
+|`defaultPackageString`
 |The string replacing the default package part +
-[.small]#*Example:*# +
-&#xa0;&#xa0; `defaultPackageString = \...` [.small]#*[Default]*# +
+|`\...` +
 
 |`reflectionClasses` +
-[.small]#(since 2.4.0)#
-|Classe names that output content by reflection even if `toString` method is implemented +
+|Classe names that output content by reflection even if `toString` method is implemented
+|_Nome_ +
+ +
 [.small]#*Example (1 value):*# +
-&#xa0;&#xa0; `reflectionClasses = org.debugtrce.DebugTraceExample.Point` +
+`org.debugtrce.example.Point` +
+ +
 [.small]#*Example (multi values):*# +
-&#xa0;&#xa0; `reflectionClasses = \` +
-&#xa0;&#xa0;&#xa0;&#xa0; `org.debugtrace.DebugTraceExample.Point,\` +
-&#xa0;&#xa0;&#xa0;&#xa0; `org.debugtrace.DebugTraceExample.Rectangle` +
-&#xa0;&#xa0; [.small]#No default value#
+`org.debugtrace.example.Point,\` +
+`org.debugtrace.example.Rectangle` +
+ +
+[.small]#*Example (package - since 3.5.0):*# +
+`org.debugtrce.example.`
 
 |`mapNameMap` +
-[.small]#(since 2.4.0)#
 |The map for obtaining map name corresponding to variable name +
+ +
+[.small]#*Format of a value:*# +
+`<Variable Name>: <Map Name>`
+|_Nome_ +
+ +
 [.small]#*Example:*# +
-&#xa0;&#xa0; `mapNameMap = appleBrand: AppleBrand` +
-[.small]#*Format of a value:*# +
-&#xa0;&#xa0; `<Variable Name>: <Map Name>` +
-&#xa0;&#xa0; [.small]#No default value#
+`appleBrand: AppleBrand`
 
-|`<Constant Map Name>` +
-[.small]#(since 2.4.0)#
+|`<Constant Map Name>`
 |The map of numbers (as key) and constant names (as value) corresponding to the numbers +
-&#xa0;&#xa0; `AppleBrand = \` +
-&#xa0;&#xa0;&#xa0;&#xa0; `0: Apple.NO_BRAND,\` + 
-&#xa0;&#xa0;&#xa0;&#xa0; `1: Apple.AKANE,\` + 
-&#xa0;&#xa0;&#xa0;&#xa0; `2: Apple.AKIYO,\` + 
-&#xa0;&#xa0;&#xa0;&#xa0; `3: Apple.AZUSA,\` + 
-&#xa0;&#xa0;&#xa0;&#xa0; `4: Apple.YUKARI` + 
+ +
 [.small]#*Format of a value:*# +
-&#xa0;&#xa0; `<Number>: <Constant Name>` +
-[.small]#*Predefined constant name maps:*# +
-&#xa0;&#xa0; `Calendar`: `Calendar.ERA` etc. +
-&#xa0;&#xa0; `CalendarWeek`: `Calendar.SUNDAY` etc. +
-&#xa0;&#xa0; `CalendarMonth`: `Calendar.JANUARY` etc. +
-&#xa0;&#xa0; `CalendarAmPm`: `Calendar.AM` etc. +
-&#xa0;&#xa0; `SqlTypes`: `java.sql.Types.BIT` etc.
+`<Number>: <Constant Name>`
+|[.small]#*Predefined constant name maps:*# +
+`Calendar`: `Calendar.ERA` etc. +
+`CalendarWeek`: `Calendar.SUNDAY` etc. +
+`CalendarMonth`: `Calendar.JANUARY` etc. +
+`CalendarAmPm`: `Calendar.AM` etc. +
+`SqlTypes`: `java.sql.Types.BIT` etc. +
+ +
+[.small]#*Example:*# +
+`AppleBrand = \` +
+&#xa0;&#xa0; `0: Apple.NO_BRAND,\` + 
+&#xa0;&#xa0; `1: Apple.AKANE,\` + 
+&#xa0;&#xa0; `2: Apple.AKIYO,\` + 
+&#xa0;&#xa0; `3: Apple.AZUSA,\` + 
+&#xa0;&#xa0; `4: Apple.YUKARI` + 
 
 |===
-Specify the format string of the date and time in the form of the argument of `String.format` for *DebugTrace-java 2.4.6 or earlier*, and specify it in the form of the argument `DateTimeFormatter.ofPattern` for *DebugTrace-java 2.5.0 or later*.
 
-==== 4.1. *nonOutputProperties*, *nonOutputString*
+Specify the format string of the date and time in the form of the argument of `String.format` for DebugTrace-java *2.4.6* or earlier, and specify it in the form of the argument `DateTimeFormatter.ofPattern` for DebugTrace-java *2.5.0* or later.
+
+===== 4.1. *nonOutputProperties*, *nonOutputString*
 
 DebugTrace use reflection to output object contents if the `toString` method is not implemented.
 If there are other object references, the contents of objects are also output.
@@ -562,7 +594,7 @@ nonOutputProperties = \
     org.lightsleep.helper.ColumnInfo#entityInfo
 ----
 
-==== 4.2. Constant map and *mapNameMap*
+===== 4.2. Constant map and *mapNameMap*
 
 The constant map is a map whose key is numeric and whose value is a constant name.
 When you call the `print` method with the key (map name) of this property as an argument, the constant name is output with numerical value.
@@ -617,11 +649,11 @@ DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 2017-07-29 13:45:32.489 |  4 example. appleBrand  = 4(Apple.YUKARI) (README_example.java:44)
 ----
 
-=== 5. Examples of using logging libraries
+==== 5. Examples of using logging libraries
 
 The logger name of DebugTrace is `org.debugtrace.DebugTrace`.   
 
-==== 5.1. Example of *logging.properties* (*JDK*)
+===== 5.1. Example of *logging.properties* (*JDK*)
 
 .logging.properties
 ----
@@ -637,12 +669,11 @@ org.debugtrace.DebugTrace.level = FINEST
 ----
 *`-Djava.util.logging.config.file=<path>/logging.properties` is required as Java startup option*
 
-==== 5.2. Example of *log4j.xml* (*Log4j*)
+===== 5.2. Example of *log4j.xml* (*Log4j*)
 
 [source,xml]
 .log4j.xml
 ----
-<!-- log4j.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 
@@ -662,12 +693,11 @@ org.debugtrace.DebugTrace.level = FINEST
 </log4j:configuration>
 ----
 
-==== 5.3. Example of *log4j2.xml* (*Log4j2*)
+===== 5.3. Example of *log4j2.xml* (*Log4j2*)
 
 [source,xml]
 .log4j2.xml
 ----
-<!-- log4j2.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
   <Appenders>
@@ -684,12 +714,11 @@ org.debugtrace.DebugTrace.level = FINEST
 </Configuration>
 ----
 
-==== 5.4. Example of *logback.xml* (*SLF4J* / *Logback*)
+===== 5.4. Example of *logback.xml* (*SLF4J* / *Logback*)
 
 [source,xml]
 .logback.xml
 ----
-<!-- logback.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <appender name="traceAppender" class="ch.qos.logback.core.FileAppender">
@@ -705,7 +734,7 @@ org.debugtrace.DebugTrace.level = FINEST
 </configuration>
 ----
 
-=== 6. Example of *build.gradle* description
+==== 6. Example of *build.gradle* description
 
 [source,groovy]
 .build.gradle
@@ -719,19 +748,37 @@ dependencies {
 }
 ----
 
-=== 7. License
+==== 7. License
 
 link:LICENSE.txt[The MIT License (MIT)]
 
 [gray]#_(C) 2015 Masato Kokubo_#
 
-=== 8. Links
+==== 8. Links
 
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specification]
 
-=== 9. Release Notes
+==== 9. Release Notes
 
-==== DebugTrace-java 3.4.0 [.small .gray]#- June 5, 2022#
+===== DebugTrace-java 3.5.0 [.small .gray]#- June 19, 2022#
+
+* Improved the log output of `byte[]`.
+* Changed default values for the following properties.
+
+[cols="1,1,1", options="header", width="60%"]
+|===
+^|Property Name ^|New Default Value ^|Old Default Value
+|`minimumOutputSize`   ^|16  ^|5
+|`minimumOutputLength` ^|16  ^|5
+|`collectionLimit`     ^|128 ^|512
+|`byteArrayLimit`      ^|256 ^|8192
+|`stringLimit`         ^|256 ^|8192
+|===
+
+* Enabled to specify the package with the `reflectionClasses` property. +
+Example: `reflectionClasses = org.debugtrace.example.`
+
+===== DebugTrace-java 3.4.0 [.small .gray]#- June 5, 2022#
 
 * Added `File` logger to output directly to a file.
 * The following contents have been added to the log at the start.
@@ -739,79 +786,79 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specificati
 ** `System.getProperty("java.runtime.name")`
 ** `System.getProperty("java.runtime.version")`
 
-==== DebugTrace-java 3.3.1 [.small .gray]#- February 26, 2022#
+===== DebugTrace-java 3.3.1 [.small .gray]#- February 26, 2022#
 
 * `print` methods now returns the value or the message of the argument.
 
-==== DebugTrace-java 3.3.0 [.small .gray]#- February 6, 2022#
+===== DebugTrace-java 3.3.0 [.small .gray]#- February 6, 2022#
 
 * Supports exception throws in the `Supplier.get` method in `print` methods with `Supplier` (or `BooleanSupplier`, etc.) as an argument.
 * `print` methods with `mapNameMap` as an argument has been deprecated. Instead, define `mapNameMap` property in `DebugTrace.properties`. 
 
-==== DebugTrace-java 3.2.0 [.small .gray]#- November 20, 2021#
+===== DebugTrace-java 3.2.0 [.small .gray]#- November 20, 2021#
 
 * Logging library https://github.com/google/flogger[Flogger] is no longer supported.
 
-==== DebugTrace-java 3.1.1 [.small .gray]#- August 10, 2021#
+===== DebugTrace-java 3.1.1 [.small .gray]#- August 10, 2021#
 
 * Improved the line break handling of data output
 
-==== DebugTrace-java 3.1.0 [.small .gray]#- June 12, 2021#
+===== DebugTrace-java 3.1.0 [.small .gray]#- June 12, 2021#
 
 * Added support for logging library https://github.com/google/flogger[Flogger].
 
-==== DebugTrace-java 3.0.7 [.small .gray]#- June 2, 2021#
+===== DebugTrace-java 3.0.7 [.small .gray]#- June 2, 2021#
 
 * Improved: Single quotes in string and double quote of character no longer escape. +
 `"'Foo'"` <- `"\'Foo\'"` +
-`'"'` <- `'\"'` +
+`'"'` <- `'\"'`
 
-==== DebugTrace-java 3.0.6 [.small .gray]#May 18, 2021#
+===== DebugTrace-java 3.0.6 [.small .gray]#May 18, 2021#
 
 * Bug fix: A `NulPointerException` is thrown in the output of an object of the `Object` class.
 
-==== DebugTrace-java 3.0.5 [.small .gray]#April 13, 2021#
+===== DebugTrace-java 3.0.5 [.small .gray]#April 13, 2021#
 
 * Migrate to Maven Central repository.
 
-==== DebugTrace-java 3.0.4 [.small .gray]#November 1, 2020#
+===== DebugTrace-java 3.0.4 [.small .gray]#November 1, 2020#
 
 * Fixed a bug that converted negative `byte[]` elements to the wrong string.
 
-==== DebugTrace-java 3.0.3 [.small .gray]#October 24, 2020#
+===== DebugTrace-java 3.0.3 [.small .gray]#October 24, 2020#
 
 * Changed the default output format of `duration` of the `leave` method from nanoseconds to milliseconds.
 
-==== DebugTrace-java 3.0.2 [.small .gray]#July 6, 2020#
+===== DebugTrace-java 3.0.2 [.small .gray]#July 6, 2020#
 
 * Changed the output parentheses in reflection. (`{}` <- `[]`)
 * Improved the line break handling of data output.
 * Added `printStack` method.
 
-==== DebugTrace-java 3.0.1 [.small .gray]#May 15, 2020#
+===== DebugTrace-java 3.0.1 [.small .gray]#May 15, 2020#
 
 * Improved the line break handling of data output.
 
-==== DebugTrace-java 3.0.0 [.small .gray]#May 12, 2020#
+===== DebugTrace-java 3.0.0 [.small .gray]#May 12, 2020#
 
 * Improved the line break handling of data output.
 
 * Added the following properties specified in DebugTrace.properties.
-  ** `sizeFormat` - The format string of the size of collections and maps (default: `size:%1d`)
-  ** `minimumOutputSize` - The minimum value to output the number of elements of array, collection and map (default: `5`)
-  ** `lengthFormat` - The format string of the length of strings (default: `length:% 1d`)
-  ** `minimumOutputLength` - The minimum value to output the length of string length (default: `5`)
-  ** `maximumDataOutputWidth` - The maximum output width of data (default: `70`)
+** `sizeFormat` - The format string of the size of collections and maps (default: `size:%1d`)
+** `minimumOutputSize` - The minimum value to output the number of elements of array, collection and map (default: `5`)
+** `lengthFormat` - The format string of the length of strings (default: `length:% 1d`)
+** `minimumOutputLength` - The minimum value to output the length of string length (default: `5`)
+** `maximumDataOutputWidth` - The maximum output width of data (default: `70`)
 
 * Changed the following property names specified in DebugTrace.properties. However, you can specify the previous names for compatibility.
-  ** `enterFormat` <- `enterString`
-  ** `leaveFormat` <- `leaveString`
-  ** `threadBoundaryFormat` <- `threadBoundaryString`
-  ** `classBoundaryFormat` <- `classBoundaryString`
-  ** `nonOutputString` <- `nonPrintString`
-  ** `collectionLimit` <- `arrayLimit`
-  ** `nonOutputProperties` <- `nonPrintProperties`
+** `enterFormat` <- `enterString`
+** `leaveFormat` <- `leaveString`
+** `threadBoundaryFormat` <- `threadBoundaryString`
+** `classBoundaryFormat` <- `classBoundaryString`
+** `nonOutputString` <- `nonPrintString`
+** `collectionLimit` <- `arrayLimit`
+** `nonOutputProperties` <- `nonPrintProperties`
 
 * Delete the following properties specified in DebugTrace.properties.
-  ** `fieldNameValueSeparator` - integrated into `keyValueSeparator`
-  ** `mapLimit` - integrated into `collectionLimit`
+** `fieldNameValueSeparator` - integrated into `keyValueSeparator`
+** `mapLimit` - integrated into `collectionLimit`

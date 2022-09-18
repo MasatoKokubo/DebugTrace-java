@@ -15,7 +15,7 @@ public class Example2 {
     }
 
     public static void main(String[] args) {
-        try {DebugTrace.enter(); // ToDo: Remove after debugging
+        try {DebugTrace.enter(); // TODO: Remove after debugging
         try {
             if (args.length <= 0)
                 throw new IllegalArgumentException("args.length = " + args.length);
@@ -25,12 +25,12 @@ public class Example2 {
         } finally {
             DebugTrace.print("fibonacciMap", fibonacciMap); // TODO: Remove after debugging
         }
-        } catch (Exception e) {DebugTrace.print("e", e); throw e; // ToDo: Remove after debugging
-        } finally {DebugTrace.leave();} // ToDo: Remove after debugging
+        } catch (Exception e) {DebugTrace.print("e", e); throw e; // TODO: Remove after debugging
+        } finally {DebugTrace.leave();} // TODO: Remove after debugging
     }
 
     public static long fibonacci(long n) {
-        try {DebugTrace.enter(); // ToDo: Remove after debugging
+        try {DebugTrace.enter(); // TODO: Remove after debugging
         if (n < 0)
             throw new IllegalArgumentException("n (" + n + ") is negative.");
         long fibonacci = 0;
@@ -45,6 +45,6 @@ public class Example2 {
             fibonacciMap.put(n, fibonacci);
         }
         return fibonacci;
-        } finally {DebugTrace.leave();} // ToDo: Remove after debugging
+        } finally {DebugTrace.leave();} // TODO: Remove after debugging
     }
 }

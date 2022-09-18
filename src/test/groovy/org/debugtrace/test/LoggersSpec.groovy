@@ -31,15 +31,6 @@ class LoggersSpec extends Specification {
             def propertyPath = "src/test/resources/logging_${loggerName}.properties"
             System.setProperty('java.util.logging.config.file', propertyPath)
             LogManager.getLogManager().readConfiguration()
-        } else if (loggerName == 'File') { // since 3.4.0
-            try {
-                def file = new File(filePath)
-                if (file.isFile())
-                    file.delete()
-            }
-            catch (Exception e) {
-                System.err.println(e.toString())
-            }
         }
         DebugTrace.initClass("DebugTrace_${loggerName}")
 

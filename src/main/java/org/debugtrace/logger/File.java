@@ -23,11 +23,18 @@ public class File implements Logger {
     /**
      * Constructs a org.debugtrace.logger.File.
      * @param file the output destination java.io.File
+     * @param append Append output to the existing log file if true, initialize and output otherwise
      */
-    public File(java.io.File file) {
+// 3.5.1
+//  public File(java.io.File file) {
+    public File(java.io.File file, boolean append) {
+////
         this.file = file;
         try {
-            new FileWriter(file, true).close();
+        // 3.5.1
+        //  new FileWriter(file, true).close();
+            new FileWriter(file, append).close();
+        ////
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -39,7 +46,7 @@ public class File implements Logger {
     @Override
     public void log(String message) {
         synchronized (lock) {
-            try (FileWriter writer = new  FileWriter(file, true)) {
+            try (FileWriter writer = new FileWriter(file, true)) {
                 writer.write(DebugTrace.appendTimestamp(message) + lineSeparator);
             } catch (IOException e) {
                 if (!writeErrorReported) {

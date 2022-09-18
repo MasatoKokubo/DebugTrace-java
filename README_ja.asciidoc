@@ -128,32 +128,32 @@ public class Example1 {
 
 .debugtrace.log
 ----
-2022-06-12 22:09:29.161+09:00 DebugTrace 3.5.0 on Temurin OpenJDK Runtime Environment 1.8.0_332-b09
-2022-06-12 22:09:29.162+09:00   property name: DebugTrace.properties
-2022-06-12 22:09:29.162+09:00   logger: org.debugtrace.logger.Std$Out
-2022-06-12 22:09:29.166+09:00 
-2022-06-12 22:09:29.166+09:00 ______________________________ main ______________________________
-2022-06-12 22:09:29.166+09:00 
-2022-06-12 22:09:29.166+09:00 Enter example.Example1.main (Example1.java:18)
-2022-06-12 22:09:29.167+09:00 | Enter example.Example1.fibonacci (Example1.java:32)
-2022-06-12 22:09:29.167+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-06-12 22:09:29.175+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-06-12 22:09:29.175+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.008
-2022-06-12 22:09:29.176+09:00 | | 
-2022-06-12 22:09:29.176+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-06-12 22:09:29.176+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-06-12 22:09:29.176+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
-2022-06-12 22:09:29.176+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-06-12 22:09:29.177+09:00 | | | 
-2022-06-12 22:09:29.177+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-06-12 22:09:29.177+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-06-12 22:09:29.177+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-06-12 22:09:29.177+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
-2022-06-12 22:09:29.178+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
-2022-06-12 22:09:29.178+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
-2022-06-12 22:09:29.178+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.011
+2022-09-17 15:16:32.347+09:00 DebugTrace 3.5.1 on Temurin OpenJDK Runtime Environment 1.8.0_332-b09
+2022-09-17 15:16:32.349+09:00   property name: DebugTrace.properties
+2022-09-17 15:16:32.349+09:00   logger: org.debugtrace.logger.Std$Err
+2022-09-17 15:16:32.356+09:00 
+2022-09-17 15:16:32.357+09:00 ______________________________ main ______________________________
+2022-09-17 15:16:32.357+09:00 
+2022-09-17 15:16:32.358+09:00 Enter example.Example1.main (Example1.java:18)
+2022-09-17 15:16:32.358+09:00 | Enter example.Example1.fibonacci (Example1.java:32)
+2022-09-17 15:16:32.358+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-09-17 15:16:32.376+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2022-09-17 15:16:32.377+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.017
+2022-09-17 15:16:32.377+09:00 | | 
+2022-09-17 15:16:32.377+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-09-17 15:16:32.377+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-09-17 15:16:32.377+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2022-09-17 15:16:32.378+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2022-09-17 15:16:32.378+09:00 | | | 
+2022-09-17 15:16:32.378+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-09-17 15:16:32.378+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2022-09-17 15:16:32.379+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2022-09-17 15:16:32.379+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2022-09-17 15:16:32.379+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
+2022-09-17 15:16:32.379+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2022-09-17 15:16:32.379+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.021
 fibonacci(3) = 2
-2022-06-12 22:09:29.178+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.011
+2022-09-17 15:16:32.379+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.021
 ----
 
 ==== 3. [.small]#メソッド一覧#
@@ -251,7 +251,9 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `Log4j` [.small]#- Log4j を使用# +
 `Log4j2` [.small]#- Log4j2 を使用# +
 `SLF4J` [.small]#- SLF4J を使用# +
-`File: /var/log/debugtrace.log` [.small]#- ファイルに直接出力# (ver. 3.4.0より)#
+`File: [.small]#<ログファイルパス>`# [.small]#- ファイルに直接出力 (追記) (ver. 3.4.0より3.5.0まで)# +
+[.small]#- ファイルに直接出力 (先頭から) (since 3.5.1)# +
+`File: [.small]#+<ログファイルパス>`# [.small]#- ファイルに直接出力 (追記) (ver. 3.5.1より)#
 |`Std$Err`
 
 |`logLevel`
@@ -759,6 +761,12 @@ _(C) 2015 Masato Kokubo_
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
 ==== 9. [.small]#リリースノート#
+
+===== DebugTrace-java 3.5.1 [.small .gray]#- 2022/9/18#
+
+* `logger=File: <ログファイルパス>` でのログのファイル出力は、ファイルの先頭から出力するようにしました。 +
+  追記で出力する場合は、`logger=File: +<ログファイルパス>` で指定してください。
+* `<クラス>.getPackage()` が `null` を返すクラスのオブジェクトの出力で `NullPointerException` がスローされるバグを修正しました。
 
 ===== DebugTrace-java 3.5.0 [.small .gray]#- 2022/6/19#
 

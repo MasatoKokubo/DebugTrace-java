@@ -67,7 +67,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.5.0";
+    public static final String VERSION = "3.5.1";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -263,7 +263,7 @@ public class DebugTrace {
         logLevel                = resource.getString("logLevel"                                    , "default");
         enterFormat             = resource.getString("enterFormat"         , "enterString"         , "Enter %1$s.%2$s (%3$s:%4$d)"); // since 3.0.0 enterFormat <- enterString
         leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL"); // since 3.0.0 leaveFormat <- leaveString
-        threadBoundaryFormat    = resource.getString("threadBoundaryFormat", "threadBoundaryString",    "______________________________ %1$s ______________________________");
+        threadBoundaryFormat    = resource.getString("threadBoundaryFormat", "threadBoundaryString", "______________________________ %1$s ______________________________");
         classBoundaryFormat     = resource.getString("classBoundaryFormat" , "classBoundaryString" , "____ %1$s ____");
         indentString            = resource.getString("indentString"                                , "| ");
         dataIndentString        = resource.getString("dataIndentString"                            , "  ");
@@ -331,17 +331,27 @@ public class DebugTrace {
             if (loggerName != null) {
                 // FileLogger detection
                 if (loggerName.startsWith(FILE_LOGGER_KEYWORD)) {
-                    // FileLogger
+                    // File Logger
                     String path = loggerName.substring(FILE_LOGGER_KEYWORD.length()).trim();
+                // 3.5.1
+                    boolean append = false;
+                    if (path.startsWith("+")) {
+                        append = true;
+                        path = path.substring(1);
+                    }
+                ////
                     File file = new File(path).getAbsoluteFile();
                     File parentFile = file.getParentFile();
                     if (!parentFile.exists())
                         throw new RuntimeException(parentFile.getPath() + " dose not exist.");
                     if (file.exists() && !file.isFile())
                         throw new RuntimeException(file.getPath() + " is not a file.");
-                    logger = new org.debugtrace.logger.File(file);
+                // 3.5.1
+                //  logger = new org.debugtrace.logger.File(file);
+                    logger = new org.debugtrace.logger.File(file, append);
+                ////
                 } else {
-                    // not FileLogger
+                    // not File Logger
                     if (loggerName.indexOf('.') == -1)
                         loggerName = Logger.class.getPackage().getName() + '.' + loggerName;
                     logger = (Logger)Class.forName(loggerName).getConstructor().newInstance();
@@ -1265,7 +1275,10 @@ public class DebugTrace {
         //      reflectionClasses.add(type.getName());
         //  }
             String className = type.getName();
-            String packageName = type.getPackage().getName() + '.';
+        // 3.5.1
+        //  String packageName = type.getPackage().getName() + '.';
+            String packageName = type.getPackage() == null ? "" : type.getPackage().getName() + '.';
+        ////
             boolean isReflection = reflectionClasses.contains(type);
             if (!isReflection) {
                 // not reflection class

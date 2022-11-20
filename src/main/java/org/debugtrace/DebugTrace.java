@@ -297,10 +297,7 @@ public class DebugTrace {
         nonOutputProperties     = resource.getStrings("nonOutputProperties", "nonPrintProperties"  ); // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
         defaultPackage          = resource.getString("defaultPackage", ""                      , ""); // since 2.3.0
         defaultPackageString    = resource.getString("defaultPackageString"                 , "..."); // since 2.3.0
-    // 3.5.0
-    //  reflectionClasses       = resource.getStringSet("reflectionClasses"                        ); // since 2.4.0
         reflectionClassPaths    = resource.getStringSet("reflectionClasses"                        ); // since 3.5.0, 2.4.0
-    ////
         mapNameMap              = resource.getStringKeyMap("mapNameMap"                            ); // since 2.4.0
 
         utilDateFormatter       = createDateTimeFormatter(utilDateFormat      );
@@ -333,23 +330,18 @@ public class DebugTrace {
                 if (loggerName.startsWith(FILE_LOGGER_KEYWORD)) {
                     // File Logger
                     String path = loggerName.substring(FILE_LOGGER_KEYWORD.length()).trim();
-                // 3.5.1
                     boolean append = false;
                     if (path.startsWith("+")) {
                         append = true;
                         path = path.substring(1);
                     }
-                ////
                     File file = new File(path).getAbsoluteFile();
                     File parentFile = file.getParentFile();
                     if (!parentFile.exists())
                         throw new RuntimeException(parentFile.getPath() + " dose not exist.");
                     if (file.exists() && !file.isFile())
                         throw new RuntimeException(file.getPath() + " is not a file.");
-                // 3.5.1
-                //  logger = new org.debugtrace.logger.File(file);
                     logger = new org.debugtrace.logger.File(file, append);
-                ////
                 } else {
                     // not File Logger
                     if (loggerName.indexOf('.') == -1)
@@ -1268,17 +1260,8 @@ public class DebugTrace {
 
         } else {
             // Other
-        // 3.5.0
-        //  boolean isReflection = reflectionClasses.contains(type.getName());
-        //  if (!isReflection && !hasToString(type)) {
-        //      isReflection = true;
-        //      reflectionClasses.add(type.getName());
-        //  }
             String className = type.getName();
-        // 3.5.1
-        //  String packageName = type.getPackage().getName() + '.';
             String packageName = type.getPackage() == null ? "" : type.getPackage().getName() + '.';
-        ////
             boolean isReflection = reflectionClasses.contains(type);
             if (!isReflection) {
                 // not reflection class
@@ -1295,7 +1278,6 @@ public class DebugTrace {
                     (isReflection ? reflectionClasses : nonReflectionClasses).add(type);
                 }
             }
-        //
 
             if (isReflection) {
                 // Use Reflection

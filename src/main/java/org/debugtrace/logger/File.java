@@ -25,16 +25,10 @@ public class File implements Logger {
      * @param file the output destination java.io.File
      * @param append Append output to the existing log file if true, initialize and output otherwise
      */
-// 3.5.1
-//  public File(java.io.File file) {
     public File(java.io.File file, boolean append) {
-////
         this.file = file;
         try {
-        // 3.5.1
-        //  new FileWriter(file, true).close();
             new FileWriter(file, append).close();
-        ////
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

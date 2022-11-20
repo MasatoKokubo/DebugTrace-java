@@ -31,7 +31,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.5.1'
+version             = '3.5.2'
 
 sourceSets {
     main {

@@ -58,7 +58,16 @@ class LogBuffer {
      * @return this object
      */
     public LogBuffer append(Object value, int nestLevel, boolean noBreak) {
-        String str = value.toString();
+    // 3.5.2
+    //  String str = value.toString();
+        String str = null;
+        try {
+            str = value.toString();
+        }
+        catch (Exception e) {
+            str = e.toString();
+        }
+    ////
         if (!noBreak && length() > 0 && length() + str.length() > DebugTrace.maximumDataOutputWidth)
             lineFeed();
         appendNestLevel = nestLevel;

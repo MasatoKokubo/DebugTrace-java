@@ -128,32 +128,32 @@ public class Example1 {
 
 .debugtrace.log
 ----
-2022-09-17 15:16:32.347+09:00 DebugTrace 3.5.1 on Temurin OpenJDK Runtime Environment 1.8.0_332-b09
-2022-09-17 15:16:32.349+09:00   property name: DebugTrace.properties
-2022-09-17 15:16:32.349+09:00   logger: org.debugtrace.logger.Std$Err
-2022-09-17 15:16:32.356+09:00 
-2022-09-17 15:16:32.357+09:00 ______________________________ main ______________________________
-2022-09-17 15:16:32.357+09:00 
-2022-09-17 15:16:32.358+09:00 Enter example.Example1.main (Example1.java:18)
-2022-09-17 15:16:32.358+09:00 | Enter example.Example1.fibonacci (Example1.java:32)
-2022-09-17 15:16:32.358+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-09-17 15:16:32.376+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-09-17 15:16:32.377+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.017
-2022-09-17 15:16:32.377+09:00 | | 
-2022-09-17 15:16:32.377+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-09-17 15:16:32.377+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-09-17 15:16:32.377+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
-2022-09-17 15:16:32.378+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-09-17 15:16:32.378+09:00 | | | 
-2022-09-17 15:16:32.378+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-09-17 15:16:32.378+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-09-17 15:16:32.379+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-09-17 15:16:32.379+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
-2022-09-17 15:16:32.379+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
-2022-09-17 15:16:32.379+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
-2022-09-17 15:16:32.379+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.021
+2022-11-20 14:58:22.456+09:00 DebugTrace 3.5.2 on Amazon.com Inc. OpenJDK Runtime Environment 17.0.5+8-LTS
+2022-11-20 14:58:22.457+09:00   property name: DebugTrace.properties
+2022-11-20 14:58:22.457+09:00   logger: org.debugtrace.logger.Std$Err
+2022-11-20 14:58:22.464+09:00 
+2022-11-20 14:58:22.467+09:00 ______________________________ main ______________________________
+2022-11-20 14:58:22.468+09:00 
+2022-11-20 14:58:22.468+09:00 Enter example.Example1.main (Example1.java:18)
+2022-11-20 14:58:22.469+09:00 | Enter example.Example1.fibonacci (Example1.java:32)
+2022-11-20 14:58:22.469+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-11-20 14:58:22.489+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2022-11-20 14:58:22.490+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.020
+2022-11-20 14:58:22.490+09:00 | | 
+2022-11-20 14:58:22.490+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-11-20 14:58:22.490+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-11-20 14:58:22.490+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2022-11-20 14:58:22.490+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2022-11-20 14:58:22.490+09:00 | | | 
+2022-11-20 14:58:22.490+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
+2022-11-20 14:58:22.491+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2022-11-20 14:58:22.491+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2022-11-20 14:58:22.492+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2022-11-20 14:58:22.492+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
+2022-11-20 14:58:22.492+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2022-11-20 14:58:22.492+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.023
 fibonacci(3) = 2
-2022-09-17 15:16:32.379+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.021
+2022-11-20 14:58:22.492+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.024
 ----
 
 ==== 3. [.small]#メソッド一覧#
@@ -761,6 +761,10 @@ _(C) 2015 Masato Kokubo_
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
 ==== 9. [.small]#リリースノート#
+
+===== DebugTrace-java 3.5.2 [.small .gray]#- 2022/11/20#
+
+* `print` メソッドで例外がスローされるバグを修正しました。
 
 ===== DebugTrace-java 3.5.1 [.small .gray]#- 2022/9/18#
 

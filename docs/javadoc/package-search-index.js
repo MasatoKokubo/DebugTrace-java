@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.debugtrace"},{"l":"org.debugtrace.helper"},{"l":"org.debugtrace.logger"}];updateSearchResults();

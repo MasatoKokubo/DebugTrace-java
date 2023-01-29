@@ -108,7 +108,7 @@ class PropertySpec extends Specification {
         expect:
         DebugTrace.logger.getClass().name == 'org.debugtrace.logger.Std$Out'
 
-        DebugTrace.logLevel               == 'Info'
+    //  DebugTrace.logLevel               == 'Info' // 3.6.0
         DebugTrace.enterFormat            == '_Enter_ %1$s.%2$s (%3$s:%4$d)'
         DebugTrace.leaveFormat            == '_Leave_ %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tN'
         DebugTrace.threadBoundaryFormat   == '_Thread_ %1$s'

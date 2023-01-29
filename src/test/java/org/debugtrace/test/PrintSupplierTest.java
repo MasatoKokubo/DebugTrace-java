@@ -24,15 +24,15 @@ public class PrintSupplierTest {
         assertEquals(999.999D, DebugTrace.print("double", () -> 999.999D));
         assertTrue(DebugTrace.getLastLog().contains("double = (double)999.999"));
 
-
-        assertEquals(0, DebugTrace.print("CalendarMonth", "int", () -> 0));
-        assertTrue(DebugTrace.getLastLog().contains("int = 0(Calendar.JANUARY)"));
-
-        assertEquals(0L, DebugTrace.print("CalendarMonth", "long", () -> 0L));
-        assertTrue(DebugTrace.getLastLog().contains("long = (long)0(Calendar.JANUARY)"));
-
-        assertEquals((Object)(Long)0L, DebugTrace.print("CalendarMonth", "Long", () -> (Object)(Long)0L));
-        assertTrue(DebugTrace.getLastLog().contains("Long = (Long)0(Calendar.JANUARY)"));
+    // 3.6.0
+    //  assertEquals(0, DebugTrace.print("CalendarMonth", "int", () -> 0));
+    //  assertTrue(DebugTrace.getLastLog().contains("int = 0(Calendar.JANUARY)"));
+    //
+    //  assertEquals(0L, DebugTrace.print("CalendarMonth", "long", () -> 0L));
+    //  assertTrue(DebugTrace.getLastLog().contains("long = (long)0(Calendar.JANUARY)"));
+    //
+    //  assertEquals((Object)(Long)0L, DebugTrace.print("CalendarMonth", "Long", () -> (Object)(Long)0L));
+    //  assertTrue(DebugTrace.getLastLog().contains("Long = (Long)0(Calendar.JANUARY)"));
     }
 
     private void mayThrow() throws Exception {
@@ -53,15 +53,15 @@ public class PrintSupplierTest {
         assertEquals(0.0, DebugTrace.print("double", () -> {mayThrow(); return 999.999D;}));
         assertTrue(DebugTrace.getLastLog().contains("a message"));
 
-
-        assertEquals(0, DebugTrace.print("CalendarMonth", "int", () -> {mayThrow(); return 0;}));
-        assertTrue(DebugTrace.getLastLog().contains("a message"));
-
-        assertEquals(0L, DebugTrace.print("CalendarMonth", "long", () -> {mayThrow(); return 0L;}));
-        assertTrue(DebugTrace.getLastLog().contains("a message"));
-
-        assertEquals(null, DebugTrace.print("CalendarMonth", "Long", () -> {mayThrow(); return (Object)(Long)0L;}));
-        assertTrue(DebugTrace.getLastLog().contains("a message"));
+    // 3.6.0
+    //  assertEquals(0, DebugTrace.print("CalendarMonth", "int", () -> {mayThrow(); return 0;}));
+    //  assertTrue(DebugTrace.getLastLog().contains("a message"));
+    //
+    //  assertEquals(0L, DebugTrace.print("CalendarMonth", "long", () -> {mayThrow(); return 0L;}));
+    //  assertTrue(DebugTrace.getLastLog().contains("a message"));
+    //
+    //  assertEquals(null, DebugTrace.print("CalendarMonth", "Long", () -> {mayThrow(); return (Object)(Long)0L;}));
+    //  assertTrue(DebugTrace.getLastLog().contains("a message"));
     }
 }
 

@@ -3,13 +3,11 @@
 
 package org.debugtrace.logger;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
-import org.apache.log4j.Level;
 import org.debugtrace.DebugTrace;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 /**
  * A logger using Log4J2.
@@ -18,24 +16,13 @@ import org.slf4j.LoggerFactory;
  * @author Masato Kokubo
  */
 public class SLF4J implements Logger {
-    // Level Map
-    private static final Map<String, Level> levelMap = new HashMap<>();
-    static {
-        levelMap.put("default", Level.TRACE);
-        levelMap.put("trace"  , Level.TRACE);
-        levelMap.put("debug"  , Level.DEBUG);
-        levelMap.put("info"   , Level.INFO );
-        levelMap.put("warn"   , Level.WARN );
-        levelMap.put("error"  , Level.ERROR);
-    }
-
     // Logger
     private org.slf4j.Logger logger;
 
     // Level
-    private Level level = Level.TRACE;
+    private static final Level level = Level.TRACE;
 
-    // Log Cosumer
+    // Log Consumer
     private Consumer<String> logConsumer;
     
     /**
@@ -50,30 +37,8 @@ public class SLF4J implements Logger {
      * {@inheritDoc}
      */
     @Override
-    public void setLevel(String levelStr) {
-        Level level = levelMap.get(levelStr);
-        if (level != null) {
-            this.level = level;
-            logConsumer =
-                this.level == Level.TRACE ? logger::trace :
-                this.level == Level.DEBUG ? logger::debug :
-                this.level == Level.INFO  ? logger::info  :
-                this.level == Level.WARN  ? logger::warn  :
-                this.level == Level.ERROR ? logger::error : null;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean isEnabled() {
-        return
-            level == Level.TRACE ? logger.isTraceEnabled() :
-            level == Level.DEBUG ? logger.isDebugEnabled() :
-            level == Level.INFO  ? logger.isInfoEnabled () :
-            level == Level.WARN  ? logger.isWarnEnabled () :
-            level == Level.ERROR ? logger.isErrorEnabled() : false;
+        return logger.isEnabledForLevel(level);
     }
 
     /**

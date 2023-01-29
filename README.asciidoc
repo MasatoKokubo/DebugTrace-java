@@ -19,7 +19,7 @@ By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end 
 ** http://logging.apache.org/log4j/1.2/[Log4j]
 ** https://logging.apache.org/log4j/2.x/[Log4j2]
 ** http://www.slf4j.org/[SLF4J]
-** Direct file output [.small]#(since 3.4.0)#
+** Direct file output
 
 ==== 2. How to use
 
@@ -127,38 +127,39 @@ public class Example1 {
 ----
 
 .debugtrace.log
+
 ----
-2022-11-20 14:58:22.456+09:00 DebugTrace 3.5.2 on Amazon.com Inc. OpenJDK Runtime Environment 17.0.5+8-LTS
-2022-11-20 14:58:22.457+09:00   property name: DebugTrace.properties
-2022-11-20 14:58:22.457+09:00   logger: org.debugtrace.logger.Std$Err
-2022-11-20 14:58:22.464+09:00 
-2022-11-20 14:58:22.467+09:00 ______________________________ main ______________________________
-2022-11-20 14:58:22.468+09:00 
-2022-11-20 14:58:22.468+09:00 Enter example.Example1.main (Example1.java:18)
-2022-11-20 14:58:22.469+09:00 | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.469+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.489+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-11-20 14:58:22.490+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.020
-2022-11-20 14:58:22.490+09:00 | | 
-2022-11-20 14:58:22.490+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.490+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.490+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
-2022-11-20 14:58:22.490+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-11-20 14:58:22.490+09:00 | | | 
-2022-11-20 14:58:22.490+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.491+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-11-20 14:58:22.491+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-11-20 14:58:22.492+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
-2022-11-20 14:58:22.492+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
-2022-11-20 14:58:22.492+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
-2022-11-20 14:58:22.492+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.023
+2023-01-29 09:46:51.386+09:00 DebugTrace 3.6.0 on Amazon.com Inc. OpenJDK Runtime Environment 1.8.0_352-b08
+2023-01-29 09:46:51.386+09:00   property name: DebugTrace.properties
+2023-01-29 09:46:51.386+09:00   logger: org.debugtrace.logger.Std$Err
+2023-01-29 09:46:51.393+09:00 
+2023-01-29 09:46:51.393+09:00 ______________________________ main ______________________________
+2023-01-29 09:46:51.393+09:00 
+2023-01-29 09:46:51.394+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
+2023-01-29 09:46:51.395+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
+2023-01-29 09:46:51.395+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.404+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-01-29 09:46:51.406+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.009
+2023-01-29 09:46:51.406+09:00 | | 
+2023-01-29 09:46:51.406+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.407+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.407+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2023-01-29 09:46:51.407+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-01-29 09:46:51.407+09:00 | | | 
+2023-01-29 09:46:51.407+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.408+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-01-29 09:46:51.408+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-01-29 09:46:51.408+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2023-01-29 09:46:51.408+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
+2023-01-29 09:46:51.408+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2023-01-29 09:46:51.408+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.013
 fibonacci(3) = 2
-2022-11-20 14:58:22.492+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.024
+2023-01-29 09:46:51.409+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.014
 ----
 
 ==== 3. Method List
 
-This library has the following methods. These are all static methods of org.debugtrace.DebugTrace class with no return value.
+This library has the following methods. These are all static methods of `org.debugtrace.DebugTrace` class.
 
 [options="header"]
 .Method List
@@ -177,18 +178,18 @@ This library has the following methods. These are all static methods of org.debu
 
 |`print`
 |`message`: a message
-|the `message` [.small]#(since 3.3.1)#
+|the `message`#
 |Outputs the message to log.
 
 |`print`
 |`messageSupplier`: a supplier of message
-| tht message getted from the messageSupplier [.small]#(since 3.3.1)#
+| tht message getted from the messageSupplier#
 |Gets a message from the supplier and output it to log.
 
 |`print`
 |`name`: the value name +
 `value`: the value
-|the `value` [.small]#(since 3.3.1)#
+|the `value`#
 |Outputs to the log in the form of +
 `"Name = Value"` +
 The type of value is `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`, `double` or `Object`.
@@ -196,33 +197,12 @@ The type of value is `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`,
 |`print`
 |`name`: the value name +
 `valueSupplier`: the supplier of the value
-| tht value getted from the valueSupplier [.small]#(since 3.3.1)#
+| tht value getted from the valueSupplier#
 |Gets a value from the supplier and outputs to the log in the form of +
 `<value name> = <value>` +
 The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `Supplier<T>`.
 
-|`print` +
-[.small]#(deprecated since 3.3.0)#
-|`mapName`: the name of map to get constant name corresponding to number +
-`name`: the value name +
-`value`: the value
-|the `value` [.small]#(since 3.3.1)#
-|Outputs to the log in the form of +
-`<value name> = <value>(<constant name>)`. +
-The type of value is `byte`, `short`, `int`, `long` or `Object`.
-
-|`print` +
-[.small]#(deprecated since 3.3.0)#
-|`mapName`: the name of map to get constant name corresponding to number +
-`name`: the value name +
-`valueSupplier`: the supplier of the value
-| tht value getted from the valueSupplier [.small]#(since 3.3.1)#
-|Gets a value from the supplier and outputs to the log in the form of +
-`<value name> = <value>(<constant name>)` +
-The valueSupplier type is `BooleanSupplier`, `IntSupplier`, `LongSupplier` or `Supplier<T>`.
-
-|`printStack` +
-[.small]#(since 3.0.2)#
+|`printStack`
 |`maxCount`:  maximum number of stack trace elements to output
 |_None_
 |Outputs a list of StackTraceElements to the log.
@@ -243,67 +223,29 @@ You can specify following properties in the `DebugTrace.properties` file.
 | Logger used by DebugTrace +
  +
 [.small]#*Specifiable Values:*# +
-`Std$Out` [.small]#- Outputs to stdout# +
-`Std$Err` [.small]#- Outputs to stderr# +
-`Jdk` [.small]#- Outputs using the JDK logger# +
-`Log4j` [.small]#- Outputs using the Log4j 1 logger# +
-`Log4j2` [.small]#- Outputs using the Log4j 2 logger# +
-`SLF4J` [.small]#- Outputs using the SLF4J logger# +
-`File: [.small]#<log file path>`# [.small]#- Outputs directly to the file (appending) (since 3.4.0 to 3.5.0)# +
-[.small]#- Outputs directly to the file (from the top) (since 3.5.1)# +
-`File: [.small]#+<log file path>`# [.small]#- Outputs directly to the file (appending) (since 3.5.1)#
+`Std$Out` [.small]#: Outputs to stdout# +
+`Std$Err` [.small]#: Outputs to stderr# +
+`Jdk` [.small]#: Outputs using the JDK logger# +
+`Log4j` [.small]#: Outputs using the Log4j 1 logger# +
+`Log4j2` [.small]#: Outputs using the Log4j 2 logger# +
+`SLF4J` [.small]#: Outputs using the SLF4J logger# +
+`File: [.small]#<log file path>`# [.small]#: Outputs to the file# +
+`File: [.small]#+<log file path>`# [.small]#: Appends to the file#
 |`Std$Err`
 
-|`logLevel`
-|Log level to use when outputting +
- +
-[.small]#*Specifiable Values (logger = JDK):*# +
-`default` [.small]#- Same as finest# +
-`finest` +
-`finer` +
-`fine` +
-`config` +
-`info` +
-`warning` +
-`severe` +
- +
-[.small]#*Specifiable Values (logger = Log4j and logger = Lo4j2):*# +
-`default` [.small]#- Same as trace# +
-`trace` +
-`debug` +
-`info` +
-`warn` +
-`error` +
-`fatal` +
- +
-[.small]#*Specifiable Values (logger = SLF4J):*# +
-`default` [.small]#- Same as trace# +
-`trace` +
-`debug` +
-`info` +
-`warn` +
-`error`
-|`default`
-
-|`enterFormat` +
-[.small]#(Renamed (since 3.0.0))# +
- +
-`enterString` +
-[.small]#(Deprecated (since 3.0.0))#
+|`enterFormat`
 |The format string of logging when entering methods +
  +
 [.small]#*Parameters:*# +
 `%1`: The class name +
 `%2`: The method name +
 `%3`: The file name +
-`%4`: The line number
-|`Enter %1$s.%2$s (%3$s:%4$d)` +
+`%4`: The line number +
+`%6`: The file name of the caller +
+`%7`: The line number of the caller
+|`Enter %1$s.%2$s (%3$s:%4$d) <- (%6$s:%7$d)`
 
-|`leaveFormat` +
-[.small]#(Renamed (since 3.0.0))# +
- +
-`leaveString` +
-[.small]#(Deprecated (since 3.0.0))#
+|`leaveFormat`
 |The format string of logging when leaving methods +
  +
 [.small]#*Parameters:*# +
@@ -311,25 +253,17 @@ You can specify following properties in the `DebugTrace.properties` file.
 `%2`: The method name +
 `%3`: The file name +
 `%4`: The line number +
-`%5`: The duration since invoking the corresponding `enter` method
-|`Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL` +
+`%5`: The duration since invoking the corresponding `enter` method +
+|`Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL`
 
-|`threadBoundaryFormat` +
-[.small]#(Renamed since 3.0.0)# +
- +
-`threadBoundaryString` +
-[.small]#(Deprecated (since 3.0.0))#
+|`threadBoundaryFormat`
 |The format string of logging at threads boundary +
  +
 [.small]#*Parameter:*# +
 `%1`: The thread name
 |[.small]#`\____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____`#
 
-|`classBoundaryFormat` +
-[.small]#(Renamed since 3.0.0)# +
- +
-`classBoundaryString` +
-[.small]#(Deprecated since 3.0.0)#
+|`classBoundaryFormat`
 |The format string of logging at classes boundary +
  +
 [.small]#*Parameter:*# +
@@ -340,23 +274,19 @@ You can specify following properties in the `DebugTrace.properties` file.
 |The indentation string for code +
 |`&#x7c;`\s` +
  +
-`\\s` _is change to a space character_
+`\\s` _will be change to a space character_
 
 |`dataIndentString`
 |The indentation string for data +
 |`\\s\\s` +
  +
-`\\s` _is change to a space character_
+`\\s` _will be change to a space character_
 
 |`limitString`
 |The string to represent that it has exceeded the limit +
 |`\...`
 
-|`nonOutputString` +
-[.small]#(Renamed since 3.0.0)# +
- +
-`nonPrintString` +
-[.small]#(Deprecated since 3.0.0)#
+|`nonOutputString`
 |The string to be output instead of not outputting value +
 |`\***`
 
@@ -364,22 +294,19 @@ You can specify following properties in the `DebugTrace.properties` file.
 |The string to represent that the cyclic reference occurs +
 |`\\s\*\** cyclic reference \***\\s` +
  +
-`\\s` _is change to a space character_
+`\\s` _will be change to a space character_
 
 |`varNameValueSeparator`
 |The separator string between the variable name and value +
 |`\\s=\\s` +
  +
-`\\s` _is change to a space character_
+`\\s` _will be change to a space character_
 
-|`keyValueSeparator` +
- +
-[.small]#`fieldNameValueSeparator`# +
-[.small]#(Deleted since 3.0.0)#
+|`keyValueSeparator`
 |The separator string between the key and value of Map object +
 |`:\\s` +
  +
-`\\s` _is change to a space character_
+`\\s` _will be change to a space character_
 
 |`printSuffixFormat`
 |The format string of `print` method suffix +
@@ -392,33 +319,29 @@ You can specify following properties in the `DebugTrace.properties` file.
 `%4`: The line number
 |`\\s(%3$s:%4$d)` +
  +
-`\\s` _is change to a space character_ +
+`\\s` _will be change to a space character_ +
 
-|`sizeFormat` +
-[.small]#(since 3.0.0)#
+|`sizeFormat`
 |The format string of the size of collection and map +
  +
 [.small]#*Parameters:*# +
 `%1`: The size
 |`\\s(%3$s:%4$d)` +
  +
-`\\s` _is change to a space character_ +
+`\\s` _will be change to a space character_ +
 
-|`minimumOutputSize` +
-[.small]#(since 3.0.0)#
+|`minimumOutputSize`
 |The minimum value to output the number of elements of array, collection and map
 |5
 
-|`lengthFormat` +
-[.small]#(since 3.0.0)#
+|`lengthFormat`
 |The format string of the length of string +
  +
 [.small]#*Parameters:*# +
 `%1`: The string length
 |`length:%1d` +
 
-|`minimumOutputLength` +
-[.small]#(since 3.0.0)#
+|`minimumOutputLength`
 |The minimum value to output the length of string
 |5
 
@@ -470,42 +393,27 @@ You can specify following properties in the `DebugTrace.properties` file.
 |The format string of the date and time of the log when the logger is `Std$Out` or `Std$Err`
 |`yyyy-MM-dd HH:mm:ss.SSSxxx`
 
-|`maximumDataOutputWidth` +
-[.small]#(since 3.0.0)#
+|`maximumDataOutputWidth`
 |The maximum output width of data
 |70
 
-|`collectionLimit` +
-[.small]#(Renamed (since 3.0.0))# +
- +
-[.small]#`arrayLimit`# +
-[.small]#(Deprecated (since 3.0.0))# +
-[.small]#`mapLimit`# +
-[.small]#(Removed since 3.0.0)#
+|`collectionLimit`
 |The limit value of elements for collection and map to output
-|128&#xa0; [.small]#(since 3.5.0)# +
-512&#xa0; [.small]#(up to 3.4.0)#
+|128
 
 |`byteArrayLimit`
 |The limit value of elements for byte array (`byte[]`) to output +
-|256 &#xa0; [.small]#(since 3.5.0)# +
-8192 &#xa0; [.small]#(up to 3.4.0)#
+|256
 
 |`stringLimit`
 |The limit value of characters for string to output
-|256 &#xa0; [.small]#(since 3.5.0)# +
-8192 &#xa0; [.small]#(up to 3.4.0)#
+|256
 
-|`reflectionNestLimit` +
-[.small]#(since 3.0.0)#
+|`reflectionNestLimit`
 |The The limit value for reflection nesting
 |4
 
-|`nonOutputProperties` +
-[.small]#(Renamed (since 3.0.0))# +
- +
-[.small]#`nonPrintProperties`# +
-[.small]#(Deprecated (since 3.0.0))#
+|`nonOutputProperties`
 |Properties not to be output +
  +
 [.small]#*Format of a value:*# +
@@ -542,7 +450,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 `org.debugtrace.example.Point,\` +
 `org.debugtrace.example.Rectangle` +
  +
-[.small]#*Example (package - since 3.5.0):*# +
+[.small]#*Example (package):*# +
 `org.debugtrce.example.`
 
 |`mapNameMap` +
@@ -577,7 +485,7 @@ You can specify following properties in the `DebugTrace.properties` file.
 
 |===
 
-Specify the format string of the date and time in the form of the argument of `String.format` for DebugTrace-java *2.4.6* or earlier, and specify it in the form of the argument `DateTimeFormatter.ofPattern` for DebugTrace-java *2.5.0* or later.
+Specify the date and time format in the format of the argument of the `DateTimeFormatter.ofPattern` method.
 
 ===== 4.1. *nonOutputProperties*, *nonOutputString*
 
@@ -598,10 +506,10 @@ nonOutputProperties = \
 
 ===== 4.2. Constant map and *mapNameMap*
 
-The constant map is a map whose key is numeric and whose value is a constant name.
-When you call the `print` method with the key (map name) of this property as an argument, the constant name is output with numerical value.
+A constant map is a map whose keys are numbers and whose values are constant names.
+If you specify the map name corresponding to the variable name in the `mapNameMap` property, the constant name corresponding to the numerical value will also be output.
 
-.Example of constant map in DebugTrace.properties
+.Example of a constant map and `mapNameMap` in DebugTrace.properties
 ----
 AppleBrand = \
     0: Apple.NO_BRAND,\
@@ -609,46 +517,38 @@ AppleBrand = \
     2: Apple.AKIYO,\
     3: Apple.AZUSA,\
     4: Apple.YUKARI
+
+mapNameMap = appleBrand:AppleBrand
 ----
 
 [source,java]
 .Example of Java source
 ----
-int appleBrand = Apple.AKANE;
-DebugTrace.print("AppleBrand", "appleBrand", appleBrand);
+static public class Apple {
+    public static final int NO_BRAND = 0;
+    public static final int AKANE = 1;
+    public static final int AKIYO = 2;
+    public static final int AZUSA = 3;
+    public static final int YUKARI = 4;
+}
+    ...
+
+    int appleBrand = Apple.AKANE;
+    DebugTrace.print("appleBrand", appleBrand);
+    appleBrand = Apple.AKIYO;
+    DebugTrace.print(" 2 appleBrand ", appleBrand);
+    appleBrand = Apple.AZUSA;
+    DebugTrace.print(" 3 example.appleBrand ", appleBrand);
+    appleBrand = Apple.YUKARI;
+    DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 ----
 
 .Example of the log
 ----
-2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:29)
-----
-
-If you specify the map name corresponding to the variable name with the `mapNameMap` property, even if you do not specify the map name, the constant name is output.
-
-.Example of *mapNameMap* in DebugTrace.properties
-----
-mapNameMap = appleBrand: AppleBrand
-----
-
-[source,java]
-.Example of Java source
-----
-int appleBrand = Apple.AKANE;
-DebugTrace.print("appleBrand", appleBrand);
-appleBrand = Apple.AKIYO;
-DebugTrace.print(" 2 appleBrand ", appleBrand);
-appleBrand = Apple.AZUSA;
-DebugTrace.print(" 3 example.appleBrand ", appleBrand);
-appleBrand = Apple.YUKARI;
-DebugTrace.print(" 4 example. appleBrand ", appleBrand);
-----
-
-.Example of the log
-----
-2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:38)
-2017-07-29 13:45:32.489 |  2 appleBrand  = 2(Apple.AKIYO) (README_example.java:40)
-2017-07-29 13:45:32.489 |  3 example.appleBrand  = 3(Apple.AZUSA) (README_example.java:42)
-2017-07-29 13:45:32.489 |  4 example. appleBrand  = 4(Apple.YUKARI) (README_example.java:44)
+2023-01-29 10:14:29.916+09:00 appleBrand = 1(Apple.AKANE) (ReadmeExample.java:18)
+2023-01-29 10:14:29.916+09:00  2 appleBrand  = 2(Apple.AKIYO) (ReadmeExample.java:20)
+2023-01-29 10:14:29.916+09:00  3 example.appleBrand  = 3(Apple.AZUSA) (ReadmeExample.java:22)
+2023-01-29 10:14:29.916+09:00  4 example. appleBrand  = 4(Apple.YUKARI) (ReadmeExample.java:24)
 ----
 
 ==== 5. Examples of using logging libraries
@@ -742,11 +642,11 @@ org.debugtrace.DebugTrace.level = FINEST
 .build.gradle
 ----
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
-    compile 'org.debugtrace:debugtrace:2.+'
+    compile 'org.debugtrace:debugtrace:3.6.0'
 }
 ----
 
@@ -761,6 +661,14 @@ link:LICENSE.txt[The MIT License (MIT)]
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API Specification]
 
 ==== 9. Release Notes
+
+===== DebugTrace-java 3.6.0 [.small .gray]#- January 29, 2023#
+
+* Fixed a bug where the `print` method could throw a `java.lang.IndexOutOfBoundsException`.
+* Added calling source file name and line number to log output of `enter` method.
+* Removed deprecated method with `mapName` as an argument.
+* Removed deprecated properties in DebugTrace.properties.
+* Abolished `logLevel` setting in DebugTrace.properties and made it fixed (`Jdk`: `FINEST`, others: `TRACE`).
 
 ===== DebugTrace-java 3.5.2 [.small .gray]#- November 20, 2022#
 

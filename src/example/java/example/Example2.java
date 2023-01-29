@@ -1,4 +1,4 @@
-// Example1.java
+// Example2.java
 // (C) 2015 Masato Kokubo
 package example;
 

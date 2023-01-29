@@ -67,7 +67,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.5.2";
+    public static final String VERSION = "3.6.0";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -157,7 +157,6 @@ public class DebugTrace {
     // Resources
     private static Resource resource;
 
-    protected static String logLevel                 ;
     protected static String enterFormat              ; // since 3.0.0 enterFormat <- enterString
     protected static String leaveFormat              ; // since 3.0.0 leaveFormat <- leaveString
     protected static String threadBoundaryFormat     ;
@@ -254,51 +253,54 @@ public class DebugTrace {
      * Initializes this class.
      * 
      * @param baseName the base name of the resource properties file
-     * 
      * @since 3.0.0
      */
     public static void initClass(String baseName) {
         resource = new Resource(DebugTrace.class, baseName);
 
-        logLevel                = resource.getString("logLevel"                                    , "default");
-        enterFormat             = resource.getString("enterFormat"         , "enterString"         , "Enter %1$s.%2$s (%3$s:%4$d)"); // since 3.0.0 enterFormat <- enterString
-        leaveFormat             = resource.getString("leaveFormat"         , "leaveString"         , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL"); // since 3.0.0 leaveFormat <- leaveString
-        threadBoundaryFormat    = resource.getString("threadBoundaryFormat", "threadBoundaryString", "______________________________ %1$s ______________________________");
-        classBoundaryFormat     = resource.getString("classBoundaryFormat" , "classBoundaryString" , "____ %1$s ____");
-        indentString            = resource.getString("indentString"                                , "| ");
-        dataIndentString        = resource.getString("dataIndentString"                            , "  ");
-        limitString             = resource.getString("limitString"                                 , "...");
-        nonOutputString         = resource.getString("nonOutputString", "nonPrintString"           , "***"); // since 1.5.0, since 3.0.0 nonOutputString <- nonPrintString
-        cyclicReferenceString   = resource.getString("cyclicReferenceString"                       , "*** cyclic reference ***");
-        varNameValueSeparator   = resource.getString("varNameValueSeparator"                       , " = ");
-        keyValueSeparator       = resource.getString("keyValueSeparator"                           , ": ");
-        printSuffixFormat       = resource.getString("printSuffixFormat"                           , " (%3$s:%4$d)");
-        sizeFormat              = resource.getString("sizeFormat"                                  , "size:%1d"); // since 3.0.0
-        minimumOutputSize       = resource.getInt   ("minimumOutputSize"                           , 16); // 16 <- 5 since 3.5.0, since 3.0.0
-        lengthFormat            = resource.getString("lengthFormat"                                , "length:%1d"); // since 3.0.0
-        minimumOutputLength     = resource.getInt   ("minimumOutputLength"                         , 16); // 16 <- 5 since 3.5.0, since 3.0.0
-        utilDateFormat          = resource.getString("utilDateFormat"                              , "yyyy-MM-dd HH:mm:ss.SSSxxx");
-        sqlDateFormat           = resource.getString("sqlDateFormat"                               , "yyyy-MM-ddxxx");
-        timeFormat              = resource.getString("timeFormat"                                  , "HH:mm:ss.SSSxxx");
-        timestampFormat         = resource.getString("timestampFormat"                             , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx");
-        localDateFormat         = resource.getString("localDateFormat"                             , "yyyy-MM-dd"); // since 2.5.0
-        localTimeFormat         = resource.getString("localTimeFormat"                             , "HH:mm:ss.SSSSSSSSS"); // since 2.5.0
-        offsetTimeFormat        = resource.getString("offsetTimeFormat"                            , "HH:mm:ss.SSSSSSSSSxxx"); // since 2.5.0
-        localDateTimeFormat     = resource.getString("localDateTimeFormat"                         , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
-        offsetDateTimeFormat    = resource.getString("offsetDateTimeFormat"                        , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx"); // since 2.5.0
-        zonedDateTimeFormat     = resource.getString("zonedDateTimeFormat"                         , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV"); // since 2.5.0
-        instantFormat           = resource.getString("instantFormat"                               , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
-        logDateTimeFormat       = resource.getString("logDateTimeFormat"                           , "yyyy-MM-dd HH:mm:ss.SSSxxx"); // since 2.5.0
-        maximumDataOutputWidth  = resource.getInt   ("maximumDataOutputWidth"                      , 70); // since 3.0.0
-        collectionLimit         = resource.getInt   ("collectionLimit", "arrayLimit"               , 128); // 128 <- 512 since 3.5.0
-        byteArrayLimit          = resource.getInt   ("byteArrayLimit"                              , 256); // 256 <- 8192 since 3.5.0
-        stringLimit             = resource.getInt   ("stringLimit"                                 , 256); // 256 <- 8192 since 3.5.0
-        reflectionNestLimit     = resource.getInt   ("reflectionNestLimit"                         , 4); // since 3.0.0
-        nonOutputProperties     = resource.getStrings("nonOutputProperties", "nonPrintProperties"  ); // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
-        defaultPackage          = resource.getString("defaultPackage", ""                      , ""); // since 2.3.0
-        defaultPackageString    = resource.getString("defaultPackageString"                 , "..."); // since 2.3.0
-        reflectionClassPaths    = resource.getStringSet("reflectionClasses"                        ); // since 3.5.0, 2.4.0
-        mapNameMap              = resource.getStringKeyMap("mapNameMap"                            ); // since 2.4.0
+        enterFormat             = resource.getString("enterFormat"           , "Enter %1$s.%2$s (%3$s:%4$d) <- (%6$s:%7$d)"); // since 3.0.0 enterFormat <- enterString
+        leaveFormat             = resource.getString("leaveFormat"           , "Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL"); // since 3.0.0 leaveFormat <- leaveString
+        threadBoundaryFormat    = resource.getString("threadBoundaryFormat"  , "______________________________ %1$s ______________________________");
+        classBoundaryFormat     = resource.getString("classBoundaryFormat"   , "____ %1$s ____");
+        indentString            = resource.getString("indentString"          , "| ");
+        dataIndentString        = resource.getString("dataIndentString"      , "  ");
+        limitString             = resource.getString("limitString"           , "...");
+        nonOutputString         = resource.getString("nonOutputString"       , "***"); // since 1.5.0, since 3.0.0 nonOutputString <- nonPrintString
+        cyclicReferenceString   = resource.getString("cyclicReferenceString" , "*** cyclic reference ***");
+        varNameValueSeparator   = resource.getString("varNameValueSeparator" , " = ");
+        keyValueSeparator       = resource.getString("keyValueSeparator"     , ": ");
+        printSuffixFormat       = resource.getString("printSuffixFormat"     , " (%3$s:%4$d)");
+        sizeFormat              = resource.getString("sizeFormat"            , "size:%1d"); // since 3.0.0
+        minimumOutputSize       = resource.getInt   ("minimumOutputSize"     , 16); // 16 <- 5 since 3.5.0, since 3.0.0
+        lengthFormat            = resource.getString("lengthFormat"          , "length:%1d"); // since 3.0.0
+        minimumOutputLength     = resource.getInt   ("minimumOutputLength"   , 16); // 16 <- 5 since 3.5.0, since 3.0.0
+        utilDateFormat          = resource.getString("utilDateFormat"        , "yyyy-MM-dd HH:mm:ss.SSSxxx");
+        sqlDateFormat           = resource.getString("sqlDateFormat"         , "yyyy-MM-ddxxx");
+        timeFormat              = resource.getString("timeFormat"            , "HH:mm:ss.SSSxxx");
+        timestampFormat         = resource.getString("timestampFormat"       , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx");
+        localDateFormat         = resource.getString("localDateFormat"       , "yyyy-MM-dd"); // since 2.5.0
+        localTimeFormat         = resource.getString("localTimeFormat"       , "HH:mm:ss.SSSSSSSSS"); // since 2.5.0
+        offsetTimeFormat        = resource.getString("offsetTimeFormat"      , "HH:mm:ss.SSSSSSSSSxxx"); // since 2.5.0
+        localDateTimeFormat     = resource.getString("localDateTimeFormat"   , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
+        offsetDateTimeFormat    = resource.getString("offsetDateTimeFormat"  , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx"); // since 2.5.0
+        zonedDateTimeFormat     = resource.getString("zonedDateTimeFormat"   , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV"); // since 2.5.0
+        instantFormat           = resource.getString("instantFormat"         , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
+        logDateTimeFormat       = resource.getString("logDateTimeFormat"     , "yyyy-MM-dd HH:mm:ss.SSSxxx"); // since 2.5.0
+        maximumDataOutputWidth  = resource.getInt   ("maximumDataOutputWidth", 70); // since 3.0.0
+        collectionLimit         = resource.getInt   ("collectionLimit"       , 128); // 128 <- 512 since 3.5.0
+        byteArrayLimit          = resource.getInt   ("byteArrayLimit"        , 256); // 256 <- 8192 since 3.5.0
+        stringLimit             = resource.getInt   ("stringLimit"           , 256); // 256 <- 8192 since 3.5.0
+        reflectionNestLimit     = resource.getInt   ("reflectionNestLimit"   , 4); // since 3.0.0
+        nonOutputProperties     = resource.getStrings("nonOutputProperties"  ); // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
+        defaultPackage          = resource.getString("defaultPackage"        , ""); // since 2.3.0
+        defaultPackageString    = resource.getString("defaultPackageString"  , "..."); // since 2.3.0
+        reflectionClassPaths    = resource.getStringSet("reflectionClasses"  ); // since 3.5.0, 2.4.0
+        mapNameMap              = resource.getStringKeyMap("baseMapNameMap"  ); // since 3.6.0
+        mapNameMap.putAll        (resource.getStringKeyMap("mapNameMap"     )); // since 2.4.0
+        mapNameMap.keySet().forEach(key -> {
+            String mapName = mapNameMap.get(key);
+            convertMapMap.put(mapName, resource.getIntegerKeyMap(mapName));
+        });
 
         utilDateFormatter       = createDateTimeFormatter(utilDateFormat      );
         sqlDateFormatter        = createDateTimeFormatter(sqlDateFormat       );
@@ -362,9 +364,6 @@ public class DebugTrace {
         if (logger == null)
             logger = new Std.Err();
 
-        // Set a logging level
-        logger.setLevel(logLevel);
-
         // Get the Java vendor and runtime version
         String javaVendor = System.getProperty("java.vendor");
         String javaRuntimeName = System.getProperty("java.runtime.name");
@@ -383,7 +382,6 @@ public class DebugTrace {
      * 
      * @param format a format
      * @return a DateTimeFormatter
-     *
      * @since 2.5.0
      */
     private static DateTimeFormatter createDateTimeFormatter(String format) {
@@ -481,7 +479,7 @@ public class DebugTrace {
                 if (state.previousNestLevel() > state.nestLevel())
                     logger.log(getIndentString(state.nestLevel(), 0)); // Line break
     
-                lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(enterFormat, 0);
+                lastLog = getIndentString(state.nestLevel(), 0) + createPrintString(enterFormat, null);
                 logger.log(lastLog);
     
                 state.setPreviousLineCount(1);
@@ -505,26 +503,13 @@ public class DebugTrace {
                     logger.log(getIndentString(state.nestLevel(), 0)); // Empty Line
     
                 long timeSpan = System.nanoTime() - state.downNest();
-    
-                lastLog = getIndentString(state.nestLevel(), 0) + getCallerInfo(leaveFormat, timeSpan);
+                Instant instant = Instant.ofEpochSecond(timeSpan / 1000_000_000, timeSpan % 1000_000_000);
+                OffsetDateTime dateTime = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
+
+                lastLog = getIndentString(state.nestLevel(), 0) + createPrintString(leaveFormat, dateTime);
                 logger.log(lastLog);
             }
         }
-    }
-
-    /**
-     * Returns a string of the invoker information.
-     */
-    private static String getCallerInfo(String baseString, long timeSpan) {
-        StackTraceElement element = getStackTraceElement();
-        Instant instant = Instant.ofEpochSecond(timeSpan / 1000_000_000, timeSpan % 1000_000_000);
-        OffsetDateTime dateTime = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC);
-        return String.format(baseString,
-            replaceTypeName(element.getClassName()),
-            element.getMethodName(),
-            element.getFileName(),
-            element.getLineNumber(),
-            dateTime);
     }
 
     /**
@@ -570,13 +555,8 @@ public class DebugTrace {
 
             String lastLog = "";
             if (!message.isEmpty()) {
-                StackTraceElement element = getStackTraceElement();
-                String suffix = String.format(printSuffixFormat,
-                    replaceTypeName(element.getClassName()),
-                    element.getMethodName(),
-                    element.getFileName(),
-                    element.getLineNumber());
-                lastLog = getIndentString(getCurrentState().nestLevel(), 0) + message + suffix;
+                lastLog = getIndentString(getCurrentState().nestLevel(), 0) +
+                    message + createPrintString(printSuffixFormat, null);
             }
             logger.log(lastLog);
         }
@@ -585,12 +565,11 @@ public class DebugTrace {
     /**
      * Outputs the name and value to the log.
      *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param name the name of the value
      * @param value the value to output (accept null)
      * @param isPrimitive true if the value is primitive type, false otherwise
      */
-    private static void printSub(String mapName, String name, Object value, boolean isPrimitive) {
+    private static void printSub(String name, Object value, boolean isPrimitive) {
         synchronized(stateMap) {
             State state = getCurrentState();
  
@@ -601,21 +580,11 @@ public class DebugTrace {
             LogBuffer buff = new LogBuffer();
 
             buff.append(name);
-            if (mapName == null) {
-                String normalizedName = name.substring(name.lastIndexOf('.') + 1).trim();
-                normalizedName = normalizedName.substring(normalizedName.lastIndexOf(' ') + 1);
-                mapName = mapNameMap.get(normalizedName);
-            }
+            String mapName = getMapName(name);
             LogBuffer valueBuff = toString(mapName, value, isPrimitive, false, false);
             buff.append(varNameValueSeparator, valueBuff);
 
-            StackTraceElement element = getStackTraceElement();
-            String suffix = String.format(printSuffixFormat,
-                element.getClassName(),
-                element.getMethodName(),
-                element.getFileName(),
-                element.getLineNumber());
-            buff.noBreakAppend(suffix);
+            buff.noBreakAppend(createPrintString(printSuffixFormat, null));
 
             List<Tuple._2<Integer, String>> lines = buff.lines();
             if (state.previousLineCount() > 1 || lines.size() > 1)
@@ -636,6 +605,34 @@ public class DebugTrace {
     }
 
     /**
+     * Creates a print string.
+     *
+     * @param formatString the format string
+     * @param dateTime the time from method start to end
+     * @return a print string
+     * @since 3.6.0
+     */
+    private static String createPrintString(String formatString, OffsetDateTime dateTime) {
+        List<StackTraceElement> elements = getStackTraceElements(2);
+        StackTraceElement element = elements.size() > 0
+            ? elements.get(0)
+            : new StackTraceElement("", "", "", 0);
+        StackTraceElement parentElement = elements.size() > 1
+            ? elements.get(1)
+            : new StackTraceElement("", "", "", 0);
+
+        String printString = String.format(formatString,
+            replaceTypeName(element.getClassName()),
+            element.getMethodName(),
+            element.getFileName(),
+            element.getLineNumber(),
+            dateTime,
+            parentElement.getFileName(),
+            parentElement.getLineNumber());
+        return printString;
+    }
+
+    /**
      * Returns stack trace elements.
      *
      * @param maxCount maximum number of stack trace elements to return
@@ -647,7 +644,7 @@ public class DebugTrace {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         List<StackTraceElement> result = new ArrayList<>();
         outerLoop:
-        for (int index = 1; index < elements.length; ++index) {
+        for (int index = 2; index < elements.length; ++index) {
             StackTraceElement element = elements[index];
             String className = element.getClassName();
             if (className.indexOf(myClassName) >= 0) continue;
@@ -662,18 +659,6 @@ public class DebugTrace {
     }
 
     /**
-     * Returns a stack trace element.
-     *
-     * @return a stack trace element
-     */
-    private static StackTraceElement getStackTraceElement() {
-        List<StackTraceElement> elements = getStackTraceElements(1);
-        return elements.size() > 0
-            ? elements.get(0)
-            : new StackTraceElement("--", "--", "--", 0);
-    }
-
-    /**
      * Outputs the name and the boolean value to the log.
      *
      * @param name the name of the value
@@ -682,7 +667,7 @@ public class DebugTrace {
      */
     public static boolean print(String name, boolean value) {
         if (isEnabled())
-            printSub(null, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -695,7 +680,7 @@ public class DebugTrace {
      */
     public static char print(String name, char value) {
         if (isEnabled())
-            printSub(null, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -708,25 +693,7 @@ public class DebugTrace {
      */
     public static byte print(String name, byte value) {
         if (isEnabled())
-            printSub(null, name, value, true);
-        return value;
-    }
-
-    /**
-     * Outputs the name and the byte value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param value the byte value to output
-     * @return the value
-     *
-     * @since 2.4.0
-     */
-    @Deprecated
-    public static byte print(String mapName, String name, byte value) {
-        if (isEnabled())
-            printSub(mapName, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -739,25 +706,7 @@ public class DebugTrace {
      */
     public static short print(String name, short value) {
         if (isEnabled())
-            printSub(null, name, value, true);
-        return value;
-    }
-
-    /**
-     * Outputs the name and the short value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param value the short value to output
-     * @return the value
-     *
-     * @since 2.4.0
-     */
-    @Deprecated
-    public static short print(String mapName, String name, short value) {
-        if (isEnabled())
-            printSub(mapName, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -770,25 +719,7 @@ public class DebugTrace {
      */
     public static int print(String name, int value) {
         if (isEnabled())
-            printSub(null, name, value, true);
-        return value;
-    }
-
-    /**
-     * Outputs the name and the int value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param value the int value to output
-     * @return the value
-     *
-     * @since 2.4.0
-     */
-    @Deprecated
-    public static int print(String mapName, String name, int value) {
-        if (isEnabled())
-            printSub(mapName, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -801,25 +732,7 @@ public class DebugTrace {
      */
     public static long print(String name, long value) {
         if (isEnabled())
-            printSub(null, name, value, true);
-        return value;
-    }
-
-    /**
-     * Outputs the name and the long value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param value the long value to output
-     * @return the value
-     *
-     * @since 2.4.0
-     */
-    @Deprecated
-    public static long print(String mapName, String name, long value) {
-        if (isEnabled())
-            printSub(mapName, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -832,7 +745,7 @@ public class DebugTrace {
      */
     public static float print(String name, float value) {
         if (isEnabled())
-            printSub(null, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -845,7 +758,7 @@ public class DebugTrace {
      */
     public static double print(String name, double value) {
         if (isEnabled())
-            printSub(null, name, value, true);
+            printSub(name, value, true);
         return value;
     }
 
@@ -859,26 +772,7 @@ public class DebugTrace {
      */
     public static <T> T print(String name, T value) {
         if (isEnabled())
-            printSub(null, name, value, false);
-        return value;
-    }
-
-    /**
-     * Outputs the name and the value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param <T> the type of the value
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param value the value to output (accept null)
-     * @return the value
-     *
-     * @since 2.4.0
-     */
-    @Deprecated
-    public static <T> T print(String mapName, String name, T value) {
-        if (isEnabled())
-            printSub(mapName, name, value, false);
+            printSub(name, value, false);
         return value;
     }
 
@@ -893,11 +787,11 @@ public class DebugTrace {
         if (isEnabled()) {
             try {
                 boolean value = valueSupplier.getAsBoolean();
-                printSub(null, name, value, true);
+                printSub(name, value, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(null, name, e.toString(), false);
+                printSub(name, e.toString(), false);
             }
         }
         return false;
@@ -914,37 +808,11 @@ public class DebugTrace {
         if (isEnabled()) {
             try {
                 int value = valueSupplier.getAsInt();
-                printSub(null, name, value, true);
+                printSub(name, value, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(null, name, e.toString(), false);
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Outputs the name and the  int value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param valueSupplier the supplier of int value to output
-     * @return the value if isEnabled(), otherwise 0
-     *
-     * @since 2.4.0
-     */
-    @Deprecated
-    public static int print(String mapName, String name, IntSupplier valueSupplier) {
-        if (isEnabled()) {
-            try {
-                int value = valueSupplier.getAsInt();
-                printSub(mapName, name, value, true);
-                return value;
-            }
-            catch (Exception e) { 
-                printSub(mapName, name, e.toString(), false);
+                printSub(name, e.toString(), false);
             }
         }
         return 0;
@@ -961,37 +829,11 @@ public class DebugTrace {
         if (isEnabled()) {
             try {
                 long value = valueSupplier.getAsLong();
-                printSub(null, name, value, true);
+                printSub(name, value, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(null, name, e.toString(), false);
-            }
-        }
-        return 0L;
-    }
-
-    /**
-     * Outputs the name and the  long value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param valueSupplier the supplier of long value to output
-     * @return the value if isEnabled(), otherwise 0L
-     *
-     * @since 2.4.0
-     */
-    @Deprecated
-    public static long print(String mapName, String name, LongSupplier valueSupplier) {
-        if (isEnabled()) {
-            try {
-                long value = valueSupplier.getAsLong();
-                printSub(mapName, name, value, true);
-                return value;
-            }
-            catch (Exception e) { 
-                printSub(mapName, name, e.toString(), false);
+                printSub(name, e.toString(), false);
             }
         }
         return 0L;
@@ -1008,42 +850,16 @@ public class DebugTrace {
         if (isEnabled()) {
             try {
                 double value = valueSupplier.getAsDouble();
-                printSub(null, name, value, true);
+                printSub(name, value, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(null, name, e.toString(), false);
+                printSub(name, e.toString(), false);
             }
         }
         return 0.0;
     }
 
-
-    /**
-     * Outputs the name and the  double value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param valueSupplier the supplier of double value to output
-     * @return the value if isEnabled(), otherwise 0.0
-     *
-     * @since 3.3.0
-     */
-    @Deprecated
-    public static double print(String mapName, String name, DoubleSupplier valueSupplier) {
-        if (isEnabled()) {
-            try {
-                double value = valueSupplier.getAsDouble();
-                printSub(mapName, name, value, true);
-                return value;
-            }
-            catch (Exception e) { 
-                printSub(mapName, name, e.toString(), false);
-            }
-        }
-        return 0.0;
-    }
     /**
      * Outputs the name and the value to the log.
      *
@@ -1056,40 +872,15 @@ public class DebugTrace {
         if (isEnabled()) {
             try {
                 T value = valueSupplier.get();
-                printSub(null, name, value, false);
+                printSub(name, value, false);
                 return value;
             }
             catch (Exception e) { 
-                printSub(null, name, e.toString(), false);
+                printSub(name, e.toString(), false);
             }
         }
         return null;
     }
-
-    /**
-     * Outputs the name and the value to the log.
-     * @deprecated Since 3.3.0, Define a constant map and `mapNameMap` in debugtrace.properties instead.
-     *
-     * @param <T> the type of the value
-     * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
-     * @param name the name of the value
-     * @param valueSupplier the supplier of value to output
-     * @return the value if isEnabled(), otherwise null
-     */
-    @Deprecated
-    public static <T> T print(String mapName, String name, Supplier<T> valueSupplier) {
-        if (isEnabled()) {
-            try {
-                T value = valueSupplier.get();
-                printSub(mapName, name, value, false);
-                return value;
-            }
-            catch (Exception e) { 
-                printSub(mapName, name, e.toString(), false);
-            }
-        }
-        return null;
-     }
 
     /**
      * Outputs a list of StackTraceElements to the log.
@@ -1292,9 +1083,18 @@ public class DebugTrace {
                 else {
                     // Use Reflection
                     reflectedObjects.add(value);
-                    LogBuffer valueBuff = toStringReflection(value);
-                    buff.append(null, valueBuff);
-                    reflectedObjects.remove(reflectedObjects.size() - 1);
+                // 3.6.0
+                //  LogBuffer valueBuff = toStringReflection(value);
+                //  buff.append(null, valueBuff);
+                //  reflectedObjects.remove(reflectedObjects.size() - 1);
+                    try {
+                        LogBuffer valueBuff = toStringReflection(value);
+                        buff.append(null, valueBuff);
+                    }
+                    finally {
+                        reflectedObjects.remove(reflectedObjects.size() - 1);
+                    }
+                ////
                     return buff;
                 }
             } else {
@@ -1397,7 +1197,6 @@ public class DebugTrace {
      *
      * @param className a class name
      * @return the replaced ckass name
-     *
      * @since 2.3.0
      */
     private static String replaceTypeName(String typeName) {
@@ -1412,7 +1211,6 @@ public class DebugTrace {
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param value the value object
      * @return a converted value (may be null)
-     *
      * @since 2.4.0
      */
     private static String getConvertedValue(String mapName, Object value) {
@@ -1893,7 +1691,7 @@ public class DebugTrace {
                 // the property is non-printing and the value is not null or Groovy's metaClass
                 fieldBuff.noBreakAppend(keyValueSeparator).noBreakAppend(nonOutputString);
             else {
-                String mapName = mapNameMap.get(fieldName);
+                String mapName = getMapName(fieldName);
                 LogBuffer valueBuff = toString(mapName, value, field.getType().isPrimitive(), false, false);
                 fieldBuff.append(keyValueSeparator, valueBuff);
             }
@@ -1910,10 +1708,24 @@ public class DebugTrace {
     }
 
     /**
+     * Returns the map name.
+     * @param name the key of the mapNameMap
+     * @return the map name.
+     * @since 3.6.0
+     */
+    private static String getMapName(String name) {
+        if (name == null) return null;
+        String mapNameKey = name.toLowerCase();
+        mapNameKey = mapNameKey.substring(mapNameKey.lastIndexOf('.') + 1).trim();
+        mapNameKey = mapNameKey.substring(mapNameKey.lastIndexOf(' ') + 1);
+        String mapName = mapNameMap.get(mapNameKey);
+        return mapName;
+    }
+
+    /**
      * Returns the last log string output.
      *
      * @return the last log string output.
-     *
      * @since 2.4.0
      */
     public static String getLastLog() {

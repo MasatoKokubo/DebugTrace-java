@@ -19,7 +19,7 @@ link:README.asciidoc[[English]]
 ** http://logging.apache.org/log4j/1.2/[Log4j]
 ** https://logging.apache.org/log4j/2.x/[Log4j2]
 ** http://www.slf4j.org/[SLF4J]
-** 直接ファイル出力 [.small]#(ver. 3.4.0より)#
+** 直接ファイル出力
 
 ==== 2. [.small]#使用方法#
 
@@ -128,37 +128,37 @@ public class Example1 {
 
 .debugtrace.log
 ----
-2022-11-20 14:58:22.456+09:00 DebugTrace 3.5.2 on Amazon.com Inc. OpenJDK Runtime Environment 17.0.5+8-LTS
-2022-11-20 14:58:22.457+09:00   property name: DebugTrace.properties
-2022-11-20 14:58:22.457+09:00   logger: org.debugtrace.logger.Std$Err
-2022-11-20 14:58:22.464+09:00 
-2022-11-20 14:58:22.467+09:00 ______________________________ main ______________________________
-2022-11-20 14:58:22.468+09:00 
-2022-11-20 14:58:22.468+09:00 Enter example.Example1.main (Example1.java:18)
-2022-11-20 14:58:22.469+09:00 | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.469+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.489+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-11-20 14:58:22.490+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.020
-2022-11-20 14:58:22.490+09:00 | | 
-2022-11-20 14:58:22.490+09:00 | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.490+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.490+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
-2022-11-20 14:58:22.490+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-11-20 14:58:22.490+09:00 | | | 
-2022-11-20 14:58:22.490+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32)
-2022-11-20 14:58:22.491+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2022-11-20 14:58:22.491+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2022-11-20 14:58:22.492+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
-2022-11-20 14:58:22.492+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
-2022-11-20 14:58:22.492+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
-2022-11-20 14:58:22.492+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.023
+2023-01-29 09:46:51.386+09:00 DebugTrace 3.6.0 on Amazon.com Inc. OpenJDK Runtime Environment 1.8.0_352-b08
+2023-01-29 09:46:51.386+09:00   property name: DebugTrace.properties
+2023-01-29 09:46:51.386+09:00   logger: org.debugtrace.logger.Std$Err
+2023-01-29 09:46:51.393+09:00 
+2023-01-29 09:46:51.393+09:00 ______________________________ main ______________________________
+2023-01-29 09:46:51.393+09:00 
+2023-01-29 09:46:51.394+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
+2023-01-29 09:46:51.395+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
+2023-01-29 09:46:51.395+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.404+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-01-29 09:46:51.406+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.009
+2023-01-29 09:46:51.406+09:00 | | 
+2023-01-29 09:46:51.406+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.407+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.407+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2023-01-29 09:46:51.407+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-01-29 09:46:51.407+09:00 | | | 
+2023-01-29 09:46:51.407+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-01-29 09:46:51.408+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-01-29 09:46:51.408+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-01-29 09:46:51.408+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2023-01-29 09:46:51.408+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
+2023-01-29 09:46:51.408+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2023-01-29 09:46:51.408+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.013
 fibonacci(3) = 2
-2022-11-20 14:58:22.492+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.024
+2023-01-29 09:46:51.409+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.014
 ----
 
 ==== 3. [.small]#メソッド一覧#
 
-このライブラリには以下のメソッドがあります。すべてorg.debugtrace.DebugTraceクラスの静的メソッドで、戻り値なしです。
+このライブラリには以下のメソッドがあります。すべて `org.debugtrace.DebugTrace` クラスの静的メソッドです。
 
 [options="header"]
 .メソッド一覧
@@ -177,18 +177,17 @@ fibonacci(3) = 2
 |`print`
 |`message`: メッセージ
 |`message` +
-[.small]#(ver. 3.3.1より)#
 |メッセージをログに出力する
 
 |`print`
 |`messageSupplier`: メッセージのサプライヤー
-|`messageSupplier` から取得したメッセージ [.small]#(ver. 3.3.1より)#
+|`messageSupplier` から取得したメッセージ
 |サプライヤーからメッセージを取得してログに出力する
 
 |`print`
 |`name`: 値の名前 +
 `value`: 値
-|`value` [.small]#(ver. 3.3.1より)#
+|`value` +
 |`<値の名前> = <値>` +
 の形式でログに出力する +
 value のタイプは `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`, `double` または `Object`
@@ -196,36 +195,13 @@ value のタイプは `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`
 |`print`
 |`name`: 値の名前 +
 `valueSupplier`: 値のサプライヤー
-|`valueSupplier` から取得した値 [.small]#(ver. 3.3.1より)#
+|`valueSupplier` から取得した値 +
 |サプライヤーから値を取得して +
 `<値の名前> = <値>` +
 の形式でログに出力する +
 valueSupplier のタイプは `BooleanSupplier`, `IntSupplier`, `LongSupplier` または `Supplier<T>`
 
-|`print` +
-[.small]#(ver. 3.3.0より非推奨)#
-|`mapName`: 数値に対応する定数名を得るためのマップの名前 +
-`name`: 値の名前 +
-`value`: 出力値
-|`value` [.small]#(ver. 3.3.1より)#
-|`<値の名前> = <値>(<定数名>)` +
-の形式でログに出力する +
-valueのタイプは `byte`, `short`, `int`, `long` または `Object`
-
-|`print` +
-[.small]#(ver. 3.3.0より非推奨)#
-|`mapName`: 数値に対応する定数名を得るためのマップの名前 +
-`name`: 値の名前 +
-`valueSupplier`: 値のサプライヤー
-|`valueSupplier` から取得した値 +
-[.small]#(ver. 3.3.1より)#
-|サプライヤーから値を取得して +
-`<値の名前> = <値>(<定数名>)` +
-の形式でログに出力する +
-valueSupplierのタイプは `BooleanSupplier`, `IntSupplier`, `LongSupplier` または `Supplier<T>`
-
 |`printStack` +
-[.small]#ver. 3.0.2より#
 |`maxCount`: 出力するスタックトレース要素の最大数
 |_なし_
 |スタックトレース要素のリストを出力する
@@ -245,67 +221,29 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 | DebugTrace が使用するロガー +
  +
 [.small]#*指定可能な値*# +
-`Std$Out` [.small]#- stdout へ出力# +
-`Std$Err` [.small]#- stderr へ出力# +
-`Jdk` [.small]#- JDKロガー を使用# +
-`Log4j` [.small]#- Log4j を使用# +
-`Log4j2` [.small]#- Log4j2 を使用# +
-`SLF4J` [.small]#- SLF4J を使用# +
-`File: [.small]#<ログファイルパス>`# [.small]#- ファイルに直接出力 (追記) (ver. 3.4.0より3.5.0まで)# +
-[.small]#- ファイルに直接出力 (先頭から) (since 3.5.1)# +
-`File: [.small]#+<ログファイルパス>`# [.small]#- ファイルに直接出力 (追記) (ver. 3.5.1より)#
+`Std$Out` [.small]#-> stdout へ出力# +
+`Std$Err` [.small]#-> stderr へ出力# +
+`Jdk` [.small]#-> JDKロガー を使用# +
+`Log4j` [.small]#-> Log4j を使用# +
+`Log4j2` [.small]#-> Log4j2 を使用# +
+`SLF4J` [.small]#-> SLF4J を使用# +
+`File: [.small]#<ログファイルパス>`# [.small]#-> ファイルに出力# +
+`File: [.small]#+<ログファイルパス>`# [.small]#-> ファイルに追加出力#
 |`Std$Err`
 
-|`logLevel`
-|使用するログレベル +
- +
-[.small]#*指定可能な値 (logger = JDK):*# +
-`default` [.small]#- finestと同じ# +
-`finest` +
-`finer` +
-`fine` +
-`config` +
-`info` +
-`warning` +
-`severe` +
- +
-[.small]#*指定可能な値 (logger = Log4j, logger = Lo4j2):*# +
-`default` [.small]#- trace と同じ# +
-`trace` +
-`debug` +
-`info` +
-`warn` +
-`error` +
-`fatal` +
- +
-[.small]#*指定可能な値 (logger = SLF4J):*# +
-`default` [.small]#- trace と同じ# +
-`trace` +
-`debug` +
-`info` +
-`warn` +
-`error`
-|`default`
-
-|`enterFormat` +
-[.small]#(ver. 3.0.0より名称変更)# +
- +
-[.small]#`enterString`# +
-[.small]#(ver. 3.0.0より非推奨)#
+|`enterFormat`
 |メソッドに入る際に出力するログのフォーマット文字列 +
  +
 [.small]#*パラメータ:*# +
 `%1`: クラス名 +
 `%2`: メソッド名 +
 `%3`: ファイル名 +
-`%4`: 行番号
-|`Enter %1$s.%2$s (%3$s:%4$d)`
+`%4`: 行番号 +
+`%6`: 呼び出し元のファイル名 +
+`%7`: 呼び出し元の行番号
+|`Enter %1$s.%2$s (%3$s:%4$d) <- (%6$s:%7$d)`
 
-|`leaveFormat` +
-[.small]#(ver. 3.0.0より名称変更))# +
- +
-[.small]#`leaveString`# +
-[.small]#(ver. 3.0.0より非推奨)#
+|`leaveFormat`
 |メソッドから出る際のログ出力のフォーマット文字列 +
  +
 [.small]#*パラメータ:*# +
@@ -316,22 +254,14 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `%5`: 対応する `enter` メソッドを呼び出してからの経過時間
 |`Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL`
 
-|`threadBoundaryFormat` +
-[.small]#(ver. 3.0.0より名称変更)# +
- +
-[.small]#`threadBoundaryString`# +
-[.small]#(ver. 3.0.0より非推奨)#
+|`threadBoundaryFormat`
 |スレッド境界のログ出力の文字列フォーマット +
  +
 [.small]#*パラメータ:*# +
 `%1`: スレッド名
 |[.small]#`\____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____`#
 
-|`classBoundaryFormat` +
-[.small]#(ver. 3.0.0より名称変更)# +
- +
-[.small]#`classBoundaryString`# +
-[.small]#(ver. 3.0.0より非推奨)#
+|`classBoundaryFormat`
 |クラス境界のログ出力の文字列フォーマット +
  +
 [.small]#*パラメータ:*# +
@@ -354,12 +284,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |制限を超えた場合に出力する文字列 +
 |`\...`
 
-|`nonOutputString` +
-[.small]#(ver. 3.0.0より名称変更)# +
- +
-[.small]#`nonPrintString`# +
-[.small]#(ver. 1.5.0より)# +
-[.small]#(ver. 3.0.0より非推奨)#
+|`nonOutputString`
 |値を出力しない場合に代わりに出力する文字列 +
 |`\***`
 
@@ -375,10 +300,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `\\s` [.small]#は空白文字に置き換えられる#
 |`\\s=\\s`
 
-|`keyValueSeparator` +
- +
-[.small]#`fieldNameValueSeparator`# +
-[.small]#(ver. 3.0.0より削除)#
+|`keyValueSeparator`
 |マップのキーと値のおよびフィールド名と値のセパレータ文字列 +
  +
 `\\s` [.small]#は空白文字に置き換えられる#
@@ -396,32 +318,26 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
  +
 `\\s` [.small]#は空白文字に置き換えられる#
 
-|`sizeFormat` +
-[.small]#(ver. 3.0.0より)# +
+|`sizeFormat`
 |コレクションおよびマップの要素数のフォーマット +
  +
 [.small]#*パラメータ:*# +
 `%1`: 要素数
 |`size:%1d`
 
-|`minimumOutputSize` +
-[.small]#(ver. 3.0.0より)# +
+|`minimumOutputSize`
 |配列、コレクションおよびマップの要素数を出力する最小値 +
-|16 &#xa0; [.small]#(ver. 3.5.0より)# +
-5 &#xa0; [.small]#(ver. 3.4.0まで)#
+|16
 
-|`lengthFormat` +
-[.small]#(ver. 3.0.0より)# +
+|`lengthFormat`
 |文字列長のフォーマット +
 [.small]#*パラメータ:*# +
 `%1`: 文字列長
 |length:%1d
 
-|`minimumOutputLength` +
-[.small]#(ver. 3.0.0より)# +
+|`minimumOutputLength`
 |文字列長を出力する最小値 +
-|16 &#xa0; [.small]#(ver. 3.5.0より)# +
-5 &#xa0; [.small]#(ver. 3.4.0まで)#
+|16
 
 |`utilDateFormat`
 |`java.util.Date` のフォーマット
@@ -471,42 +387,27 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |`logger` が `Std$Out` および `Std$Err` の場合のログの日時のフォーマット
 |`yyyy-MM-dd HH:mm:ss.SSSxxx`
 
-|`maximumDataOutputWidth` +
-[.small]#(ver. 3.0.0より)#
+|`maximumDataOutputWidth`
 |データの出力幅の最大値 +
 |70
 
-|`collectionLimit` +
-[.small]#(ver. 3.0.0より名称変更)# +
- +
-[.small]#`arrayLimit`# +
-[.small]#(ver. 3.0.0より非推奨)# +
-[.small]#`mapLimit`# +
-[.small]#(ver. 3.0.0より削除)#
+|`collectionLimit`
 |配列、コレクションおよびマップの要素の出力数の制限値 +
-|128 &#xa0; [.small]#(ver. 3.5.0より)# +
-512 &#xa0; [.small]#(ver. 3.4.0まで)#
+|128
 
 |`byteArrayLimit`
 |バイト配列(`byte[]`)要素の出力数の制限値
-|256 &#xa0; [.small]#(ver. 3.5.0より)# +
-8192 &#xa0; [.small]#(ver. 3.4.0まで)#
+|256
 
 |`stringLimit`
 |文字列の出力文字数の制限値
-|256 &#xa0; [.small]#(ver. 3.5.0より)# +
-8192 &#xa0; [.small]#(ver. 3.4.0まで)#
+|256
 
-|`reflectionNestLimit` +
-[.small]#(ver. 3.0.0より)#
+|`reflectionNestLimit`
 |リフレクションのネスト数の制限値 +
 |4
 
-|`nonOutputProperties` +
-[.small]#(ver. 3.0.0より名称変更)# +
- +
-[.small]#`nonPrintProperties`# +
-[.small]#(ver. 3.0.0より非推奨)#
+|`nonOutputProperties`
 |出力しないプロパティ名のリスト +
  +
 [.small]#*値のフォーマット:*# +
@@ -543,7 +444,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `org.debugtrace.example.Point,\` +
 `org.debugtrace.example.Rectangle` +
  +
-[.small]#*値の例 (パッケージ - ver. 3.5.0より):*# +
+[.small]#*値の例 (パッケージ):*# +
 `org.debugtrce.example.`
 
 |`mapNameMap`
@@ -578,7 +479,7 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |===
 
-*DebugTrace-java 2.4.6* までは、日時のフォーマットを `String.format` の引数の形式で指定し、*2.5.0* 以降では `DateTimeFormatter.ofPattern` の引数の形式で指定してください。
+日時のフォーマットは、`DateTimeFormatter.ofPattern` メソッドの引数の形式で指定してください。
 
 ===== 4.1. *nonOutputProperties*, *nonOutputString*
 
@@ -599,9 +500,10 @@ nonOutputProperties = \
 
 ===== 4.2. [.small]#定数マップ#, *mapNameMap*
 
-定数マップは、キーが数値で値が定数名のマップです。このプロパティのキー(マップ名)を `print` メソッドの引数にしてコールすると数値に定数名が付加されて出力されます。
+定数マップは、キーが数値で値が定数名のマップです。
+変数名に対応するマップ名を `mapNameMap` プロパティで指定すると、数値に対応する定数名も出力されます。
 
-.定数マップの例 (DebugTrace.properties)
+.定数マップおよび mapNameMap の例 (DebugTrace.properties)
 ----
 AppleBrand = \
     0: Apple.NO_BRAND,\
@@ -609,46 +511,38 @@ AppleBrand = \
     2: Apple.AKIYO,\
     3: Apple.AZUSA,\
     4: Apple.YUKARI
+
+mapNameMap = appleBrand:AppleBrand
 ----
 
 [source,java]
 .Javaソースの例
 ----
-int appleBrand = Apple.AKANE;
-DebugTrace.print("AppleBrand", "appleBrand", appleBrand);
-----
+static public class Apple {
+    public static final int NO_BRAND = 0;
+    public static final int AKANE = 1;
+    public static final int AKIYO = 2;
+    public static final int AZUSA = 3;
+    public static final int YUKARI = 4;
+}
+    ...
 
-.Log[.small]##の例##
-----
-2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:29)
-----
-
-変数名に対応するマップ名を `mapNameMap` プロパティで指定すると、マップ名を指定しない場合でも定数名が出力されます。
-
-.mapNameMap[.small]##の例## (DebugTrace.properties)
-----
-mapNameMap = appleBrand: AppleBrand
-----
-
-[source,java]
-.Javaソースの例
-----
-int appleBrand = Apple.AKANE;
-DebugTrace.print("appleBrand", appleBrand);
-appleBrand = Apple.AKIYO;
-DebugTrace.print(" 2 appleBrand ", appleBrand);
-appleBrand = Apple.AZUSA;
-DebugTrace.print(" 3 example.appleBrand ", appleBrand);
-appleBrand = Apple.YUKARI;
-DebugTrace.print(" 4 example. appleBrand ", appleBrand);
+    int appleBrand = Apple.AKANE;
+    DebugTrace.print("appleBrand", appleBrand);
+    appleBrand = Apple.AKIYO;
+    DebugTrace.print(" 2 appleBrand ", appleBrand);
+    appleBrand = Apple.AZUSA;
+    DebugTrace.print(" 3 example.appleBrand ", appleBrand);
+    appleBrand = Apple.YUKARI;
+    DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 ----
 
 .Logの例
 ----
-2017-07-29 13:45:32.489 | appleBrand = 1(Apple.AKANE) (README_example.java:38)
-2017-07-29 13:45:32.489 |  2 appleBrand  = 2(Apple.AKIYO) (README_example.java:40)
-2017-07-29 13:45:32.489 |  3 example.appleBrand  = 3(Apple.AZUSA) (README_example.java:42)
-2017-07-29 13:45:32.489 |  4 example. appleBrand  = 4(Apple.YUKARI) (README_example.java:44)
+2023-01-29 10:14:29.916+09:00 appleBrand = 1(Apple.AKANE) (ReadmeExample.java:18)
+2023-01-29 10:14:29.916+09:00  2 appleBrand  = 2(Apple.AKIYO) (ReadmeExample.java:20)
+2023-01-29 10:14:29.916+09:00  3 example.appleBrand  = 3(Apple.AZUSA) (ReadmeExample.java:22)
+2023-01-29 10:14:29.916+09:00  4 example. appleBrand  = 4(Apple.YUKARI) (ReadmeExample.java:24)
 ----
 
 ==== 5. [.small]#ロギング・ライブラリの使用例#
@@ -746,7 +640,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.debugtrace:debugtrace:3.5.0'
+    implementation 'org.debugtrace:debugtrace:3.6.0'
 }
 ----
 
@@ -761,6 +655,14 @@ _(C) 2015 Masato Kokubo_
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
 ==== 9. [.small]#リリースノート#
+
+===== DebugTrace-java 3.6.0 [.small .gray]#- 2023/1/29#
+
+* `print` メソッドで `java.lang.IndexOutOfBoundsException` がスローされる事があるバグを修正しました。
+* `enter` メソッドのログ出力に、呼び出し元のソースファイル名と行番号を追加しました。 
+* `mapName` を引数に持つ非推奨のメソッドを削除しました。
+* DebugTrace.properties の非推奨のプロパティを削除しました。
+* DebugTrace.propertiesで `logLevel` の設定を廃止し、固定 (`Jdk`: `FINEST`, それ以外: `TRACE`) にしました。
 
 ===== DebugTrace-java 3.5.2 [.small .gray]#- 2022/11/20#
 

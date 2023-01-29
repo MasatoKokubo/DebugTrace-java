@@ -31,7 +31,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.5.2'
+version             = '3.6.0'
 
 sourceSets {
     main {
@@ -68,7 +68,7 @@ sourceSets {
 }
 
 wrapper {
-    gradleVersion = '7.5.1'
+    gradleVersion = '7.6'
 }
 
 compileJava {

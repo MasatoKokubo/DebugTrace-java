@@ -207,27 +207,29 @@ class DebugTraceSpec extends Specification {
         DebugTrace.lastLog.indexOf('v = "\\u0001\\u001F\\u007F"') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.print('Calendar', 'v', (byte)1) == (byte)1
-        DebugTrace.lastLog.indexOf('v = (byte)1(Calendar.YEAR)') >= 0
-        DebugTrace.lastLog.indexOf(commonSuffix) >= 0
-
-        DebugTrace.print('Calendar', 'v', (short)1) == (short)1
-        DebugTrace.lastLog.indexOf('v = (short)1(Calendar.YEAR)') >= 0
-        DebugTrace.lastLog.indexOf(commonSuffix) >= 0
-
-        DebugTrace.print('Calendar', 'v', 1) == 1
-        DebugTrace.lastLog.indexOf('v = 1(Calendar.YEAR)') >= 0
-        DebugTrace.lastLog.indexOf(commonSuffix) >= 0
-
-        DebugTrace.print('Calendar', 'v', 1L) == 1L
-        DebugTrace.lastLog.indexOf('v = (long)1(Calendar.YEAR)') >= 0
-        DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+    // 3.6.0
+    //  DebugTrace.print('Calendar', 'v', (byte)1) == (byte)1
+    //  DebugTrace.lastLog.indexOf('v = (byte)1(Calendar.YEAR)') >= 0
+    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+    //
+    //  DebugTrace.print('Calendar', 'v', (short)1) == (short)1
+    //  DebugTrace.lastLog.indexOf('v = (short)1(Calendar.YEAR)') >= 0
+    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+    //
+    //  DebugTrace.print('Calendar', 'v', 1) == 1
+    //  DebugTrace.lastLog.indexOf('v = 1(Calendar.YEAR)') >= 0
+    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
+    //
+    //  DebugTrace.print('Calendar', 'v', 1L) == 1L
+    //  DebugTrace.lastLog.indexOf('v = (long)1(Calendar.YEAR)') >= 0
+    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
         // 3.0.6
         when:
         def object = new Object()
         then:
-        DebugTrace.print('Object', 'v', object) == object
+    //  DebugTrace.print('Object', 'v', object) == object
+        DebugTrace.print('v', object) == object
         DebugTrace.lastLog.indexOf('v = (Object){}') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 

@@ -116,7 +116,6 @@ public class Resource {
      *
      * @param key the key of resource property
      * @return the string value of resource property
-     *
      * @throws NullPointerException if <b>key</b> is null
      * @throws MissingResourceException if the property dose not found
     */
@@ -152,48 +151,19 @@ public class Resource {
     }
 
     /**
-     * Returns the string value of resource property.
-     *
-     * @param key the key of resource property
-     * @return the string value of resource property
-     *
-     * @throws NullPointerException if <b>key</b> is null
-     * @throws MissingResourceException if the property dose not found
-    */
-    private String get(String key1, String key2) {
-    	try {
-    		return get(key1);
-    	}
-    	catch (MissingResourceException e1) {
-    		if (key2 == null)
-    			throw e1;
-
-        	try {
-        		return get(key2);
-        	}
-        	catch (MissingResourceException e2) {
-        		throw new MissingResourceException(e1.getMessage(), e1.getClassName(), e1.getKey() + ", " + e2.getKey());
-        	}
-    	}
-    }
-
-    /**
      * Returns the value of resource property.
      * 
      * @param <V> the type of value
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
+     * @param key the key of resource property
      * @param valueConverter the function to convert string to return type
      * @param defaultValue the default value
      * @return the value of resource property (or defaultValue if not found in properties file)
-     *
      * @throws NullPointerException if <b>key</b> or <b>valueConverter</b> is null
-     *
      * @since 3.0.0
      */
-    public <V> V getValue(String key1, String key2, Function<String, V> valueConverter, V defaultValue) {
+    public <V> V getValue(String key, Function<String, V> valueConverter, V defaultValue) {
         try {
-            return valueConverter.apply(get(key1, key2));
+            return valueConverter.apply(get(key));
         }
         catch (MissingResourceException e) {
             return defaultValue;
@@ -206,29 +176,11 @@ public class Resource {
      * @param key the key of resource property
      * @param defaultValue the default value
      * @return the string value of resource property (or defaultValue if not found in properties file)
-     *
      * @throws NullPointerException if <b>key</b> is null
-     *
      * @since 2.3.0
      */
     public String getString(String key, String defaultValue) {
-        return getValue(key, null, stringConverter, defaultValue);
-    }
-
-    /**
-     * Returns the string of resource property.
-     * 
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
-     * @param defaultValue the default value
-     * @return the string value of resource property (or defaultValue if not found in properties file)
-     *
-     * @throws NullPointerException if <b>key</b> is null
-     *
-     * @since 3.0.0
-     */
-    public String getString(String key1, String key2, String defaultValue) {
-        return getValue(key1, key2, stringConverter, defaultValue);
+        return getValue(key, stringConverter, defaultValue);
     }
 
     /**
@@ -237,31 +189,12 @@ public class Resource {
      * @param key the key of resource property
      * @param defaultValue the default value
      * @return the int value of resource property (or defaultValue if not found in properties file)
-     *
      * @throws NullPointerException if <b>key</b> is null
      * @throws NumberFormatException if the value can not convert to int
-     *
      * @since 2.3.0
      */
     public int getInt(String key, int defaultValue) {
-        return getValue(key, null, Integer::parseInt, defaultValue);
-    }
-
-    /**
-     * Returns the int value of resource property.
-     *
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
-     * @param defaultValue the default value
-     * @return the int value of resource property (or defaultValue if not found in properties file)
-     *
-     * @throws NullPointerException if <b>key</b> is null
-     * @throws NumberFormatException if the value can not convert to int
-     *
-     * @since 3.0.0
-     */
-    public int getInt(String key1, String key2, int defaultValue) {
-        return getValue(key1, key2, Integer::parseInt, defaultValue);
+        return getValue(key, Integer::parseInt, defaultValue);
     }
 
     /**
@@ -269,19 +202,16 @@ public class Resource {
      * an empty list otherwise.
      *
      * @param <E> the type of elements of the list
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
+     * @param key the key of resource property
      * @param valueConverter the function to convert string to element type
      * @return a created list (or an empty list)
-     *
      * @throws NullPointerException if <b>key</b> or <b>valueConverter</b> is null
-     *
      * @since 3.0.0
      */
-    public <E> List<E> getList(String key1, String key2, Function<String, E> valueConverter) {
+    public <E> List<E> getList(String key, Function<String, E> valueConverter) {
         Objects.requireNonNull(valueConverter, "valueConverter is null");
 
-        String propertyValue = getString(key1, key2, "");
+        String propertyValue = getString(key, "");
         List<E> list = new ArrayList<>();
 
         Arrays.stream(propertyValue.split(","))
@@ -300,19 +230,16 @@ public class Resource {
      * an empty set otherwise.
      *
      * @param <E> the type of elements of the list
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
+     * @param key the key of resource property
      * @param valueConverter the function to convert string to element type
      * @return a created set (or an empty set)
-     *
      * @throws NullPointerException if <b>key</b> or <b>valueConverter</b> is null
-     *
      * @since 3.1.1
      */
-    public <E> Set<E> getSet(String key1, String key2, Function<String, E> valueConverter) {
+    public <E> Set<E> getSet(String key, Function<String, E> valueConverter) {
         Objects.requireNonNull(valueConverter, "valueConverter is null");
 
-        String propertyValue = getString(key1, key2, "");
+        String propertyValue = getString(key, "");
         Set<E> set = new HashSet<>();
 
         Arrays.stream(propertyValue.split(","))
@@ -331,25 +258,10 @@ public class Resource {
      *
      * @param key the key of resource property
      * @return a created string list (or an empty list)
-     *
      * @since 2.4.0
      */
     public List<String> getStrings(String key) {
-        return getList(key, null, stringConverter);
-    }
-
-    /**
-     * Returns a string list created from the resource property value if it is found,
-     * an empty list otherwise.
-     *
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
-     * @return a created string list (or an empty list)
-     *
-     * @since 3.0.0
-     */
-    public List<String> getStrings(String key1, String key2) {
-        return getList(key1, key2, stringConverter);
+        return getList(key, stringConverter);
     }
 
     /**
@@ -358,11 +270,10 @@ public class Resource {
      *
      * @param key the key of resource property
      * @return a created string set (or an empty set)
-     *
      * @since 3.1.1
      */
     public Set<String> getStringSet(String key) {
-        return getSet(key, null, stringConverter);
+        return getSet(key, stringConverter);
     }
 
     /**
@@ -371,21 +282,18 @@ public class Resource {
      *
      * @param <K> the type of keys of map
      * @param <V> the type of values of the map
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
+     * @param key the key of resource property
      * @param keyConverter the function that converts string to the key type of the map
      * @param valueConverter the function that converts string to the value type of the map
      * @return a created map (or an empty map)
-     *
      * @throws NullPointerException if <b>key</b>, <b>keyConverter</b> or <b>valueConverter</b> is null
-     *
      * @since 3.0.0
      */
-    public <K, V> Map<K, V> getMap(String key1, String key2, Function<String, K> keyConverter, Function<String, V> valueConverter) {
+    public <K, V> Map<K, V> getMap(String key, Function<String, K> keyConverter, Function<String, V> valueConverter) {
         Objects.requireNonNull(keyConverter, "keyConverter is null");
         Objects.requireNonNull(valueConverter, "valueConverter is null");
 
-        String mapKeyValue = getString(key1, key2, "");
+        String mapKeyValue = getString(key, "");
 
         Map<K, V> map = new HashMap<>();
 
@@ -410,31 +318,12 @@ public class Resource {
      *
      * @param key the key of resource property
      * @return a created map (or an empty map)
-     *
      * @throws NullPointerException if <b>key</b> is null
      * @throws NumberFormatException if the value can not convert to int
-     *
      * @since 2.4.0
      */
     public Map<Integer, String> getIntegerKeyMap(String key) {
-        return getMap(key, null, Integer::parseInt, stringConverter);
-    }
-
-    /**
-     * Returns a map  (key: Integer, value: String) created from the resource property value if it is found,
-     * an empty map otherwise.
-     *
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
-     * @return a created map (or an empty map)
-     *
-     * @throws NullPointerException if <b>key</b> is null
-     * @throws NumberFormatException if the value can not convert to int
-     *
-     * @since 3.0.0
-     */
-    public Map<Integer, String> getIntegerKeyMap(String key1, String key2) {
-        return getMap(key1, key2, Integer::parseInt, stringConverter);
+        return getMap(key, Integer::parseInt, stringConverter);
     }
 
     /**
@@ -443,28 +332,10 @@ public class Resource {
      *
      * @param key the key of resource property
      * @return a created map (or an empty map)
-     *
      * @throws NullPointerException if <b>key</b> is null
-     *
      * @since 2.4.0
      */
     public Map<String, String> getStringKeyMap(String key) {
-        return getMap(key, null,  s -> s, stringConverter);
-    }
-
-    /**
-     * Returns a map (key: String, value: String) created from the resource property value if it is found,
-     * an empty map otherwise.
-     *
-     * @param key1 the key 1 of resource property
-     * @param key2 the key 2 of resource property
-     * @return a created map (or an empty map)
-     *
-     * @throws NullPointerException if <b>key</b> is null
-     *
-     * @since 3.0.0
-     */
-    public Map<String, String> getStringKeyMap(String key1, String key2) {
-        return getMap(key1, key2, s -> s, stringConverter);
+        return getMap(key,  s -> s.toLowerCase(), stringConverter);
     }
 }

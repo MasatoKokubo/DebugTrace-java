@@ -15,6 +15,7 @@ import java.time.ZonedDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import org.debugtrace.DebugTrace
+import org.debugtrace.LogOptions
 import spock.lang.*
 
 @Unroll
@@ -23,25 +24,18 @@ class DebugTraceSpec extends Specification {
 
     static commonSuffix = ' (' + DebugTraceSpec.class.simpleName + '.groovy:'
 
+    @Shared options = new LogOptions()
     @Shared timeZone = TimeZone.default
-    @Shared int minimumOutputSize
-    @Shared int minimumOutputLength
-    @Shared int byteArrayLimit
 
     def setupSpec() {
-        minimumOutputSize = DebugTrace.minimumOutputSize
-        minimumOutputLength = DebugTrace.minimumOutputLength
-        byteArrayLimit = DebugTrace.byteArrayLimit
-        DebugTrace.minimumOutputSize = 5
-        DebugTrace.minimumOutputLength = 5
-        DebugTrace.byteArrayLimit = 512
+        options.minimumOutputSize = 5
+        options.minimumOutputLength = 5
+        options.collectionLimit = 5
+        options.byteArrayLimit = 512
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+9"))
     }
 
     def cleanupSpec() {
-        DebugTrace.minimumOutputSize = minimumOutputSize
-        DebugTrace.minimumOutputLength = minimumOutputLength
-        DebugTrace.byteArrayLimit = byteArrayLimit
         TimeZone.default = timeZone
     }
 
@@ -189,17 +183,17 @@ class DebugTraceSpec extends Specification {
         DebugTrace.lastLog.indexOf('v = "ABCD"') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        DebugTrace.print('v', "ABCDE") == "ABCDE"
+        DebugTrace.print('v', "ABCDE", options) == "ABCDE"
         DebugTrace.lastLog.indexOf('v = (length:5)"ABCDE"') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
         // 3.0.7
-        DebugTrace.print('v', "'ABCDE'") == "'ABCDE'"
+        DebugTrace.print('v', "'ABCDE'", options) == "'ABCDE'"
         DebugTrace.lastLog.indexOf('v = (length:7)"\'ABCDE\'"') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
         // 3.0.7
-        DebugTrace.print('v', "ABCDE\b\t\n\r\f'\"\\") == "ABCDE\b\t\n\r\f'\"\\"
+        DebugTrace.print('v', "ABCDE\b\t\n\r\f'\"\\", options) == "ABCDE\b\t\n\r\f'\"\\"
         DebugTrace.lastLog.indexOf('v = (length:13)"ABCDE\\b\\t\\n\\r\\f\'\\"\\\\"') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
@@ -207,28 +201,10 @@ class DebugTraceSpec extends Specification {
         DebugTrace.lastLog.indexOf('v = "\\u0001\\u001F\\u007F"') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-    // 3.6.0
-    //  DebugTrace.print('Calendar', 'v', (byte)1) == (byte)1
-    //  DebugTrace.lastLog.indexOf('v = (byte)1(Calendar.YEAR)') >= 0
-    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
-    //
-    //  DebugTrace.print('Calendar', 'v', (short)1) == (short)1
-    //  DebugTrace.lastLog.indexOf('v = (short)1(Calendar.YEAR)') >= 0
-    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
-    //
-    //  DebugTrace.print('Calendar', 'v', 1) == 1
-    //  DebugTrace.lastLog.indexOf('v = 1(Calendar.YEAR)') >= 0
-    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
-    //
-    //  DebugTrace.print('Calendar', 'v', 1L) == 1L
-    //  DebugTrace.lastLog.indexOf('v = (long)1(Calendar.YEAR)') >= 0
-    //  DebugTrace.lastLog.indexOf(commonSuffix) >= 0
-
         // 3.0.6
         when:
         def object = new Object()
         then:
-    //  DebugTrace.print('Object', 'v', object) == object
         DebugTrace.print('v', object) == object
         DebugTrace.lastLog.indexOf('v = (Object){}') >= 0
         DebugTrace.lastLog.indexOf(commonSuffix) >= 0
@@ -669,7 +645,7 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (ArrayList)[(....DebugTraceSpec.Fruits)APPLE, (....DebugTraceSpec.Fruits)ORANGE]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1, 2, 3, 4, 5])
+        when: DebugTrace.print('v', [1, 2, 3, 4, 5], options)
         then:
             DebugTrace.lastLog.indexOf('v = (ArrayList size:5)[1, 2, 3, 4, 5]') >= 0
             DebugTrace.lastLog.indexOf(commonSuffix) >= 0
@@ -746,7 +722,7 @@ class DebugTraceSpec extends Specification {
         then: DebugTrace.lastLog.indexOf('v = (LinkedHashMap)[(....DebugTraceSpec.Fruits)APPLE: (....DebugTraceSpec.Fruits)ORANGE]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
-        when: DebugTrace.print('v', [1: 'A', 2: 'AB', 3: 'ABC', 4: 'ABCD', 5: 'ABCDE'])
+        when: DebugTrace.print('v', [1: 'A', 2: 'AB', 3: 'ABC', 4: 'ABCD', 5: 'ABCDE'], options)
         then: DebugTrace.lastLog.indexOf('v = (LinkedHashMap size:5)[1: "A", 2: "AB", 3: "ABC", 4: "ABCD", 5: (length:5)"ABCDE"]') >= 0
               DebugTrace.lastLog.indexOf(commonSuffix) >= 0
 
@@ -797,7 +773,7 @@ class DebugTraceSpec extends Specification {
                 0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xED, 0xEE, 0xEF, 
                 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF, 
                 0x00
-            ] as byte[])
+            ] as byte[], options)
         then: DebugTrace.lastLog
             .indexOf(
                 '| v = (byte[257])[\n' +

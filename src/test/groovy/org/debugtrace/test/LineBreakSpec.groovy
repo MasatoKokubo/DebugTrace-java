@@ -98,10 +98,10 @@ class LineBreakSpec extends Specification {
         DebugTrace.print('contacts', contacts)
 
         then:
-        DebugTrace.lastLog.contains('firstName: (length:')
-        DebugTrace.lastLog.contains('lastName: (length:')
+        DebugTrace.lastLog.contains('firstName: "')
+        DebugTrace.lastLog.contains('lastName: "')
         DebugTrace.lastLog.contains('birthday: (LocalDate)')
-        DebugTrace.lastLog.contains('phoneNumber: (length:')
+        DebugTrace.lastLog.contains('phoneNumber: "')
         DebugTrace.lastLog.contains('},\n|   2: (....Contact){\n')
 
         DebugTrace.lastLog.contains('[\n|   1:')
@@ -152,7 +152,7 @@ class LineBreakSpec extends Specification {
         DebugTrace.print('foo', foo)
     
         then:
-        DebugTrace.lastLog.contains('foo = (length:60)"0000000000')
+        DebugTrace.lastLog.contains('foo = "0000000000')
 
         cleanup:
         DebugTrace.leave()
@@ -168,7 +168,7 @@ class LineBreakSpec extends Specification {
         DebugTrace.print('name', name)
     
         then:
-        DebugTrace.lastLog.contains('first: (length:60)"0000000000')
+        DebugTrace.lastLog.contains('first: "0000000000')
 
         cleanup:
         DebugTrace.leave()
@@ -185,7 +185,7 @@ class LineBreakSpec extends Specification {
         DebugTrace.print('foo', foo)
     
         then:
-        DebugTrace.lastLog.contains('1: (length:60)"0000000000')
+        DebugTrace.lastLog.contains('1: "0000000000')
 
         cleanup:
         DebugTrace.leave()

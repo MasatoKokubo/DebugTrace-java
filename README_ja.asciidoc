@@ -126,41 +126,44 @@ public class Example1 {
 }
 ----
 
+[source,log]
 .debugtrace.log
 ----
-2023-01-29 09:46:51.386+09:00 DebugTrace 3.6.0 on Amazon.com Inc. OpenJDK Runtime Environment 1.8.0_352-b08
-2023-01-29 09:46:51.386+09:00   property name: DebugTrace.properties
-2023-01-29 09:46:51.386+09:00   logger: org.debugtrace.logger.Std$Err
-2023-01-29 09:46:51.393+09:00 
-2023-01-29 09:46:51.393+09:00 ______________________________ main ______________________________
-2023-01-29 09:46:51.393+09:00 
-2023-01-29 09:46:51.394+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
-2023-01-29 09:46:51.395+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
-2023-01-29 09:46:51.395+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-01-29 09:46:51.404+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2023-01-29 09:46:51.406+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.009
-2023-01-29 09:46:51.406+09:00 | | 
-2023-01-29 09:46:51.406+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-01-29 09:46:51.407+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-01-29 09:46:51.407+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
-2023-01-29 09:46:51.407+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2023-01-29 09:46:51.407+09:00 | | | 
-2023-01-29 09:46:51.407+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-01-29 09:46:51.408+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2023-01-29 09:46:51.408+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2023-01-29 09:46:51.408+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
-2023-01-29 09:46:51.408+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
-2023-01-29 09:46:51.408+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
-2023-01-29 09:46:51.408+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.013
+2023-03-21 17:01:32.388+09:00 DebugTrace 3.7.0 on Amazon.com Inc. OpenJDK Runtime Environment 1.8.0_362-b08
+2023-03-21 17:01:32.390+09:00   property name: DebugTrace.properties
+2023-03-21 17:01:32.390+09:00   logger: org.debugtrace.logger.Std$Err
+2023-03-21 17:01:32.409+09:00 
+2023-03-21 17:01:32.409+09:00 ______________________________ main ______________________________
+2023-03-21 17:01:32.409+09:00 
+2023-03-21 17:01:32.410+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
+2023-03-21 17:01:32.410+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
+2023-03-21 17:01:32.411+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-03-21 17:01:32.446+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-03-21 17:01:32.448+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.035
+2023-03-21 17:01:32.448+09:00 | | 
+2023-03-21 17:01:32.449+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-03-21 17:01:32.449+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-03-21 17:01:32.449+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2023-03-21 17:01:32.449+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-03-21 17:01:32.449+09:00 | | | 
+2023-03-21 17:01:32.449+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2023-03-21 17:01:32.449+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2023-03-21 17:01:32.449+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
+2023-03-21 17:01:32.449+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2023-03-21 17:01:32.449+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
+2023-03-21 17:01:32.451+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2023-03-21 17:01:32.451+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.039
 fibonacci(3) = 2
-2023-01-29 09:46:51.409+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.014
+2023-03-21 17:01:32.451+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.039
 ----
 
 ==== 3. [.small]#メソッド一覧#
 
-このライブラリには以下のメソッドがあります。すべて `org.debugtrace.DebugTrace` クラスの静的メソッドです。
+このライブラリには以下のメソッドがあります。すべて
+http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/DebugTrace.html[org.debugtrace.DebugTrace]
+クラスの静的メソッドです。
 
-[options="header"]
+[cols="2,4,3,4", options="header"]
 .メソッド一覧
 |===
 |メソッド名|引 数|戻り値|説 明
@@ -190,16 +193,49 @@ fibonacci(3) = 2
 |`value` +
 |`<値の名前> = <値>` +
 の形式でログに出力する +
-value のタイプは `boolean`, `char`, `byte`, `short`, `int`, `long`, `float`, `double` または `Object`
+`value` のタイプは以下のいずれか +
+`boolean`, `char`, +
+`byte`, `short`, `int`, `long`, +
+`float`, `double`, `T`
+
+|[.small red]#*new*# +
+`print`
+|`name`: 値の名前 +
+`value`: 値 +
+`logOptions`: http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/LogOptions.html[LogOptions] +
+以下のフィールドを指定可能 +
+`minimumOutputSize`, +
+`minimumOutputLength`, +
+`collectionLimit`, +
+`byteArrayLimit`, +
+`stringLimit`, +
+`reflectionNestLimit` +
+または以下を指定可能 +
+`LogOptions.outputSize` +
+`LogOptions.outputLength`
+|`value` +
+|同上 +
 
 |`print`
 |`name`: 値の名前 +
 `valueSupplier`: 値のサプライヤー
-|`valueSupplier` から取得した値 +
-|サプライヤーから値を取得して +
+|`valueSupplier` から取得した値
+|`valueSupplier` から値を取得して +
 `<値の名前> = <値>` +
 の形式でログに出力する +
-valueSupplier のタイプは `BooleanSupplier`, `IntSupplier`, `LongSupplier` または `Supplier<T>`
+`valueSupplier` のタイプは以下のいずれか +
+`BooleanSupplier`, +
+`IntSupplier`, `LongSupplier` +
+`Supplier<T>` +
+
+|[.small red]#*new*# +
+`print`
+|`name`: 値の名前 +
+`valueSupplier`: 値のサプライヤー +
+`logOptions`: http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/LogOptions.html[LogOptions] +
+[.small]#*_詳細は上を参照_*#
+|`valueSupplier` から取得した値
+|同上
 
 |`printStack` +
 |`maxCount`: 出力するスタックトレース要素の最大数
@@ -296,15 +332,15 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |`varNameValueSeparator`
 |変数名と値のセパレータ文字列 +
+|`\\s=\\s` +
  +
 `\\s` [.small]#は空白文字に置き換えられる#
-|`\\s=\\s`
 
 |`keyValueSeparator`
 |マップのキーと値のおよびフィールド名と値のセパレータ文字列 +
+|`:\\s` +
  +
 `\\s` [.small]#は空白文字に置き換えられる#
-|`:\\s`
 
 |`printSuffixFormat` +
 |`print` メソッドで付加される文字列のフォーマット +
@@ -327,17 +363,20 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |`minimumOutputSize`
 |配列、コレクションおよびマップの要素数を出力する最小値 +
-|16
+|[.small red]#*new*# +
+`Integer.MAX_VALUE` [.small]#(出力しない)#
 
 |`lengthFormat`
 |文字列長のフォーマット +
+ +
 [.small]#*パラメータ:*# +
 `%1`: 文字列長
 |length:%1d
 
 |`minimumOutputLength`
 |文字列長を出力する最小値 +
-|16
+|[.small red]#*new*# +
+`Integer.MAX_VALUE` [.small]#(出力しない)#
 
 |`utilDateFormat`
 |`java.util.Date` のフォーマット
@@ -655,6 +694,35 @@ _(C) 2015 Masato Kokubo_
 http://masatokokubo.github.io/DebugTrace-java/javadoc/index.html[API仕様(英語)]
 
 ==== 9. [.small]#リリースノート#
+
+===== DebugTrace-java 3.7.0 [.small .gray]#- 2023/3/21#
+
+* http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/LogOptions.html[LogOptions]
+クラスを追加しました。
+* http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/DebugTrace.html[DebugTrace]
+クラスに以下のメソッドを追加しました。
+** `public static boolean print(String name, boolean value, LogOptions logOptions)`
+** `public static char print(String name, char value, LogOptions logOptions)`
+** `public static byte print(String name, byte value, LogOptions logOptions)`
+** `public static short print(String name, short value, LogOptions logOptions)`
+** `public static int print(String name, int value, LogOptions logOptions)`
+** `public static long print(String name, long value, LogOptions logOptions)`
+** `public static float print(String name, float value, LogOptions logOptions)`
+** `public static double print(String name, double value, LogOptions logOptions)`
+** `public static <T> T print(String name, T value, LogOptions logOptions)`
+** `public static boolean print(String name, BooleanSupplier valueSupplier, LogOptions logOptions)`
+** `public static int print(String name, IntSupplier valueSupplier, LogOptions logOptions)`
+** `public static long print(String name, LongSupplier valueSupplier, LogOptions logOptions)`
+** `public static double print(String name, DoubleSupplier valueSupplier, LogOptions logOptions)`
+** `public static <T> T print(String name, Supplier<T> valueSupplier, LogOptions logOptions)`
+* 以下のプロパティのデフォルト値を変更しました。
+
+[cols="1,1,1", options="header", width="60%"]
+|===
+^|プロパティ名 ^|新デフォルト値 ^|旧デフォルト値
+|`minimumOutputSize`   ^|`Integer.MAX_VALUE` ^|16
+|`minimumOutputLength` ^|`Integer.MAX_VALUE` ^|16
+|===
 
 ===== DebugTrace-java 3.6.0 [.small .gray]#- 2023/1/29#
 

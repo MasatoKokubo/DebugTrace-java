@@ -1,4 +1,4 @@
-// Foo1.java
+// Bar1.java
 // (C) 2016 Masato Kokubo
 
 package org.debugtrace.test.foo.bar;

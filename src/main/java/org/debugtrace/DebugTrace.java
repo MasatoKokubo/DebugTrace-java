@@ -67,7 +67,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "3.6.0";
+    public static final String VERSION = "3.7.0";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = MapUtils.ofEntries(
@@ -236,6 +236,9 @@ public class DebugTrace {
     // FileLogger keyword since 3.4.0
     private static final String FILE_LOGGER_KEYWORD = "File:";
 
+
+    private static LogOptions defaultLogOptions;
+
     static {
         initClass();
     }
@@ -271,9 +274,9 @@ public class DebugTrace {
         keyValueSeparator       = resource.getString("keyValueSeparator"     , ": ");
         printSuffixFormat       = resource.getString("printSuffixFormat"     , " (%3$s:%4$d)");
         sizeFormat              = resource.getString("sizeFormat"            , "size:%1d"); // since 3.0.0
-        minimumOutputSize       = resource.getInt   ("minimumOutputSize"     , 16); // 16 <- 5 since 3.5.0, since 3.0.0
+        minimumOutputSize       = resource.getInt   ("minimumOutputSize"     , Integer.MAX_VALUE); // <- 16 <- 5 since 3.0.0
         lengthFormat            = resource.getString("lengthFormat"          , "length:%1d"); // since 3.0.0
-        minimumOutputLength     = resource.getInt   ("minimumOutputLength"   , 16); // 16 <- 5 since 3.5.0, since 3.0.0
+        minimumOutputLength     = resource.getInt   ("minimumOutputLength"   , Integer.MAX_VALUE); // <- 16 <- 5 since 3.0.0
         utilDateFormat          = resource.getString("utilDateFormat"        , "yyyy-MM-dd HH:mm:ss.SSSxxx");
         sqlDateFormat           = resource.getString("sqlDateFormat"         , "yyyy-MM-ddxxx");
         timeFormat              = resource.getString("timeFormat"            , "HH:mm:ss.SSSxxx");
@@ -287,9 +290,9 @@ public class DebugTrace {
         instantFormat           = resource.getString("instantFormat"         , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
         logDateTimeFormat       = resource.getString("logDateTimeFormat"     , "yyyy-MM-dd HH:mm:ss.SSSxxx"); // since 2.5.0
         maximumDataOutputWidth  = resource.getInt   ("maximumDataOutputWidth", 70); // since 3.0.0
-        collectionLimit         = resource.getInt   ("collectionLimit"       , 128); // 128 <- 512 since 3.5.0
-        byteArrayLimit          = resource.getInt   ("byteArrayLimit"        , 256); // 256 <- 8192 since 3.5.0
-        stringLimit             = resource.getInt   ("stringLimit"           , 256); // 256 <- 8192 since 3.5.0
+        collectionLimit         = resource.getInt   ("collectionLimit"       , 128); // <- 512 since 3.5.0
+        byteArrayLimit          = resource.getInt   ("byteArrayLimit"        , 256); // <- 8192 since 3.5.0
+        stringLimit             = resource.getInt   ("stringLimit"           , 256); // <- 8192 since 3.5.0
         reflectionNestLimit     = resource.getInt   ("reflectionNestLimit"   , 4); // since 3.0.0
         nonOutputProperties     = resource.getStrings("nonOutputProperties"  ); // since 2.2.0, since 3.0.0 nonOutputProperties <- nonPrintProperties
         defaultPackage          = resource.getString("defaultPackage"        , ""); // since 2.3.0
@@ -373,6 +376,8 @@ public class DebugTrace {
             javaVendor + " " + javaRuntimeName + " " + javaRuntimeVersion);
         logger.log("  property name: " + baseName + ".properties");
         logger.log("  logger: " + logger.toString());
+
+        defaultLogOptions = new LogOptions();
     }
 
     private DebugTrace() {}
@@ -567,9 +572,10 @@ public class DebugTrace {
      *
      * @param name the name of the value
      * @param value the value to output (accept null)
+     * @param logOptions LogOptions
      * @param isPrimitive true if the value is primitive type, false otherwise
      */
-    private static void printSub(String name, Object value, boolean isPrimitive) {
+    private static void printSub(String name, Object value, LogOptions logOptions, boolean isPrimitive) {
         synchronized(stateMap) {
             State state = getCurrentState();
  
@@ -581,7 +587,7 @@ public class DebugTrace {
 
             buff.append(name);
             String mapName = getMapName(name);
-            LogBuffer valueBuff = toString(mapName, value, isPrimitive, false, false);
+            LogBuffer valueBuff = toString(mapName, value, logOptions, isPrimitive, false, false);
             buff.append(varNameValueSeparator, valueBuff);
 
             buff.noBreakAppend(createPrintString(printSuffixFormat, null));
@@ -666,8 +672,21 @@ public class DebugTrace {
      * @return the value
      */
     public static boolean print(String name, boolean value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the boolean value to the log.
+     *
+     * @param name the name of the value
+     * @param value the boolean value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static boolean print(String name, boolean value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, logOptions, true);
         return value;
     }
 
@@ -679,8 +698,21 @@ public class DebugTrace {
      * @return the value
      */
     public static char print(String name, char value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the char value to the log.
+     *
+     * @param name the name of the value
+     * @param value the char value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static char print(String name, char value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, defaultLogOptions, true);
         return value;
     }
 
@@ -692,8 +724,21 @@ public class DebugTrace {
      * @return the value
      */
     public static byte print(String name, byte value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the byte value to the log.
+     *
+     * @param name the name of the value
+     * @param value the byte value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static byte print(String name, byte value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, logOptions, true);
         return value;
     }
 
@@ -705,8 +750,22 @@ public class DebugTrace {
      * @return the value
      */
     public static short print(String name, short value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+
+    /**
+     * Outputs the name and the short value to the log.
+     *
+     * @param name the name of the value
+     * @param value the short value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static short print(String name, short value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, logOptions, true);
         return value;
     }
 
@@ -718,8 +777,21 @@ public class DebugTrace {
      * @return the value
      */
     public static int print(String name, int value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the int value to the log.
+     *
+     * @param name the name of the value
+     * @param value the int value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static int print(String name, int value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, logOptions, true);
         return value;
     }
 
@@ -731,8 +803,21 @@ public class DebugTrace {
      * @return the value
      */
     public static long print(String name, long value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the long value to the log.
+     *
+     * @param name the name of the value
+     * @param value the long value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static long print(String name, long value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, logOptions, true);
         return value;
     }
 
@@ -744,8 +829,21 @@ public class DebugTrace {
      * @return the value
      */
     public static float print(String name, float value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the value to the log.
+     *
+     * @param name the name of the value
+     * @param value the float value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static float print(String name, float value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, logOptions, true);
         return value;
     }
 
@@ -757,8 +855,22 @@ public class DebugTrace {
      * @return the value
      */
     public static double print(String name, double value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+
+    /**
+     * Outputs the name and the value to the log.
+     *
+     * @param name the name of the value
+     * @param value the double value to output
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static double print(String name, double value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, true);
+            printSub(name, value, logOptions, true);
         return value;
     }
 
@@ -771,8 +883,23 @@ public class DebugTrace {
      * @return the value
      */
     public static <T> T print(String name, T value) {
+        return print(name, value, defaultLogOptions);
+    }
+
+
+    /**
+     * Outputs the name and the value to the log.
+     *
+     * @param <T> the type of the value
+     * @param name the name of the value
+     * @param value the value to output (accept null)
+     * @param logOptions LogOptions
+     * @return the value
+     * @since 3.7.0
+     */
+    public static <T> T print(String name, T value, LogOptions logOptions) {
         if (isEnabled())
-            printSub(name, value, false);
+            printSub(name, value, logOptions, false);
         return value;
     }
 
@@ -784,14 +911,28 @@ public class DebugTrace {
      * @return the value if isEnabled(), otherwise false
      */
     public static boolean print(String name, BooleanSupplier valueSupplier) {
+        return print(name, valueSupplier, defaultLogOptions);
+    }
+
+
+    /**
+     * Outputs the name and the boolean value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of boolean value to output
+     * @param logOptions LogOptions
+     * @return the value if isEnabled(), otherwise false
+     * @since 3.7.0
+     */
+    public static boolean print(String name, BooleanSupplier valueSupplier, LogOptions logOptions) {
         if (isEnabled()) {
             try {
                 boolean value = valueSupplier.getAsBoolean();
-                printSub(name, value, true);
+                printSub(name, value, defaultLogOptions, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(name, e.toString(), false);
+                printSub(name, e.toString(), defaultLogOptions, false);
             }
         }
         return false;
@@ -805,14 +946,27 @@ public class DebugTrace {
      * @return the value if isEnabled(), otherwise 0
      */
     public static int print(String name, IntSupplier valueSupplier) {
+        return print(name, valueSupplier, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the  int value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of int value to output
+     * @param logOptions LogOptions
+     * @return the value if isEnabled(), otherwise 0
+     * @since 3.7.0
+     */
+    public static int print(String name, IntSupplier valueSupplier, LogOptions logOptions) {
         if (isEnabled()) {
             try {
                 int value = valueSupplier.getAsInt();
-                printSub(name, value, true);
+                printSub(name, value, logOptions, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(name, e.toString(), false);
+                printSub(name, e.toString(), logOptions, false);
             }
         }
         return 0;
@@ -826,14 +980,27 @@ public class DebugTrace {
      * @return the value if isEnabled(), otherwise 0L
      */
     public static long print(String name, LongSupplier valueSupplier) {
+        return print(name, valueSupplier, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the  long value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of long value to output
+     * @param logOptions LogOptions
+     * @return the value if isEnabled(), otherwise 0L
+     * @since 3.7.0
+     */
+    public static long print(String name, LongSupplier valueSupplier, LogOptions logOptions) {
         if (isEnabled()) {
             try {
                 long value = valueSupplier.getAsLong();
-                printSub(name, value, true);
+                printSub(name, value, defaultLogOptions, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(name, e.toString(), false);
+                printSub(name, e.toString(), defaultLogOptions, false);
             }
         }
         return 0L;
@@ -847,14 +1014,27 @@ public class DebugTrace {
      * @return the value if isEnabled(), otherwise 0.0
      */
     public static double print(String name, DoubleSupplier valueSupplier) {
+        return print(name, valueSupplier, defaultLogOptions);
+    }
+
+    /**
+     * Outputs the name and the  double value to the log.
+     *
+     * @param name the name of the value
+     * @param valueSupplier the supplier of double value to output
+     * @param logOptions LogOptions
+     * @return the value if isEnabled(), otherwise 0.0
+     * @since 3.7.0
+     */
+    public static double print(String name, DoubleSupplier valueSupplier, LogOptions logOptions) {
         if (isEnabled()) {
             try {
                 double value = valueSupplier.getAsDouble();
-                printSub(name, value, true);
+                printSub(name, value, defaultLogOptions, true);
                 return value;
             }
             catch (Exception e) { 
-                printSub(name, e.toString(), false);
+                printSub(name, e.toString(), defaultLogOptions, false);
             }
         }
         return 0.0;
@@ -869,14 +1049,29 @@ public class DebugTrace {
      * @return the value if isEnabled(), otherwise null
      */
     public static <T> T print(String name, Supplier<T> valueSupplier) {
+        return print(name, valueSupplier, defaultLogOptions);
+    }
+
+
+    /**
+     * Outputs the name and the value to the log.
+     *
+     * @param <T> the type of the value
+     * @param name the name of the value
+     * @param valueSupplier the supplier of value to output
+     * @param logOptions LogOptions
+     * @return the value if isEnabled(), otherwise null
+     * @since 3.7.0
+     */
+    public static <T> T print(String name, Supplier<T> valueSupplier, LogOptions logOptions) {
         if (isEnabled()) {
             try {
                 T value = valueSupplier.get();
-                printSub(name, value, false);
+                printSub(name, value, logOptions, false);
                 return value;
             }
             catch (Exception e) { 
-                printSub(name, e.toString(), false);
+                printSub(name, e.toString(), logOptions, false);
             }
         }
         return null;
@@ -889,7 +1084,7 @@ public class DebugTrace {
      */
     public static void printStack(int maxCount) {
         if (isEnabled())
-            print("stack",  getStackTraceElements(maxCount));
+            print("stack", getStackTraceElements(maxCount), defaultLogOptions);
     }
 
     /**
@@ -897,12 +1092,14 @@ public class DebugTrace {
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param value the value object
+     * @param logOptions LogOptions
      * @param isPrimitive true if the value is primitive type, false otherwise
      * @param isComponent true if the value is component of an array, false otherwise
      * @param isElement true if the value is element of a container class, false otherwise
      * @return a LogBuffer
      */
-    private static LogBuffer toString(String mapName, Object value, boolean isPrimitive, boolean isComponent, boolean isElement) {
+    private static LogBuffer toString(String mapName, Object value, LogOptions logOptions, boolean isPrimitive, boolean isComponent, boolean isElement) {
+        logOptions.normalize();
         LogBuffer buff = new LogBuffer();
 
         if (value == null) {
@@ -917,21 +1114,21 @@ public class DebugTrace {
                 type = value.getClass();
         }
 
-        String typeName = getTypeName(type, value, isComponent, isElement, 0);
+        String typeName = getTypeName(type, value, logOptions, isComponent, isElement, 0);
 
         if (type.isArray()) {
             // Array
             if (type == char[].class) {
                 // sting
                 buff.noBreakAppend(typeName);
-                appendString(buff, new String((char[])value));
+                appendString(buff, new String((char[])value), logOptions);
             } else if (type == byte[].class) {
                 // byte Array
-                LogBuffer valueBuff = toStringBytes((byte[])value);
+                LogBuffer valueBuff = toStringBytes((byte[])value, logOptions);
                 buff.append(null, valueBuff);
             } else {
                 // Other Array
-                LogBuffer valueBuff = toStringArray(mapName, value);
+                LogBuffer valueBuff = toStringArray(mapName, value, logOptions);
                 buff.append(null, valueBuff);
             }
 
@@ -956,7 +1153,7 @@ public class DebugTrace {
         } else if (value instanceof CharSequence) {
             // CharSequence
             buff.noBreakAppend(typeName);
-            appendString(buff, (CharSequence)value);
+            appendString(buff, (CharSequence)value, logOptions);
 
         } else if (value instanceof java.util.Date) {
             // Date
@@ -1008,29 +1205,29 @@ public class DebugTrace {
             // Optional
             buff.noBreakAppend(typeName);
             if (((Optional<?>)value).isPresent()) {
-                LogBuffer valueBuff = toString(mapName, ((Optional<?>)value).get(), false, false, true);
+                LogBuffer valueBuff = toString(mapName, ((Optional<?>)value).get(), logOptions, false, false, true);
                 buff.append(null, valueBuff);
             }else
                 buff.noBreakAppend("empty");
 
         } else if (value instanceof Collection) {
             // Collection
-            LogBuffer valueBuff = toStringCollection(mapName, (Collection<?>)value);
+            LogBuffer valueBuff = toStringCollection(mapName, (Collection<?>)value, logOptions);
             buff.append(null, valueBuff);
 
         } else if (value instanceof Map) {
             // Map
-            LogBuffer valueBuff = toStringMap(mapName, (Map<?,?>)value);
+            LogBuffer valueBuff = toStringMap(mapName, (Map<?,?>)value, logOptions);
             buff.append(null, valueBuff);
 
         } else if (value instanceof Clob) {
             // Clob
             try {
                 long length = ((Clob)value).length();
-                if (length > (long)stringLimit)
-                    length = (long)(stringLimit + 1);
+                if (length > (long)logOptions.stringLimit)
+                    length = (long)(logOptions.stringLimit + 1);
                 buff.noBreakAppend(typeName);
-                appendString(buff, ((Clob)value).getSubString(1L, (int)length));
+                appendString(buff, ((Clob)value).getSubString(1L, (int)length), logOptions);
             }
             catch (SQLException e) {
                 buff.append(e);
@@ -1040,9 +1237,9 @@ public class DebugTrace {
             // Blob
             try {
                 long length = ((Blob)value).length();
-                if (length > (long)byteArrayLimit)
-                    length = (long)(byteArrayLimit + 1);
-                LogBuffer valueBuff = toStringBytes(((Blob)value).getBytes(1L, (int)length));
+                if (length > (long)logOptions.byteArrayLimit)
+                    length = (long)(logOptions.byteArrayLimit + 1);
+                LogBuffer valueBuff = toStringBytes(((Blob)value).getBytes(1L, (int)length), logOptions);
                 buff.append(typeName, valueBuff);
             }
             catch (SQLException e) {
@@ -1076,7 +1273,7 @@ public class DebugTrace {
                     // Cyclic reference
                     buff.append(cyclicReferenceString).append(value);
 
-                else if (reflectedObjects.size() >= reflectionNestLimit)
+                else if (reflectedObjects.size() >= logOptions.reflectionNestLimit)
                     // Over reflection level limitation
                     buff.append(limitString);
 
@@ -1088,7 +1285,7 @@ public class DebugTrace {
                 //  buff.append(null, valueBuff);
                 //  reflectedObjects.remove(reflectedObjects.size() - 1);
                     try {
-                        LogBuffer valueBuff = toStringReflection(value);
+                        LogBuffer valueBuff = toStringReflection(value, logOptions);
                         buff.append(null, valueBuff);
                     }
                     finally {
@@ -1116,20 +1313,21 @@ public class DebugTrace {
      *
      * @param type the type of the value
      * @param value the value object
+     * @param logOptions LogOptions
      * @param isComponent true if the value is component of an array, false otherwise
      * @param isElement true if the value is element of a container class, false otherwise
      * @param nest current nest count
      * @return the type name to be output to the log
      */
     @SuppressWarnings("rawtypes")
-    private static String getTypeName(Class<?>type, Object value, boolean isComponent, boolean isElement, int nest) {
+    private static String getTypeName(Class<?>type, Object value, LogOptions logOptions, boolean isComponent, boolean isElement, int nest) {
         String typeName = "";
         long length = -1L;
         int size = -1;
 
         if (type.isArray()) {
             // Array
-            typeName = getTypeName(type.getComponentType(), null, false, false, nest + 1);
+            typeName = getTypeName(type.getComponentType(), null, logOptions, false, false, nest + 1);
             if (!typeName.isEmpty()) {
                 String bracket = "[";
                 if (value != null)
@@ -1168,19 +1366,19 @@ public class DebugTrace {
                     if      (value instanceof CharSequence) length = ((CharSequence)value).length();
                     else if (value instanceof Blob        ) length = ((Blob        )value).length();
                     else if (value instanceof Clob        ) length = ((Clob        )value).length();
-                    else if (value instanceof Collection  ) size   = ((Collection  )value).size  ();
-                    else if (value instanceof Map         ) size   = ((Map         )value).size  ();
+                    else if (value instanceof Collection  ) size   = ((Collection  )value).size();
+                    else if (value instanceof Map         ) size   = ((Map         )value).size();
                 }
                 catch (SQLException e) {}
             }
     }
 
-        if (length >= minimumOutputLength) {
+        if (length >= logOptions.minimumOutputLength) {
             if (!typeName.isEmpty())
                 typeName += " ";
             typeName += String.format(lengthFormat, length);
 
-        } else if (size >= minimumOutputSize) {
+        } else if (size >= logOptions.minimumOutputSize) {
             if (!typeName.isEmpty())
                 typeName += " ";
             typeName += String.format(sizeFormat, size);
@@ -1243,7 +1441,7 @@ public class DebugTrace {
     /**
      * Appends a character representation for logging to the string buffer.
      *
-     * @param buff a string buffer
+     * @param buff a LogBuffer
      * @param ch a character
      * @param inString true if the character is included in the string, false otherwise
      */
@@ -1269,15 +1467,15 @@ public class DebugTrace {
     /**
      * Appends a CharSequence representation for logging to the string buffer.
      *
-     * @param state indent state
-     * @param strings a string list
-     * @param buff a string buffer
+     * @param buff a LogBuffer
+     * @param charSequence a CharSequence
+     * @param logOptions LogOptions
      * @param charSequence a CharSequence object
      */
-    private static void appendString(LogBuffer buff, CharSequence charSequence) {
+    private static void appendString(LogBuffer buff, CharSequence charSequence, LogOptions logOptions) {
         buff.noBreakAppend('"');
         for (int index = 0; index < charSequence.length(); ++index) {
-            if (index >= stringLimit) {
+            if (index >= logOptions.stringLimit) {
                 buff.noBreakAppend(limitString);
                 break;
             }
@@ -1290,15 +1488,16 @@ public class DebugTrace {
      * Returns a string representation of the bytes as a LogBuffer.
      *
      * @param bytes a byte array
+     * @param logOptions LogOptions
      * @return a LogBuffer
      */
-    private static LogBuffer toStringBytes(byte[] bytes) {
+    private static LogBuffer toStringBytes(byte[] bytes, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
         StringBuilder charBuff = new StringBuilder();
 
-        boolean isMultiLines = bytes.length > 16 && byteArrayLimit > 16;
+        boolean isMultiLines = bytes.length > 16 && logOptions.byteArrayLimit > 16;
 
-        buff.append(getTypeName(bytes.getClass(), bytes, false, false, 0));
+        buff.append(getTypeName(bytes.getClass(), bytes, logOptions, false, false, 0));
         buff.noBreakAppend('[');
 
         if (isMultiLines) {
@@ -1315,7 +1514,7 @@ public class DebugTrace {
             if (offset > 0)
                 buff.append(" ");
 
-            if (index >= byteArrayLimit) {
+            if (index >= logOptions.byteArrayLimit) {
                 buff.noBreakAppend(limitString);
                 break;
             }
@@ -1365,15 +1564,16 @@ public class DebugTrace {
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param array an array
+     * @param logOptions LogOptions
      * @return a LogBuffer
      */
-    private static LogBuffer toStringArray(String mapName, Object array) {
+    private static LogBuffer toStringArray(String mapName, Object array, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
 
-        buff.append(getTypeName(array.getClass(), array, false, false, 0));
+        buff.append(getTypeName(array.getClass(), array, logOptions, false, false, 0));
         buff.noBreakAppend('[');
 
-        LogBuffer bodyBuff = toStringArrayBody(mapName, array);
+        LogBuffer bodyBuff = toStringArrayBody(mapName, array, logOptions);
 
         boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
 
@@ -1394,7 +1594,7 @@ public class DebugTrace {
         return buff;
     }
 
-    private static LogBuffer toStringArrayBody(String mapName, Object array) {
+    private static LogBuffer toStringArrayBody(String mapName, Object array, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
 
         Class<?> componentType = array.getClass().getComponentType();
@@ -1406,14 +1606,14 @@ public class DebugTrace {
             if (index > 0)
                 buff.noBreakAppend(", "); // Append a delimiter
 
-            if (index >= collectionLimit) {
+            if (index >= logOptions.collectionLimit) {
                 buff.append(limitString);
                 break;
             }
 
             Object component = Array.get(array, index);
 
-            LogBuffer elementBuff = toString(mapName, component, componentType.isPrimitive(), true, false);
+            LogBuffer elementBuff = toString(mapName, component, logOptions, componentType.isPrimitive(), true, false);
             if (index > 0 && (wasMultiLines || elementBuff.isMultiLines()))
                 buff.lineFeed();
             buff.append(null, elementBuff);
@@ -1429,15 +1629,16 @@ public class DebugTrace {
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param collection a Collection
+     * @param logOptions LogOptions
      * @return a LogBuffer
      */
-    private static <E> LogBuffer toStringCollection(String mapName, Collection<E> collection) {
+    private static <E> LogBuffer toStringCollection(String mapName, Collection<E> collection, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
 
-        buff.append(getTypeName(collection.getClass(), collection, false, false, 0));
+        buff.append(getTypeName(collection.getClass(), collection, logOptions, false, false, 0));
         buff.noBreakAppend('[');
 
-        LogBuffer bodyBuff = toStringCollectionBody(mapName, collection);
+        LogBuffer bodyBuff = toStringCollectionBody(mapName, collection, logOptions);
 
         boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
 
@@ -1458,7 +1659,7 @@ public class DebugTrace {
         return buff;
     }
 
-    private static <E> LogBuffer toStringCollectionBody(String mapName, Collection<E> collection) {
+    private static <E> LogBuffer toStringCollectionBody(String mapName, Collection<E> collection, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
     
         Iterator<E> iterator = collection.iterator();
@@ -1468,14 +1669,14 @@ public class DebugTrace {
             if (index > 0)
                 buff.noBreakAppend(", ");
 
-            if (index >= collectionLimit) {
+            if (index >= logOptions.collectionLimit) {
                 buff.append(limitString);
                 break;
             }
 
             E element = iterator.next();
 
-            LogBuffer elementBuff = toString(mapName, element, false, false, true);
+            LogBuffer elementBuff = toString(mapName, element, logOptions, false, false, true);
             if (index > 0 && (wasMultiLines || elementBuff.isMultiLines()))
                 buff.lineFeed();
             buff.append(null, elementBuff);
@@ -1491,15 +1692,16 @@ public class DebugTrace {
      *
      * @param mapName the name of the map for get a constant name corresponding to the value (accept null)
      * @param map a Map
+     * @param logOptions LogOptions
      * @return a LogBuffer
      */
-    private static <K, V> LogBuffer toStringMap(String mapName, Map<K, V> map) {
+    private static <K, V> LogBuffer toStringMap(String mapName, Map<K, V> map, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
 
-        buff.append(getTypeName(map.getClass(), map, false, false, 0));
+        buff.append(getTypeName(map.getClass(), map, logOptions, false, false, 0));
         buff.noBreakAppend('[');
 
-        LogBuffer bodyBuff = toStringMapBody(mapName, map);
+        LogBuffer bodyBuff = toStringMapBody(mapName, map, logOptions);
 
         boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
 
@@ -1520,7 +1722,7 @@ public class DebugTrace {
         return buff;
     }
 
-    private static <K, V> LogBuffer toStringMapBody(String mapName, Map<K, V> map) {
+    private static <K, V> LogBuffer toStringMapBody(String mapName, Map<K, V> map, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
     
         Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
@@ -1530,7 +1732,7 @@ public class DebugTrace {
             if (index > 0)
                 buff.noBreakAppend(", ");
 
-            if (index >= collectionLimit) {
+            if (index >= logOptions.collectionLimit) {
                 buff.append(limitString);
                 break;
             }
@@ -1538,8 +1740,8 @@ public class DebugTrace {
             Map.Entry<K, V> keyValue = iterator.next();
 
             LogBuffer entryBuff = new LogBuffer();
-            LogBuffer keyBuff = toString(mapName, keyValue.getKey(), false, false, true);
-            LogBuffer valueBuff = toString(mapName, keyValue.getValue(), false, false, true);
+            LogBuffer keyBuff = toString(mapName, keyValue.getKey(), logOptions, false, false, true);
+            LogBuffer valueBuff = toString(mapName, keyValue.getValue(), logOptions, false, false, true);
             entryBuff.append(null, keyBuff).append(keyValueSeparator, valueBuff);
 
             if (index > 0 && (wasMultiLines || entryBuff.isMultiLines()))
@@ -1579,16 +1781,17 @@ public class DebugTrace {
      * Returns a string representation of the object as a LogBuffer uses reflection.
      *
      * @param object an object
+     * @param logOptions LogOptions
      * @return a LogBuffer
      */
-    private static LogBuffer toStringReflection(Object object) {
+    private static LogBuffer toStringReflection(Object object, LogOptions logOptions) {
         LogBuffer buff = new LogBuffer();
 
         Class<?> type = object.getClass();
-        buff.append(getTypeName(type, object, false, false, 0));
+        buff.append(getTypeName(type, object, logOptions, false, false, 0));
         boolean isExtended = type.getSuperclass() != null && type.getSuperclass() != Object.class;
 
-        LogBuffer bodyBuff = toStringReflectionBody(object, type, isExtended);
+        LogBuffer bodyBuff = toStringReflectionBody(object, logOptions, type, isExtended);
 
         boolean isMultiLines = bodyBuff.isMultiLines() || buff.length() + bodyBuff.length() > maximumDataOutputWidth;
 
@@ -1610,13 +1813,15 @@ public class DebugTrace {
         return buff;
     }
 
-    private static LogBuffer toStringReflectionBody(Object object, Class<?> type, boolean isExtended) {
+    private static LogBuffer toStringReflectionBody(Object object, LogOptions logOptions, Class<?> type, boolean isExtended) {
         LogBuffer buff = new LogBuffer();
 
         Class<?> baseType = type.getSuperclass();
         if (baseType != null && baseType != Object.class) {
             // Call for the base type
-            LogBuffer baseBuff =  toStringReflectionBody(object, baseType, isExtended);
+            LogBuffer baseBuff =  toStringReflectionBody(object, logOptions, 
+            
+            baseType, isExtended);
             buff.append(null, baseBuff);
         }
 
@@ -1692,7 +1897,7 @@ public class DebugTrace {
                 fieldBuff.noBreakAppend(keyValueSeparator).noBreakAppend(nonOutputString);
             else {
                 String mapName = getMapName(fieldName);
-                LogBuffer valueBuff = toString(mapName, value, field.getType().isPrimitive(), false, false);
+                LogBuffer valueBuff = toString(mapName, value, logOptions, field.getType().isPrimitive(), false, false);
                 fieldBuff.append(keyValueSeparator, valueBuff);
             }
 

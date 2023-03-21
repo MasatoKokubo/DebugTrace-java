@@ -31,7 +31,7 @@ sourceCompatibility = 8
 targetCompatibility = 8
 group               = 'org.debugtrace'
 archivesBaseName    = 'debugtrace'
-version             = '3.6.0'
+version             = '3.7.0'
 
 sourceSets {
     main {
@@ -68,7 +68,7 @@ sourceSets {
 }
 
 wrapper {
-    gradleVersion = '7.6'
+    gradleVersion = '8.0.2'
 }
 
 compileJava {
@@ -93,7 +93,7 @@ task compileJava_ja(type:JavaCompile) {
 
     classpath      = compileJava.classpath
     source         = files('src/main_ja/java')
-    destinationDir = file('build/classes/main_ja')
+    destinationDirectory = file('build/classes/main_ja')
 }
 
 processResources {
@@ -141,7 +141,7 @@ javadoc.doLast {
 }
 
 task zip(type: Zip) {
-    classifier = 'bin'
+    archiveClassifier = 'bin'
 
     into('/'      , {from "build/libs/${archivesBaseName}-${version}.jar"})
     into('/'      , {from 'LICENSE.txt', 'README.asciidoc', 'README_ja.asciidoc'})
@@ -150,7 +150,7 @@ task zip(type: Zip) {
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
 
     manifest {
         attributes 'Implementation-Title'    : project.name,
@@ -163,7 +163,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadocJar(type: Jar, dependsOn:javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from javadoc.destinationDir
 }
 

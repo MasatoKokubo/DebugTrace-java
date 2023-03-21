@@ -1,4 +1,4 @@
-// MappingTest.groovy
+// MappingSpec.groovy
 // (C) 2015 Masato Kokubo
 
 package org.debugtrace.test

@@ -2,8 +2,20 @@
 
 link:README_ja.asciidoc[[Japanese]]
 
-*DebugTrace-java 4.x.x* is a library that outputs trace logs when debugging Java programs. It is available on Java 17 or later. +
-By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end of methods, you can output the execution status of the Java program under development to the log.
+*DebugTrace-java* is a library that outputs trace logs when debugging Java programs. +
+By embedding `DebugTrace.enter()` and `DebugTrace.leave()` at the start and end of methods,
+you can output the execution status of the Java program under development to the log.
+
+[options="header"]
+|===
+|DebugTrace-java version|Java version to support
+
+|DebugTrace-java 4.x.x
+|Java 17 and later
+
+|DebugTrace-java 3.x.x
+|Java 8 and later
+|===
 
 ==== 1. Features
 

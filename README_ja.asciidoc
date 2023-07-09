@@ -2,8 +2,19 @@
 
 link:README.asciidoc[[English]]
 
-*DebugTrace-java 4.x.x* は、Javaプログラムのデバッグ時にトレースログを出力するライブラリで、Java 17以降で利用できます。 +
+*DebugTrace-java* は、Javaプログラムのデバッグ時にトレースログを出力するライブラリです。 +
 メソッドの開始と終了箇所に `DebugTrace.enter()` および `DebugTrace.leave()` を埋め込む事で、開発中のJavaプログラムの実行状況をログに出力する事ができます。
+
+[options="header"]
+|===
+|DebugTrace-javaのバージョン|サポートするJavaのバージョン
+
+|DebugTrace-java 4.x.x
+|Java 17以降
+
+|DebugTrace-java 3.x.x
+|Java 8以降
+|===
 
 ==== 1. [.small]#特徴#
 

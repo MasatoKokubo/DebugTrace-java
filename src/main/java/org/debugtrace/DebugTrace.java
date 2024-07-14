@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Date;
@@ -62,7 +63,7 @@ public class DebugTrace {
      * 
      * @since 3.0.0
      */
-    public static final String VERSION = "4.0.0";
+    public static final String VERSION = "4.1.0";
 
     // A map for wrapper classes of primitive type to primitive type
     private static final Map<Class<?>, Class<?>> primitiveTypeMap = Map.ofEntries(
@@ -180,6 +181,7 @@ public class DebugTrace {
     protected static String zonedDateTimeFormat      ; // since 2.5.0
     protected static String instantFormat            ; // since 2.5.0
     protected static String logDateTimeFormat        ; // since 2.5.0
+    protected static String timeZone                 ; // since 4.1.0
     protected static int    maximumDataOutputWidth   ; // since 3.0.0
     protected static int    collectionLimit          ;
     protected static int    byteArrayLimit           ;
@@ -206,6 +208,7 @@ public class DebugTrace {
     private static DateTimeFormatter zonedDateTimeFormatter ;
     private static DateTimeFormatter instantFormatter       ;
     private static DateTimeFormatter logDateTimeFormatter   ;
+    private static ZoneId            zoneId; // since 4.1.0
 
     // Array of indent strings
     private static final String[] indentStrings = new String[32];
@@ -284,6 +287,7 @@ public class DebugTrace {
         zonedDateTimeFormat     = resource.getString("zonedDateTimeFormat"   , "yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV"); // since 2.5.0
         instantFormat           = resource.getString("instantFormat"         , "yyyy-MM-dd HH:mm:ss.SSSSSSSSS"); // since 2.5.0
         logDateTimeFormat       = resource.getString("logDateTimeFormat"     , "yyyy-MM-dd HH:mm:ss.SSSxxx"); // since 2.5.0
+        timeZone                = resource.getString("timeZone"              , null); // since 4.1.0
         maximumDataOutputWidth  = resource.getInt   ("maximumDataOutputWidth", 70); // since 3.0.0
         collectionLimit         = resource.getInt   ("collectionLimit"       , 128); // <- 512 since 3.5.0
         byteArrayLimit          = resource.getInt   ("byteArrayLimit"        , 256); // <- 8192 since 3.5.0
@@ -312,6 +316,15 @@ public class DebugTrace {
         zonedDateTimeFormatter  = createDateTimeFormatter(zonedDateTimeFormat );
         instantFormatter        = createDateTimeFormatter(instantFormat       );
         logDateTimeFormatter    = createDateTimeFormatter(logDateTimeFormat   );
+        try {
+            if (timeZone != null)
+                zoneId = ZoneId.of(timeZone);
+        }
+        catch (Exception e) {
+            System.err.println("DebugTrace: " + e.toString());
+        }
+        if (zoneId == null)
+            zoneId = ZoneId.systemDefault();
 
         indentStrings[0] = "";
         IntStream.iterate(1, index -> index + 1).limit(indentStrings.length - 1)
@@ -329,19 +342,46 @@ public class DebugTrace {
                 // FileLogger detection
                 if (loggerName.startsWith(FILE_LOGGER_KEYWORD)) {
                     // File Logger
-                    String path = loggerName.substring(FILE_LOGGER_KEYWORD.length()).trim();
-                    boolean append = false;
+                    var path = loggerName.substring(FILE_LOGGER_KEYWORD.length()).trim();
+                    var charset = Charset.forName("UTF-8");
+                    var lineSeparator = LineSeparator.parse(System.getProperty("line.separator"));
+                    var colonIndex = path.indexOf(':');
+                    if (colonIndex >= 0) {
+                        // Character set specified
+                        var charsetName = path.substring(0, colonIndex).trim();
+                        var slashIndex = charsetName.indexOf('/');
+                        if (slashIndex >= 0) {
+                            // Line separator specified
+                            var lineSeparatorStr = charsetName.substring(slashIndex + 1).trim();
+                            charsetName = charsetName.substring(0, slashIndex).trim();
+                            try {
+                                lineSeparator = LineSeparator.parse(lineSeparatorStr);
+                            }
+                            catch (Exception e) {
+                                System.err.println("DebugTrace: " + e.toString());
+                            }
+                        }
+                        try {
+                            if (charsetName.length() > 0)
+                                charset = Charset.forName(charsetName);
+                        }
+                        catch (Exception e) {
+                            System.err.println("DebugTrace: " + e.toString());
+                        }
+                        path = path.substring(colonIndex + 1).trim();
+                    }
+                    var append = false;
                     if (path.startsWith("+")) {
                         append = true;
-                        path = path.substring(1);
+                        path = path.substring(1).trim();
                     }
-                    File file = new File(path).getAbsoluteFile();
-                    File parentFile = file.getParentFile();
+                    var file = new File(path).getAbsoluteFile();
+                    var parentFile = file.getParentFile();
                     if (!parentFile.exists())
                         throw new RuntimeException(parentFile.getPath() + " dose not exist.");
                     if (file.exists() && !file.isFile())
                         throw new RuntimeException(file.getPath() + " is not a file.");
-                    logger = new org.debugtrace.logger.File(file, append);
+                    logger = new org.debugtrace.logger.File(file, charset, lineSeparator, append);
                 } else {
                     // not File Logger
                     if (loggerName.indexOf('.') == -1)
@@ -363,14 +403,15 @@ public class DebugTrace {
             logger = new Std.Err();
 
         // Get the Java vendor and runtime version
-        String javaVendor = System.getProperty("java.vendor");
-        String javaRuntimeName = System.getProperty("java.runtime.name");
-        String javaRuntimeVersion = System.getProperty("java.runtime.version");
+        var javaVendor = System.getProperty("java.vendor");
+        var javaRuntimeName = System.getProperty("java.runtime.name");
+        var javaRuntimeVersion = System.getProperty("java.runtime.version");
 
         logger.log("DebugTrace " + VERSION + " on " +
             javaVendor + " " + javaRuntimeName + " " + javaRuntimeVersion);
         logger.log("  property name: " + baseName + ".properties");
         logger.log("  logger: " + logger.toString());
+        logger.log("  time zone: " + zoneId.toString());
 
         defaultLogOptions = new LogOptions();
     }
@@ -402,7 +443,7 @@ public class DebugTrace {
      * @return a string appended a timestamp string
      */
     public static String appendTimestamp(String string) {
-        return logDateTimeFormatter == null ? string : ZonedDateTime.now().format(logDateTimeFormatter) + " " + string;
+        return logDateTimeFormatter == null ? string : ZonedDateTime.now(zoneId).format(logDateTimeFormatter) + " " + string;
     }
 
     /**
@@ -410,7 +451,7 @@ public class DebugTrace {
      */
     private static State getCurrentState() {
         State state;
-        Long threadId = Thread.currentThread().getId();
+        var threadId = Thread.currentThread().getId();
 
         if (stateMap.containsKey(threadId)) {
             state = stateMap.get(threadId);
@@ -553,7 +594,6 @@ public class DebugTrace {
         synchronized(stateMap) {
             printStart(); // Common start processing of output
 
-            var lastLog = "";
             if (!message.isEmpty()) {
                 lastLog = getIndentString(getCurrentState().nestLevel(), 0) +
                     message + createPrintString(printSuffixFormat, null);
@@ -1154,11 +1194,12 @@ public class DebugTrace {
             // Date
             buff.noBreakAppend(typeName);
             var timestamp = date instanceof Timestamp ? (Timestamp)date : new Timestamp(date.getTime());
-            var zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+        //  var zonedDateTime = timestamp.toLocalDateTime().atZone(ZoneId.systemDefault());
+            var zonedDateTime = timestamp.toLocalDateTime().atZone(zoneId);
             if      (date instanceof Date     ) buff.noBreakAppend(zonedDateTime.format(sqlDateFormatter  )); // java.sql.Date
             else if (date instanceof Time     ) buff.noBreakAppend(zonedDateTime.format(timeFormatter     )); // Time
             else if (date instanceof Timestamp) buff.noBreakAppend(zonedDateTime.format(timestampFormatter)); // Timestamp
-            else                                 buff.noBreakAppend(zonedDateTime.format(utilDateFormatter )); // java.util.Date
+            else                                buff.noBreakAppend(zonedDateTime.format(utilDateFormatter )); // java.util.Date
 
         } else if (value instanceof Temporal) {
             // Temporal

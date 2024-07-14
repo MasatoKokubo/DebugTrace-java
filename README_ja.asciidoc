@@ -140,32 +140,32 @@ public class Example1 {
 [source,log]
 .debugtrace.log
 ----
-2023-04-16 08:03:10.363+09:00 DebugTrace 4.0.0 on Amazon.com Inc. OpenJDK Runtime Environment 17.0.6+10-LTS
-2023-04-16 08:03:10.363+09:00   property name: DebugTrace.properties
-2023-04-16 08:03:10.363+09:00   logger: org.debugtrace.logger.Std$Err
-2023-04-16 08:03:10.385+09:00 
-2023-04-16 08:03:10.388+09:00 ______________________________ main ______________________________
-2023-04-16 08:03:10.388+09:00 
-2023-04-16 08:03:10.388+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
-2023-04-16 08:03:10.389+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
-2023-04-16 08:03:10.389+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-04-16 08:03:10.432+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2023-04-16 08:03:10.434+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.044
-2023-04-16 08:03:10.434+09:00 | | 
-2023-04-16 08:03:10.434+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-04-16 08:03:10.434+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-04-16 08:03:10.434+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
-2023-04-16 08:03:10.436+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2023-04-16 08:03:10.436+09:00 | | | 
-2023-04-16 08:03:10.436+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
-2023-04-16 08:03:10.436+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
-2023-04-16 08:03:10.436+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.000
-2023-04-16 08:03:10.436+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
-2023-04-16 08:03:10.436+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.001
-2023-04-16 08:03:10.436+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
-2023-04-16 08:03:10.437+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.047
-fibonacci(3) = 2
-2023-04-16 08:03:10.437+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.048
+2024-07-14 12:38:58.175+09:00 DebugTrace 4.1.0 on Amazon.com Inc. OpenJDK Runtime Environment 17.0.11+9-LTS
+2024-07-14 12:38:58.187+09:00   property name: DebugTrace.properties
+2024-07-14 12:38:58.198+09:00   logger: org.debugtrace.logger.File (character set: UTF-8, line separator: \n, file: Z:\logs\debugtrace.log)
+2024-07-14 12:38:58.205+09:00   time zone: Asia/Tokyo
+2024-07-14 12:38:58.219+09:00 
+2024-07-14 12:38:58.226+09:00 ______________________________ main ______________________________
+2024-07-14 12:38:58.234+09:00 
+2024-07-14 12:38:58.241+09:00 Enter example.Example1.main (Example1.java:18) <- (:0)
+2024-07-14 12:38:58.258+09:00 | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:23)
+2024-07-14 12:38:58.266+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2024-07-14 12:38:58.317+09:00 | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2024-07-14 12:38:58.326+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.050
+2024-07-14 12:38:58.333+09:00 | | 
+2024-07-14 12:38:58.343+09:00 | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2024-07-14 12:38:58.352+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2024-07-14 12:38:58.362+09:00 | | | | mapped fibonacci(0) = (long)0 (Example1.java:38)
+2024-07-14 12:38:58.371+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.009
+2024-07-14 12:38:58.379+09:00 | | | 
+2024-07-14 12:38:58.388+09:00 | | | Enter example.Example1.fibonacci (Example1.java:32) <- (Example1.java:40)
+2024-07-14 12:38:58.396+09:00 | | | | mapped fibonacci(1) = (long)1 (Example1.java:38)
+2024-07-14 12:38:58.403+09:00 | | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.007
+2024-07-14 12:38:58.411+09:00 | | | fibonacci(2) = (long)1 (Example1.java:41)
+2024-07-14 12:38:58.419+09:00 | | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.068
+2024-07-14 12:38:58.462+09:00 | | fibonacci(3) = (long)2 (Example1.java:41)
+2024-07-14 12:38:58.470+09:00 | Leave example.Example1.fibonacci (Example1.java:46) duration: 00:00:00.203
+2024-07-14 12:38:58.482+09:00 Leave example.Example1.main (Example1.java:28) duration: 00:00:00.228
 ----
 
 ==== 3. [.small]#メソッド一覧#
@@ -258,23 +258,37 @@ http://masatokokubo.github.io/DebugTrace-java/javadoc/org/debugtrace/DebugTrace.
 DebugTrace は、クラスパスにある `DebugTrace.properties` ファイルを起動時に読み込みます。
 `DebugTrace.properties` ファイルには以下のプロパティを指定できます。
 
-[options="header", cols="2,3,4"]
+[options="header", cols="1,4"]
 .DebugTrace.properties
 |===
-|プロパティ名|説明|デフォルト値(設定例)
+|プロパティ名|説明
 |`logger`
 | DebugTrace が使用するロガー +
  +
 [.small]#*指定可能な値*# +
-`Std$Out` [.small]#-> stdout へ出力# +
-`Std$Err` [.small]#-> stderr へ出力# +
-`Jdk` [.small]#-> JDKロガー を使用# +
-`Log4j` [.small]#-> Log4j を使用# +
-`Log4j2` [.small]#-> Log4j2 を使用# +
-`SLF4J` [.small]#-> SLF4J を使用# +
-`File: [.small]#<ログファイルパス>`# [.small]#-> ファイルに出力# +
-`File: [.small]#+<ログファイルパス>`# [.small]#-> ファイルに追加出力#
-|`Std$Err`
+`Std$Out` ➔ stdout へ出力 +
+`Std$Err` ➔ stderr へ出力
+`Jdk` ➔ JDKロガー を使用 +
+`Log4j` ➔ Log4j を使用 +
+`Log4j2` ➔ Log4j2 を使用 +
+`SLF4J` ➔ SLF4J を使用 +
+`File: [[文字セット][/行セパレータ]:] <ログファイルパス>` ➔ ファイルに出力 +
+`File: [[文字セット][/行セパレータ]:] +<ログファイルパス>` ➔ ファイルに追加出力 +
+ +
+`文字セット` ::= `UTF-8` \| `Shift_JIS` \| ... +
+`行セパレータ` ::= `lf` \| `cr` \| `crlf` +
+ +
+[.small]#*デフォルト値:*# `Std$Err` +
+ +
+[.small]#*例:*# +
+`logger = File: /logs/debugtrace.log` +
+`logger = File: UTF-8: /logs/debugtrace.log` +
+`logger = File: UTF-8/lf: /logs/debugtrace.log` +
+`logger = File: UTF-8/cr: /logs/debugtrace.log` +
+`logger = File: UTF-8/crlf: /logs/debugtrace.log` +
+`logger = File: /lf: /logs/debugtrace.log` +
+`logger = File :Shift_JIS: /logs/debugtrace.log` +
+`logger = File: EUC-JP: /logs/debugtrace.log`
 
 |`enterFormat`
 |メソッドに入る際に出力するログのフォーマット文字列 +
@@ -285,8 +299,9 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `%3`: ファイル名 +
 `%4`: 行番号 +
 `%6`: 呼び出し元のファイル名 +
-`%7`: 呼び出し元の行番号
-|`Enter %1$s.%2$s (%3$s:%4$d) <- (%6$s:%7$d)`
+`%7`: 呼び出し元の行番号 +
+ +
+[.small]#*デフォルト値:*# `Enter %1$s.%2$s (%3$s:%4$d) <- (%6$s:%7$d)`
 
 |`leaveFormat`
 |メソッドから出る際のログ出力のフォーマット文字列 +
@@ -296,59 +311,62 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `%2`: メソッド名 +
 `%3`: ファイル名 +
 `%4`: 行番号 +
-`%5`: 対応する `enter` メソッドを呼び出してからの経過時間
-|`Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL`
+`%5`: 対応する `enter` メソッドを呼び出してからの経過時間 +
+ +
+[.small]#*デフォルト値:*# `Leave %1$s.%2$s (%3$s:%4$d) duration: %5$tT.%5$tL`
 
 |`threadBoundaryFormat`
 |スレッド境界のログ出力の文字列フォーマット +
  +
-[.small]#*パラメータ:*# +
-`%1`: スレッド名
-|[.small]#`\____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____`#
+[.small]#*パラメータ:*# `%1`: スレッド名 +
+ +
+[.small]#*デフォルト値:*# [.small]#`\____\__\__\__\__\__\__\__\__\__\__\__\__\__ %1$s \__\__\__\__\__\__\__\__\__\__\__\__\__\____`#
 
 |`classBoundaryFormat`
 |クラス境界のログ出力の文字列フォーマット +
  +
-[.small]#*パラメータ:*# +
-`%1`: クラス名
-|`\\____ %1$s \____`
+[.small]#*パラメータ:*# `%1`: クラス名 +
+ +
+[.small]#*デフォルト値:*# `\\____ %1$s \____`
 
 |`indentString`
-|コードのインデント文字列
-|`&#x7c;\\s` +
+|コードのインデント文字列 +
  +
+[.small]#*デフォルト値:*# `&#x7c;\\s` +
 `\\s` [.small]#は空白文字に置き換えられる#
 
 |`dataIndentString`
-|データのインデント文字列
-|`\\s\\s` +
+|データのインデント文字列 +
  +
+[.small]#*デフォルト値:*# `\\s\\s` +
 `\\s` [.small]#は空白文字に置き換えられる#
 
 |`limitString`
 |制限を超えた場合に出力する文字列 +
-|`\...`
+ +
+[.small]#*デフォルト値:*# `\...`
 
 |`nonOutputString`
 |値を出力しない場合に代わりに出力する文字列 +
-|`\***`
+ +
+[.small]#*デフォルト値:*# `\***`
 
 |`cyclicReferenceString`
-|循環参照している場合に出力する文字列
-|`\\s\*\** cyclic reference \***\\s` +
+|循環参照している場合に出力する文字列 +
  +
+[.small]#*デフォルト値:*# `\\s\*\** cyclic reference \***\\s` +
 `\\s` [.small]#は空白文字に置き換えられる#
 
 |`varNameValueSeparator`
 |変数名と値のセパレータ文字列 +
-|`\\s=\\s` +
  +
+[.small]#*デフォルト値:*# `\\s=\\s` +
 `\\s` [.small]#は空白文字に置き換えられる#
 
 |`keyValueSeparator`
 |マップのキーと値のおよびフィールド名と値のセパレータ文字列 +
-|`:\\s` +
  +
+[.small]#*デフォルト値:*# `:\\s` +
 `\\s` [.small]#は空白文字に置き換えられる#
 
 |`printSuffixFormat` +
@@ -358,107 +376,137 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 `%1`: 呼出側のクラス名 +
 `%2`: 呼出側のメソッド名 +
 `%3`: 呼出側のファイル名 +
-`%4`: 呼出側の行番号
-|`\\s(%3$s:%4$d)` +
+`%4`: 呼出側の行番号 +
  +
+[.small]#*デフォルト値:*# `\\s(%3$s:%4$d)` +
 `\\s` [.small]#は空白文字に置き換えられる#
 
 |`sizeFormat`
 |コレクションおよびマップの要素数のフォーマット +
  +
-[.small]#*パラメータ:*# +
-`%1`: 要素数
-|`size:%1d`
+[.small]#*パラメータ:*# `%1`: 要素数 +
+ +
+[.small]#*デフォルト値:*# `size:%1d`
 
 |`minimumOutputSize`
 |配列、コレクションおよびマップの要素数を出力する最小値 +
-|`Integer.MAX_VALUE` [.small]#(出力しない)#
+ +
+[.small]#*デフォルト値:*# `Integer.MAX_VALUE` [.small]#(出力しない)#
 
 |`lengthFormat`
 |文字列長のフォーマット +
  +
-[.small]#*パラメータ:*# +
-`%1`: 文字列長
-|length:%1d
+[.small]#*パラメータ:*# `%1`: 文字列長 +
+ +
+[.small]#*デフォルト値:*# length:%1d
 
 |`minimumOutputLength`
 |文字列長を出力する最小値 +
-|`Integer.MAX_VALUE` [.small]#(出力しない)#
+ +
+[.small]#*デフォルト値:*# `Integer.MAX_VALUE` [.small]#(出力しない)#
 
 |`utilDateFormat`
-|`java.util.Date` のフォーマット
-|`yyyy-MM-dd HH:mm:ss.SSSxxx`
+|`java.util.Date` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd HH:mm:ss.SSSxxx`
 
 |`sqlDateFormat`
-|`java.sql.Date` のフォーマット
-|`yyyy-MM-ddxxx`
+|`java.sql.Date` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-ddxxx`
 
 |`timeFormat`
-|`java.sql.Time` のフォーマット
-|`HH:mm:ss.SSSxxx`
+|`java.sql.Time` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `HH:mm:ss.SSSxxx`
 
 |`timestampFormat`
-|`java.sql.Timestamp` のフォーマット
-|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx`
+|`java.sql.Timestamp` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx`
 
 |`localDateFormat`
-|`java.time.LocalDate` のフォーマット
-|`yyyy-MM-dd`
+|`java.time.LocalDate` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd`
 
 |`localTimeFormat`
-|`java.time.LocalTime` のフォーマット
-|`HH:mm:ss.SSSSSSSSS`
+|`java.time.LocalTime` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `HH:mm:ss.SSSSSSSSS`
 
 |`offsetTimeFormat`
-|`java.time.OffsetTime` のフォーマット
-|`HH:mm:ss.SSSSSSSSSxxx`
+|`java.time.OffsetTime` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `HH:mm:ss.SSSSSSSSSxxx`
 
 |`localDateTimeFormat`
-|`java.time.LocalDateTime` のフォーマット
-|`yyyy-MM-dd HH:mm:ss.SSSSSSSSS`
+|`java.time.LocalDateTime` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd HH:mm:ss.SSSSSSSSS`
 
 |`offsetDateTimeFormat`
-|`java.time.OffsetDateTime` のフォーマット
-|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx`
+|`java.time.OffsetDateTime` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx`
 
 |`zonedDateTimeFormat`
-|`java.time.ZonedDateTime` のフォーマット
-|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV`
+|`java.time.ZonedDateTime` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd HH:mm:ss.SSSSSSSSSxxx VV`
 
 |`instantFormat`
-|`java.time.Instant` のフォーマット
-|`yyyy-MM-dd HH:mm:ss.SSSSSSSSSX`
+|`java.time.Instant` のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd HH:mm:ss.SSSSSSSSSX`
 
 |`logDateTimeFormat`
-|`logger` が `Std$Out` および `Std$Err` の場合のログの日時のフォーマット
-|`yyyy-MM-dd HH:mm:ss.SSSxxx`
+|`logger` が `Std$Out` および `Std$Err` の場合のログの日時のフォーマット +
+ +
+[.small]#*デフォルト値:*# `yyyy-MM-dd HH:mm:ss.SSSxxx`
+
+|`timeZone`
+|タイムゾーンの指定 (`ZoneId.of(timeZone)`) +
+ +
+[.small]#*例:*# +
+`timeZone = UTC` +
+`timeZone = America/New_York` +
+`timeZone = Asia/Tokyo` +
+ +
+[.small]#*デフォルト値:*# `ZoneId.systemDefault()`
 
 |`maximumDataOutputWidth`
 |データの出力幅の最大値 +
-|70
+ +
+[.small]#*デフォルト値:*# 70
 
 |`collectionLimit`
 |配列、コレクションおよびマップの要素の出力数の制限値 +
-|128
+ +
+[.small]#*デフォルト値:*# 128
 
 |`byteArrayLimit`
-|バイト配列(`byte[]`)要素の出力数の制限値
-|256
+|バイト配列(`byte[]`)要素の出力数の制限値 +
+ +
+[.small]#*デフォルト値:*# 256
 
 |`stringLimit`
-|文字列の出力文字数の制限値
-|256
+|文字列の出力文字数の制限値 +
+ +
+[.small]#*デフォルト値:*# 256
 
 |`reflectionNestLimit`
 |リフレクションのネスト数の制限値 +
-|4
+ +
+[.small]#*デフォルト値:*# 4
 
 |`nonOutputProperties`
 |出力しないプロパティ名のリスト +
  +
 [.small]#*値のフォーマット:*# +
-`<フルクラス名>#<プロパティ名>`
-|なし +
+`<フルクラス名>#<プロパティ名>` +
+ +
+[.small]#*デフォルト値:*# なし +
  +
 [.small]#*値の例 (1つ):*# +
 [.small]#`org.lightsleep.helper.EntityInfo#columnInfos`# +
@@ -470,18 +518,21 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 
 |`defaultPackage`
 |使用する Javaソースのデフォルトパッケージ +
-|なし +
+ +
+[.small]#*デフォルト値:*# なし +
  +
 [.small]#*値の例:*# +
 `org.debugtrace.DebugTraceExample`
 
 |`defaultPackageString`
 |デフォルトパッケージ部を置き換える文字列 +
-|`\...`
+ +
+[.small]#*デフォルト値:*# `\...`
 
 |`reflectionClasses`
-|`toString` メソッドを実装していてもリフレクションで内容を出力するクラス名または `パッケージ名 + '.'` のリスト
-|なし +
+|`toString` メソッドを実装していてもリフレクションで内容を出力するクラス名または `パッケージ名 + '.'` のリスト +
+ +
+[.small]#*デフォルト値:*# なし +
  +
 [.small]#*値の例 (1つ):*# +
 `org.debugtrce.example.Point` +
@@ -497,8 +548,9 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
 |変数名に対応するマップ名を取得するためのマップ +
  +
 [.small]#*値のフォーマット:*# +
-`<変数名>: <マップ名>`
-|なし +
+`<変数名>: <マップ名>` +
+ +
+[.small]#*デフォルト値:*# なし +
  +
 [.small]#*値の例:*# +
 `appleBrand: AppleBrand` +
@@ -508,7 +560,8 @@ DebugTrace は、クラスパスにある `DebugTrace.properties` ファイル�
  +
 [.small]#*値のフォーマット:*# +
 `<数値>: <定数名>` +
-|[.small]#*定義済み定数名マップ:*# +
+ +
+[.small]#*定義済み定数名マップ:*# +
 `Calendar`: `Calendar.ERA` など +
 `CalendarWeek`: `Calendar.SUNDAY` など +
 `CalendarMonth`: `Calendar.JANUARY` など +

@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="text/css" href="../../../script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../script.js"></script>
-<script type="text/javascript" src="../../../script-dir/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../script-dir/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
@@ -100,7 +100,9 @@ implements <a href="Logger.html" title="interface in org.debugtrace.logger">Logg
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.io.File,boolean)" class="member-name-link">File</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;file,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.io.File,java.nio.charset.Charset,org.debugtrace.LineSeparator,boolean)" class="member-name-link">File</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;file,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset,
+ <a href="../LineSeparator.html" title="enum class in org.debugtrace">LineSeparator</a>&nbsp;lineSeparator,
  boolean&nbsp;append)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Constructs a org.debugtrace.logger.File.</div>
@@ -148,14 +150,18 @@ implements <a href="Logger.html" title="interface in org.debugtrace.logger">Logg
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.io.File,boolean)">
+<section class="detail" id="&lt;init&gt;(java.io.File,java.nio.charset.Charset,org.debugtrace.LineSeparator,boolean)">
 <h3>File</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">File</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/File.html" title="class or interface in java.io" class="external-link">File</a>&nbsp;file,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/Charset.html" title="class or interface in java.nio.charset" class="external-link">Charset</a>&nbsp;charset,
+ <a href="../LineSeparator.html" title="enum class in org.debugtrace">LineSeparator</a>&nbsp;lineSeparator,
  boolean&nbsp;append)</span></div>
 <div class="block">Constructs a org.debugtrace.logger.File.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>file</code> - the output destination java.io.File</dd>
+<dd><code>charset</code> - the charset</dd>
+<dd><code>lineSeparator</code> - the line separator</dd>
 <dd><code>append</code> - Append output to the existing log file if true, initialize and output otherwise</dd>
 </dl>
 </section>

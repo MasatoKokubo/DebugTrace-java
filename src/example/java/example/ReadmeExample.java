@@ -23,7 +23,10 @@ public class ReadmeExample {
         appleBrand = Apple.YUKARI;
         DebugTrace.print(" 4 example. appleBrand ", appleBrand);
 
-        var name = new Name("Haruka", "Apple");
-        DebugTrace.print("name", name);
+        var enName = new Name("Haruka", "Apple");
+        DebugTrace.print("enName", enName);
+
+        var jpName = new Name("はるか", "りんご");
+        DebugTrace.print("jpName", jpName);
     }
 }
